@@ -19,17 +19,19 @@ Here are some ideas to get you started:
 
 # In a nutshell
 <h1> About me </h1>
+``` 
 Name : Christo John 
 Age : 18 as of 2022
 Role : Student
 Category : It and computer application
 Currently : BCA Student
+``` 
 # 📫 How to reach me:
-- [Facebook](bit.ly/chrisatfb)
-- [Instagram ](bit.ly/christatinsta)
-- [LinkedIn](bit.ly/christatlinkedin)
-- [Discord](bit.ly/chrisatdiscord
-- [Gmail](bit.ly/christatgoogle)
+[Facebook](https://bit.ly/chrisatfb)
+[Instagram ](https://bit.ly/christatinsta)
+[LinkedIn](https://bit.ly/christatlinkedin)
+[Discord](https://bit.ly/chrisatdiscord
+[Gmail](httsps://bit.ly/christatgoogle)
 Wanna know about me in-depth...
 ***[It's not all about Christo John but about Tesnic as well]***
 ***Hello*** **Boss,**
