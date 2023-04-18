@@ -1,23 +1,23 @@
 Hey there 👋 wanna know about me...
-
-👦 My name is ``` Christo John ```
-💫 ``` 18``` years old as of 2022
-🌴 ``` Keralite ``` as origin 
-👨‍💻 Computer enthusiast since childhood...
-👨‍🎓 ``` Bachelor of Computer Applications ``` student as role...
+<br> 
+👦 My name is ``` Christo John ```<br> 
+💫 ``` 18``` years old as of 2022<br> 
+🌴 ``` Keralite ``` as origin <br> 
+👨‍💻 Computer enthusiast since childhood...<br> 
+👨‍🎓 ``` Bachelor of Computer Applications ``` student as role...<br> 
 🎮 Love playing ``` Games ``` and
-🎧 ``` Listening Music ```
+🎧 ``` Listening Music ```<br> 
 📔 Big fan of ``` Manga's ``` and
-🎞️ ``` Animes ```
-✍️ Also am a ``` Content writer ``` and ``` Fictional novel ``` writer...
-💻 As in the field of computers, I am a ``` Programmer ``` Designer ``` and a ``` Developer ``` who is at his infancy...😄___
+🎞️ ``` Animes ```<br> 
+✍️ Also am a ``` Content writer ```and ``` Fictional novel ``` writer...<br> 
+💻 As in the field of computers, I am a ``` Programmer ``` Designer ``` and a ``` Developer ``` who is at his infancy...😄___<br> 
 
-💭 My dream is to become a ``` Computer expert ``` by all aspects...
+💭 My dream is to become a ``` Computer expert ``` by all aspects...<br> 
 
-> Dreams are not what we see while sleeping, rather they are what that makes us sleepless...
+> Dreams are not what we see while sleeping, rather they are what that makes us sleepless...<br> <br> 
 
 
-🌀 Branded myself as ``` Tesnic ``` 
+> 🌀 Branded myself as ``` Tesnic ``` <br> <br> 
 
 _^_^_^_^__^_^_^_^__^_^_^_^__^_^_^_^__^_^_^_^__^_^_^_^__^_^_^_^__^_^_^_^__^_^_^__^_^_^_^__^_^_^_^__^_^_^_^__^__^_^_
 
