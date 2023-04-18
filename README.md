@@ -1,6 +1,6 @@
 Hey there 👋 wanna know about me...
 
-👦 My name os ``` Christo John ```
+👦 My name is ``` Christo John ```
 💫 ``` 18``` years old as of 2022
 🌴 ``` Keralite ``` as origin 
 👨‍💻 Computer enthusiast since childhood...
