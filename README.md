@@ -1,4 +1,30 @@
-> ## ▶️ Click Here to know more about ***CHRISTO JOHN***
+Hey there 👋 wanna know about me...
+
+👦 My name os ``` Christo John ```
+💫 ``` 18``` years old as of 2022
+🌴 ``` Keralite ``` as origin 
+👨‍💻 Computer enthusiast since childhood...
+👨‍🎓 ``` Bachelor of Computer Applications ``` student as role...
+🎮 Love playing ``` Games ``` and
+🎧 ``` Listening Music ```
+📔 Big fan of ``` Manga's ``` and
+🎞️ ``` Animes ```
+✍️ Also am a ``` Content writer ``` and ``` Fictional novel ``` writer...
+💻 As in the field of computers, I am a ``` Programmer ``` Designer ``` and a ``` Developer ``` who is at his infancy...😄___
+
+💭 My dream is to become a ``` Computer expert ``` by all aspects...
+
+> Dreams are not what we see while sleeping, rather they are what that makes us sleepless...
+
+
+🌀 Branded myself as ``` Tesnic ``` 
+
+_^_^_^_^__^_^_^_^__^_^_^_^__^_^_^_^__^_^_^_^__^_^_^_^__^_^_^_^__^_^_^_^__^_^_^__^_^_^_^__^_^_^_^__^_^_^_^__^__^_^_
+
+
+
+
+> #### ▶️ Scroll Downto know more about ***CHRISTO JOHN***
 
 ```
 If you can be the cause of smile on someone's face,
