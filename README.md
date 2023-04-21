@@ -1,10 +1,12 @@
 
 
 <p>
-      ////////////////////////////<img src='assets/me.png' alt='Yours Trult christor john' width='90' height='90'>  ////////////////////////////  
+      ~////////////////////////////<img src='assets/me.png' alt='Yours Truly christor john' width='90' height='90'>  ////////////////////////////~ 
   </p>
 <br><br>
-Hey there 👋 wanna know about me...
+
+***Hey there 👋 wanna know about me...***
+
 <br> <br>
 
 <img src="./assets\name.jpg" width='35' height='20'> My name is ``` Christo John ```<br> <br>
@@ -109,8 +111,11 @@ Here are some ideas to get you started:
 
 # <!--  -->
 
+ <img src='assets/nutshell.jpg' width ='190' height='100'>
+
 # In a nutshell
-!<h2>🧒 About me </h2>
+
+<h2><img src='assets/about%20me.jpg' alt='About me' width='auto' height='30'> About me </h2>
 
 ```
 ⏩️ Name      : Christo John 
@@ -119,8 +124,13 @@ Here are some ideas to get you started:
 ⏩️ Department: IT & computer application :›
 ⏩️ Currently : BCA Student
 ```
+<section>
+<br>
+ <img src='assets/connect.jpg' alt='Connect with me' width='auto' height='30'> 
+ 
+ # How to reach me:
 
-# 📫 How to reach me:
+
 <img src="./assets\fb.jpg" width='15' height='15'> [Facebook](https://bit.ly/chrisatfb)<br>
 
 <img src="./assets\insta.jpg" width='15' height='15'> [Instagram ](https://bit.ly/christatinsta)<br>
@@ -132,6 +142,7 @@ Here are some ideas to get you started:
 
 <img src="./assets\gmail.png" width='15' height='15'> [Gmail](https://bit.ly/christatgoogle)<br>
 
+</section>
 Wanna know about me in-depth...<br>
 
 ***It's not all about Christo John but a lot about Tesnic as well***<br><br><br>
@@ -143,15 +154,20 @@ Aged 18 as on may 12 2022... And a BCA student at that...<br>
 
 I am a computer aspirant and programmer along with basic IoT, Arduino and NodeMCU development as side business (Not really though):>>...<br>
 It was my biggest dream to learn about hardware and software technologies to its root...<br><br>
+<section>
+<img src="./assets\interested.jpg" width='300' height='150'> 
 
-# 💫 Interests
+
+
+#  Interests
 
 I am interested in a lot of stuffs, though yet not defined them all properly but surely am intersted in the field of Computer Technology - both Hardware and software -...<br>
 Also am interested in the field of agriculture as I am rooted from an agricultural family.<br>
 Along with that I am very much fond of anime, manga and of course manga novels :):) ...<br><br><br>
 
+</section>
 
-#💭 Dreams
+# 💭 Dreams
 
 As same as my Interests I have a lot of undefined dreams. ***Currently my dream is to become a computer expert where I am capable of defining a computer upto its roof to root and could understand it completely both in terms of Hardware and software technologies - pretty fancy ha... >>***<br><br>
 As for my biggest dream, ***It is to create a completely free  and open-source world where anyone could find anything which they are interested inrsrearch on it completely out of bounds as well as for free as well as get hands-on-experience including practical experience absolutely free *-Well, that seems super fancy and impossible... But yet it's not ...-*<br><br><br>
@@ -174,9 +190,12 @@ And as well as I could design some no code websites.. Well of course I have a we
 Aand of course as a developer I could handle Arduino, NodeMCU, IoT projects development and as well as am currently a telegram bot designer and developer....<br>
 Yes of course I am a telegram bot develooer...**TESNICO** is my primary bot's name -Which was of course derived from **Tesnic**... Tesnico is currently 7under development as of 10 04 2023(today) and am not 24/7 online... It is locally hosted and not in any clouds.... But Tesnico's source code and files are publically available at my Tesnico repo...<br><br>
 
-# 🦸‍♂️🧛‍♂️Role model<br><br>
 
-If you ask me who my role model is, then the answer definitely will be ***NIKOLA TESLA***!, and that certainly is not out of eneither empathy nor symathy but completely outta ***RESPECT!***....<br><br>
+<img src="./assets\rolemodel.jpg" width='300' height='150'> 
+
+# Role model<br>
+If you ask me who my role model is, then the answer definitely will be ***NIKOLA TESLA***!, and that certainly is not out of neither empathy nor symathy but completely outta ***RESPECT!***....<br><br>
+
 Nokola Tesla is the biggest scientist who had made 100's N 1000's of inventions, yet unrecognized... He was the biggest man who had always dedicated his whole for research and invention.. He was the man whose 68% inventions were used world wide... And he is the man who revolutionized the world with his AC current tech.. And who is there more worthy to be a role model✨️. <br> <br><br><br>
 
 
@@ -197,11 +216,16 @@ What all do I have under Tesnic currently... Well currently only Tesnico is the 
 
 
 
-#   
-### ◀️▶️My projects
+#
+
+<img src="./assets\projects.jpg" width='300' height='150'>  
+
+# ◀▶My projects
 #   
 
 > Click on title to view project repo...
 
+
 - [Tesnico](https://github.com/ChristoJohn1030/Tesnico)<br>
 
+- [Tesnic Learning Hub](https://github.com/ChristoJohn1030/Tesnic-Learning-Hub)
