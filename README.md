@@ -41,7 +41,7 @@ ________________________________________________________________________________
 
 
 
-> #### ▶️ Scroll Down to know more about ***CHRISTO JOHN***
+> #### ▶ Scroll Down to know more about ***CHRISTO JOHN***
 | <br>
   |<br>
 | <br>
@@ -122,11 +122,11 @@ Here are some ideas to get you started:
 </h2>
 
 ```
-⏩️ Name      : Christo John 
-⏩️ Age       : 18 as of 2022
-⏩️ Role     : Student
-⏩️ Department: IT & computer application :›
-⏩️ Currently : BCA Student
+⏩ Name      : Christo John 
+⏩ Age       : 18 as of 2022
+⏩ Role     : Student
+⏩ Department: IT & computer application :]
+⏩ Currently : BCA Student
 ```
 </h2>
 <section>
@@ -221,8 +221,9 @@ So what's TESNIC any way....<br><br>
 Tesnic is something more complex!but not either... It is just a simple name under I am releasing my projects activities and whatever I am releasing publically... It's almost like my brand name... Or a pen name... It represents myself and only me...<br>
 Now then, where did Tesnic came from...<br><br>
 
-Well, TesNic has  two parts as you see.. Tes and Nic... **Tes** as in **Tesla** and **Nic** as in **Nikola**... Yes of course TesNic is derived from **Nikola Tesla**....<br>
-Why wasn't it NicTes then!  It's because I am a fan of japaneese... And in Japanese they say second name or initial or family name -whatever it is- as first name.. And thus Nikola Tesla became Tesla Nikola and thus TesNic...<br><br><br
+Well, **TesNic** has  two parts as you see.. Tes and Nic... **Tes** as in **Tesla** and **Nic** as in **Nikola**... Yes of course TesNic is derived from **Nikola Tesla**....<br><br>
+
+Why wasn't it NicTes then!  It's because I am a fan of japaneese contents... And in Japanese they say second name or initial or family name -whatever it is- as first name.. And thus Nikola Tesla became Tesla Nikola and thus TesNic **:]|**  ...<br><br>
 
 
 What all do I have under Tesnic currently... Well currently only Tesnico is the only thing under the flag Tesnic.. And am working on a blog site which will soon be released for real names *TechNic* Which is derived from tech+Tesnic words...<br>
