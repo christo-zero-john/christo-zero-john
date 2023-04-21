@@ -115,7 +115,11 @@ Here are some ideas to get you started:
 
 # In a nutshell
 
-<h2><img src='assets/about%20me.jpg' alt='About me' width='auto' height='30'> About me </h2>
+<img src='assets/About-me.jpg' alt='About me' width='auto' height='60'>
+ 
+## **About me**
+#
+</h2>
 
 ```
 ⏩️ Name      : Christo John 
@@ -124,6 +128,7 @@ Here are some ideas to get you started:
 ⏩️ Department: IT & computer application :›
 ⏩️ Currently : BCA Student
 ```
+</h2>
 <section>
 <br>
  <img src='assets/connect.jpg' alt='Connect with me' width='auto' height='30'> 
@@ -142,14 +147,20 @@ Here are some ideas to get you started:
 <img src="./assets\gmail.png" width='15' height='15'> [Gmail](https://bit.ly/chrisatgoogle)<br>
 
 </section>
+
+# 
+
 Wanna know about me in-depth...<br>
+
+
 
 ***It's not all about Christo John but a lot about Tesnic as well***<br><br><br>
 ***Hello*** **Boss,**
 
-       Wanna know about me... Then you are at the right place...<br>
+ > Wanna know about me... Then you are at the right place...
+
 My name is Christo John, from the land of kerala - **The Gods Own country**....<br>
-Aged 18 as on may 12 2022... And a BCA student at that...<br>
+Aged 18 as of may 12 2022... And a BCA student at that...<br>
 
 I am a computer aspirant and programmer along with basic IoT, Arduino and NodeMCU development as side business (Not really though):>>...<br>
 It was my biggest dream to learn about hardware and software technologies to its root...<br><br>
@@ -168,7 +179,10 @@ Along with that I am very much fond of anime, manga and of course manga novels :
 
 # 💭 Dreams
 
-As same as my Interests I have a lot of undefined dreams. ***Currently my dream is to become a computer expert where I am capable of defining a computer upto its roof to root and could understand it completely both in terms of Hardware and software technologies - pretty fancy ha... >>***<br><br>
+As same as my Interests I have a lot of undefined dreams. 
+
+
+***At present  my dream is to become a computer expert where I am capable of defining a computer upto its roof to root and could understand it completely both in terms of Hardware and software technologies ---- pretty fancy ha... >>***<br><br>
 As for my biggest dream, ***It is to create a completely free  and open-source world where anyone could find anything which they are interested inrsrearch on it completely out of bounds as well as for free as well as get hands-on-experience including practical experience absolutely free *-Well, that seems super fancy and impossible... But yet it's not ...-*<br><br><br>
 
 
@@ -193,7 +207,7 @@ Yes of course I am a telegram bot develooer...**TESNICO** is my primary bot's na
 <img src="./assets\rolemodel.jpg" width='300' height='150'> 
 
 # Role model<br>
-If you ask me who my role model is, then the answer definitely will be ***NIKOLA TESLA***!, and that certainly is not out of neither empathy nor symathy but completely outta ***RESPECT!***....<br><br>
+If you ask me who my role model is, then the answer definitely will be ***NIKOLA TESLA***!, <img src="./assets\nikolatesla.jpg" width='30' height='20'>   and that certainly is not out of neither empathy nor symathy but completely outta ***RESPECT!***....<br><br>
 
 Nokola Tesla is the biggest scientist who had made 100's N 1000's of inventions, yet unrecognized... He was the biggest man who had always dedicated his whole for research and invention.. He was the man whose 68% inventions were used world wide... And he is the man who revolutionized the world with his AC current tech.. And who is there more worthy to be a role model✨️. <br> <br><br><br>
 
