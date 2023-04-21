@@ -25,7 +25,7 @@ Hey there 👋 wanna know about me...
 
 <img src="./assets\writer.jpg" width='50' height='30'>  Also am a ``` Content writer ```and ``` Fictional novel ``` writer...<br> 
 
-<img src="./assets\computer.jpg" width='50' height='30'>  As in the field of computers, I am a ``` Programmer ``` Designer ``` and a ``` Developer ``` who just started... :> ___<br> 
+<img src="./assets\computer.jpg" width='50' height='30'>  As in the field of computers, I am a ``` Programmer ``` ```Designer ``` and a ``` Developer ``` who just started... :> ___<br> 
 
 
 💭 My dream is to become a ``` Computer expert ``` by all aspects...<br> 
