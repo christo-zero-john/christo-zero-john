@@ -1,17 +1,30 @@
-
+<p>
+      ////////////////////////////<img src='assets/me.png' alt='Yours Trult christor john' width='90' height='90'>  ////////////////////////////  
+  </p>
+<br><br>
 Hey there 👋 wanna know about me...
-<br> 
-<img src="" My name is ``` Christo John ```<br> 
-💫 ``` 18``` years old as of 2022<br> 
-🌴 ``` Keralite ``` as origin <br> 
-👨‍💻 Computer enthusiast since childhood...<br> 
-👨‍🎓 ``` Bachelor of Computer Applications ``` student as role...<br> 
-🎮 Love playing ``` Games ``` and
-🎧 ``` Listening Music ```<br> 
-📔 Big fan of ``` Manga's ``` and
+<br> <br>
+
+<img src="./assets\name.jpg" width='35' height='20'> My name is ``` Christo John ```<br> <br>
+
+ <img src="./assets\age.png" width='20' height='20'> ``` 18``` years old as of 2022<br> <br>
+
+<img src="./assets\kerala.jpg" width='40' height='25'>  ``` Keralite ``` as origin <br> 
+
+<img src="./assets\computer.jpg" width='30' height='30'>  Computer enthusiast since childhood...<br> 
+
+<img src="./assets\BCA.png" width='50' height='50'>  ``` Bachelor of Computer Applications ``` student as role...<br> 
+
+<img src="./assets\gamer.jpg" width='50' height='25'>  Love playing ``` Games ``` and
+<img src="./assets\music.jpg" width='50' height='30'>  ``` Listening Music ```<br> 
+
+<img src="./assets\fantacy.jpg" width='50' height='30'>  Big fan of ``` Manga's ``` and
 🎞️ ``` Animes ```<br> 
-✍️ Also am a ``` Content writer ```and ``` Fictional novel ``` writer...<br> 
-💻 As in the field of computers, I am a ``` Programmer ``` Designer ``` and a ``` Developer ``` who just started... :> ___<br> 
+
+<img src="./assets\writer.jpg" width='50' height='30'>  Also am a ``` Content writer ```and ``` Fictional novel ``` writer...<br> 
+
+<img src="./assets\computer.jpg" width='50' height='30'>  As in the field of computers, I am a ``` Programmer ``` Designer ``` and a ``` Developer ``` who just started... :> ___<br> 
+
 
 💭 My dream is to become a ``` Computer expert ``` by all aspects...<br> 
 
@@ -106,12 +119,19 @@ Here are some ideas to get you started:
 ```
 
 # 📫 How to reach me:
-[Facebook](https://bit.ly/chrisatfb)<br>
-[Instagram ](https://bit.ly/christatinsta)<br>
-[LinkedIn](https://bit.ly/christatlinkedin)<br>
-[Discord](https://bit.ly/chrisatdiscord)<br>
-[Gmail](https://bit.ly/christatgoogle)<br>
+<img src="./assets\fb.jpg" width='15' height='15'> [Facebook](https://bit.ly/chrisatfb)<br>
+
+<img src="./assets\insta.jpg" width='15' height='15'> [Instagram ](https://bit.ly/christatinsta)<br>
+
+<img src="./assets\linkedin
+.jpg" width='15' height='15'> [LinkedIn](https://bit.ly/christatlinkedin)<br>
+
+<img src="./assets\discord.png" width='15' height='15'> [Discord](https://bit.ly/chrisatdiscord)<br>
+
+<img src="./assets\gmail.png" width='15' height='15'> [Gmail](https://bit.ly/christatgoogle)<br>
+
 Wanna know about me in-depth...<br>
+
 ***It's not all about Christo John but a lot about Tesnic as well***<br><br><br>
 ***Hello*** **Boss,**
 
@@ -152,7 +172,7 @@ And as well as I could design some no code websites.. Well of course I have a we
 Aand of course as a developer I could handle Arduino, NodeMCU, IoT projects development and as well as am currently a telegram bot designer and developer....<br>
 Yes of course I am a telegram bot develooer...**TESNICO** is my primary bot's name -Which was of course derived from **Tesnic**... Tesnico is currently 7under development as of 10 04 2023(today) and am not 24/7 online... It is locally hosted and not in any clouds.... But Tesnico's source code and files are publically available at my Tesnico repo...<br><br>
 
-# 🦸‍♀️🦸‍♂️🧛‍♂️Role model<br><br>
+# 🦸‍♂️🧛‍♂️Role model<br><br>
 
 If you ask me who my role model is, then the answer definitely will be ***NIKOLA TESLA***!, and that certainly is not out of eneither empathy nor symathy but completely outta ***RESPECT!***....<br><br>
 Nokola Tesla is the biggest scientist who had made 100's N 1000's of inventions, yet unrecognized... He was the biggest man who had always dedicated his whole for research and invention.. He was the man whose 68% inventions were used world wide... And he is the man who revolutionized the world with his AC current tech.. And who is there more worthy to be a role model✨️. <br> <br><br><br>
