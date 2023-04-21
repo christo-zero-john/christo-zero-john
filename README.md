@@ -136,11 +136,11 @@ Here are some ideas to get you started:
 <img src="./assets\insta.jpg" width='15' height='15'> [Instagram ](https://bit.ly/christatinsta)<br>
 
 <img src="./assets\linkedin
-.jpg" width='15' height='15'> [LinkedIn](https://bit.ly/christatlinkedin)<br>
+.jpg" width='15' height='15'> [LinkedIn](https://bit.ly/chrisatlinkedin)<br>
 
 <img src="./assets\discord.png" width='15' height='15'> [Discord](https://bit.ly/chrisatdiscord)<br>
 
-<img src="./assets\gmail.png" width='15' height='15'> [Gmail](https://bit.ly/christatgoogle)<br>
+<img src="./assets\gmail.png" width='15' height='15'> [Gmail](https://bit.ly/chrisatgoogle)<br>
 
 </section>
 Wanna know about me in-depth...<br>
