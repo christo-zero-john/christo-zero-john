@@ -135,8 +135,7 @@ Here are some ideas to get you started:
 
 <img src="./assets\insta.jpg" width='15' height='15'> [Instagram ](https://bit.ly/christatinsta)<br>
 
-<img src="./assets\linkedin
-.jpg" width='15' height='15'> [LinkedIn](https://bit.ly/chrisatlinkedin)<br>
+<img src="./assets\linkedin.jpg" width='15' height='15'> [LinkedIn](https://bit.ly/chrisatlinkedin)<br>
 
 <img src="./assets\discord.png" width='15' height='15'> [Discord](https://bit.ly/chrisatdiscord)<br>
 
@@ -155,7 +154,7 @@ Aged 18 as on may 12 2022... And a BCA student at that...<br>
 I am a computer aspirant and programmer along with basic IoT, Arduino and NodeMCU development as side business (Not really though):>>...<br>
 It was my biggest dream to learn about hardware and software technologies to its root...<br><br>
 <section>
-<img src="./assets\interested.jpg" width='300' height='150'> 
+<img src="./assets\Interested.jpg" width='300' height='150'> 
 
 
 
