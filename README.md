@@ -10,7 +10,7 @@ Hey there 👋 wanna know about me...
 📔 Big fan of ``` Manga's ``` and
 🎞️ ``` Animes ```<br> 
 ✍️ Also am a ``` Content writer ```and ``` Fictional novel ``` writer...<br> 
-💻 As in the field of computers, I am a ``` Programmer ``` Designer ``` and a ``` Developer ``` who is at his infancy...😄___<br> 
+💻 As in the field of computers, I am a ``` Programmer ``` Designer ``` and a ``` Developer ``` who just started... :> ___<br> 
 
 💭 My dream is to become a ``` Computer expert ``` by all aspects...<br> 
 
@@ -19,12 +19,56 @@ Hey there 👋 wanna know about me...
 
 > 🌀 Branded myself as ``` Tesnic ``` <br> <br> 
 
-_^_^_^_^__^_^_^_^__^_^_^_^__^_^_^_^__^_^_^_^__^_^_^_^__^_^_^_^__^_^_^_^__^_^_^__^_^_^_^__^_^_^_^__^_^_^_^__^__^_^_
+_______________________________________________________________________________________________________________________________________________________________________
 
 
 
 
-> #### ▶️ Scroll Downto know more about ***CHRISTO JOHN***
+> #### ▶️ Scroll Down to know more about ***CHRISTO JOHN***
+| <br>
+  |<br>
+| <br>
+  |<br>
+| <br>
+  |<br>
+| <br>
+  |<br>
+| <br>
+  |<br>
+| <br>
+  |<br>
+| <br>
+  |<br>
+| <br>
+  |<br>
+| <br>
+  |<br>
+| <br>
+  |<br>
+ | <br>
+  |<br>
+ | <br>
+  |<br>
+ | <br>
+  |<br>
+ | <br>
+  |<br>
+ | <br>
+  |<br>
+ | <br>
+  |<br>
+ | <br>
+  |<br>
+ | <br>
+  |<br>
+ | <br>
+  |<br>
+ | <br>
+  |<br>
+ | <br>
+  |<br>
+ 
+ 
 
 ```
 If you can be the cause of smile on someone's face,
