@@ -1,8 +1,14 @@
 
 
-<p>
-      ~////////////////////////////<img src='assets/me.png' alt='Yours Truly christor john' width='90' height='90'>  ////////////////////////////~ 
-  </p>
+
+
+
+
+
+
+
+
+<img src='assets/me.png' alt='Yours Truly christor john' width='90' height='90'>
 <br><br>
 
 ***Hey there 👋 wanna know about me...***
