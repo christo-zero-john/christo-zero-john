@@ -156,8 +156,7 @@ Here are some ideas to get you started:
 Wanna know about me in-depth...<br>
 
 
-
-***It's not all about Christo John but a lot about Tesnic as well***<br><br><br>
+``` It's not all about Christo John but a lot about Tesnic as well...```<br><br><br>
 ***Hello*** **Boss,**
 
  > Wanna know about me... Then you are at the right place...
