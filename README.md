@@ -135,7 +135,6 @@ Here are some ideas to get you started:
 ⏩ Currently : BCA Student
 ```
 </h2>
-<section>
 <br>
  <img src='assets/connect.jpg' alt='Connect with me' width='auto' height='30'> 
  
@@ -144,15 +143,13 @@ Here are some ideas to get you started:
 
 <img src="./assets\fb.jpg" width='15' height='15'> [Facebook](https://bit.ly/chrisatfb)<br>
 
-<img src="./assets\insta.jpg" width='15' height='15'> [Instagram ](https://bit.ly/christatinsta)<br>
+<img src="./assets\insta.jpg" width='15' height='15'> [Instagram ](https://bit.ly/chrisatinsta)<br>
 
 <img src="./assets\linkedin.jpg" width='15' height='15'> [LinkedIn](https://bit.ly/chrisatlinkedin)<br>
 
-<img src="./assets\discord.png" width='15' height='15'> [Discord](https://bit.ly/chrisatdiscord)<br>
-
 <img src="./assets\gmail.png" width='15' height='15'> [Gmail](https://bit.ly/chrisatgoogle)<br>
 
-</section>
+
 
 # 
 
