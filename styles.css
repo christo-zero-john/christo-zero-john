@@ -1,0 +1,895 @@
+/* width */
+.width-0
+{
+    width:0vw;
+}
+
+.width-10
+{
+    width:10vw;
+}
+
+.width-20
+{
+    width:20vw;
+}
+
+.width-25
+{
+    width:25vw;
+}
+
+
+.width-30
+{
+    width:30vw;
+}
+
+.width-40
+{
+    width:40vw;
+}
+
+.width-50
+{
+    width:50vw;
+}
+
+.width-60
+{
+    width:60vw;
+}
+
+.width-70
+{
+    width:70vw;
+}
+
+.width-75
+{
+    width:75vw;
+}
+
+.width-80
+{
+    width:80vw;
+}
+
+.width-90
+{
+    width:90vw;
+}
+
+.width-100
+{
+    width:100vw;
+}
+
+/* height */
+.height-0
+{
+    height:0vh;
+}
+
+.height-10
+{
+    height:10vh;
+}
+
+.height-20
+{
+    height:20vh;
+}
+
+.height-25
+{
+    height:25vh;
+}
+
+
+.height-30
+{
+    height:30vh;
+}
+
+.height-40
+{
+    height:40vh;
+}
+
+.height-50
+{
+    height:50vh;
+}
+
+.height-60
+{
+    height:60vh;
+}
+
+.height-70
+{
+    height:70vh;
+}
+
+.height-75
+{
+    height:75vh;
+}
+
+.height-80
+{
+    height:80vh;
+}
+
+.height-90
+{
+    height:90vh;
+}
+
+.height-100
+{
+    height:100vh;
+}
+
+
+
+/* Width-in-pixels */
+.width-px-1
+{
+    width:1px;
+}
+
+.width-px-2
+{
+    width:2px;
+}
+
+.width-px-3
+{
+    width:3px;
+}
+
+.width-px-4
+{
+    width:4px;
+}
+
+.width-px-5
+{
+    width:5px;
+}
+
+.width-px-6
+{
+    width:6px;
+}
+
+.width-px-7
+{
+    width:7px;
+}
+
+.width-px-8
+{
+    width:8px;
+}
+
+.width-px-9
+{
+    width:9px;
+}
+
+.width-px-10
+{
+    width:10px;
+}
+
+.width-px-20
+{
+    width:20px;
+}
+
+.width-px-30
+{
+    width:30px;
+}
+
+.width-px-40
+{
+    width:40px;
+}
+
+.width-px-50
+{
+    width:50px;
+}
+
+.width-px-60
+{
+    width:60px;
+}
+
+.width-px-70
+{
+    width:70px;
+}
+
+.width-px-80
+{
+    width:80px;
+}
+
+.width-px-90
+{
+    width:90px;
+}
+
+.width-px-100
+{
+    width:100px;
+}
+
+.width-px-150
+{
+    width:150px;
+}
+
+.width-px-200
+{
+    width:200px;
+}
+
+.width-px-250
+{
+    width:250px;
+}
+
+.width-px-300
+{
+    width:300px;
+}
+
+
+/* height-in-pixels */
+.height-px-1
+{
+    height:1px;
+}
+
+.height-px-2
+{
+    height:2px;
+}
+
+.height-px-3
+{
+    height:3px;
+}
+
+.height-px-4
+{
+    height:4px;
+}
+
+.height-px-5
+{
+    height:5px;
+}
+
+.height-px-6
+{
+    height:6px;
+}
+
+.height-px-7
+{
+    height:7px;
+}
+
+.height-px-8
+{
+    height:8px;
+}
+
+.height-px-9
+{
+    height:9px;
+}
+
+.height-px-10
+{
+    height:10px;
+}
+
+.height-px-20
+{
+    height:20px;
+}
+
+.height-px-30
+{
+    height:30px;
+}
+
+.height-px-40
+{
+    height:40px;
+}
+
+.height-px-50
+{
+    height:50px;
+}
+
+.height-px-60
+{
+    height:60px;
+}
+
+.height-px-70
+{
+    height:70px;
+}
+
+.height-px-80
+{
+    height:80px;
+}
+
+.height-px-90
+{
+    height:90px;
+}
+
+.height-px-100
+{
+    height:100px;
+}
+
+.height-px-150
+{
+    height:150px;
+}
+
+.height-px-200
+{
+    height:200px;
+}
+
+.height-px-250
+{
+    height:250px;
+}
+
+.height-px-300
+{
+    height:300px;
+}
+
+
+
+/* text-color */
+.text-color-aquamarine
+{
+    color:aquamarine
+}
+
+.text-color-blanchedalmond
+{
+    color:blanchedalmond;
+}
+
+.text-color-1
+{
+    color:rgb(0, 255, 246);
+}
+
+
+
+/* Text-shadow */
+.text-shadow-1
+{
+    text-shadow:0px 0px 40px rgb(255, 255, 255);
+}
+
+
+
+/* Fonts */
+.font-orbitron
+{
+    font-family:'orbitron',serif;
+}
+
+.font-foldit
+{
+    font-family:'foldit',serif;
+}
+
+.font-bodoni-moda
+{
+    font-family: 'Bodoni Moda', serif;
+}
+
+.font-rubik-pixels
+{
+    font-family: 'Rubik Pixels', cursive;
+}
+
+.font-poiret-one
+{
+    font-family: 'Poiret One', cursive;
+}
+
+.font-tangerine
+{
+    font-family: 'Tangerine', cursive;
+}
+
+
+
+
+/* font-size */
+.font-size-0-5em
+{
+    font-size:0.5em;
+}
+
+.font-size-1em
+{
+    font-size:1rem;
+}
+
+.font-size-1-5em
+{
+    font-size:1.5em;
+}
+.font-size-2em
+{
+    font-size:2em;
+}
+
+
+/* font-weight */
+.font-weight-100
+{
+    font-weight: 100;
+}
+
+.font-weight-200
+{
+    font-weight: 200;
+}
+
+.font-weight-300
+{
+    font-weight: 300;
+}
+
+.font-weight-400
+{
+    font-weight: 400;
+}
+
+.font-weight-500
+{
+    font-weight: 500;
+}
+
+.font-weight-600
+{
+    font-weight: 600;
+}
+
+.font-weight-700
+{
+    font-weight: 700;
+}
+
+.font-weight-800
+{
+    font-weight: 800;
+}
+
+.font-weight-900
+{
+    font-weight: 900;
+}
+
+.font-weight-1000
+{
+    font-weight: 1000;
+}
+
+/* border-styles */
+.border-solid
+{
+    border-style: solid;
+}
+
+.border-double
+{
+    border-style: double;
+}
+
+.border-dashed
+{
+    border-style:dashed;
+}
+
+.border-dotted
+{
+    border-style: dotted;
+}
+
+.border-groove
+{
+    border-style: groove;
+}
+
+.border-hidden
+{
+    border-style: hidden;
+}
+
+.border-ridge
+{
+    border-style: ridge;
+}
+
+.border-1
+{
+    border:1px ridge aqua;
+    border-radius:10px;
+}
+
+.border-2
+{
+    border-top-right-radius:10px;
+    border-bottom-left-radius:10px;
+}
+
+.border-3
+{
+    border:2px dotted aqua;
+}
+
+.half-border-1
+{
+    border-bottom:2px ridge white;
+    border-bottom-left-radius: 50%;
+
+    
+}
+
+
+.border-left-round
+{
+    border-left: 50%;
+}
+
+/* border-size */
+.border-px-1
+{
+    border-width: 1px;
+}
+
+.border-px-2
+{
+    border-width: 2px;
+}
+
+.border-px-3
+{
+    border-width: 3px;
+}
+
+.border-px-4
+{
+    border-width: 4px;
+}
+
+.border-px-5
+{
+    border-width: 5px;
+}
+
+.border-px-6
+{
+    border-width: 6px;
+}
+
+.border-px-7
+{
+    border-width: 7px;
+}
+
+.border-px-8
+{
+    border-width: 8px;
+}
+
+.border-px-9
+{
+    border-width: 9px;
+}
+
+.border-px-10
+{
+    border-width: 10px;
+}
+
+
+/* Border-color */
+.border-color-pink
+{
+    border-color: pink;
+}
+
+.border-color-aqua
+{
+    border-color: aqua;
+}
+
+
+.hover-border-color-white:hover
+{
+    border-color: antiquewhite;
+}   
+
+/* border-radius */
+.border-radius-px-15
+{
+    border-radius: 15px;
+}
+
+/* box-shadow */
+.box-shadow-1
+{
+    box-shadow:0px 0px 13px 2px rgba(0, 0, 0, 0.593);
+}
+
+.box-shadow-2
+{
+    box-shadow:0px 0px 13px 2px rgba(255, 255, 255, 0.593);
+}
+
+.box-shadow-3
+{
+    box-shadow:0px 0px 5px 2px rgb(103, 112, 7);
+}
+
+
+.hover-box-shadow-anime-1:hover
+{
+    animation:hover-box-shadow-anime-1 5s linear infinite;
+}
+
+/* hover-styles */
+.on-hover-opacity-half:hover
+{
+    background:linear-gradient(35deg,rgb(20, 23, 32) 10%,transparent 78%,rgb(92, 154, 211) 5%,rgba(3, 255, 247, 0.44));
+}
+
+.menu-item-on-hover-trasp-white-0-5:hover
+{
+    background:linear-gradient(35deg,rgba(255, 255, 255, 0.627) 10%,transparent 78%,rgb(92, 154, 211) 5%,rgba(3, 255, 247, 0.44));
+}
+
+.menu-item-on-hover-text-size-1-2em:hover
+{
+    font-size:1.2em;
+}
+
+/* object-size */
+.size-100x100
+{
+    width:100px;
+    height:100px;
+}
+
+.size-150x150
+{
+    width:150px;
+    height:150px;
+}
+
+.size-200x200
+{
+    width:200px;
+    height:200px;
+}
+/* visibility */
+.hidden
+{
+    visibility: hidden;
+}
+
+
+/* backgrounds */
+.bg-nav
+{
+    background:linear-gradient(90deg,rgb(20, 84, 204) 20%,black);
+    
+}
+
+.bg-img-1
+{
+    background-image: url(../assets/sitepics/cube.jpg);
+    background-repeat:no-repeat;
+    background-size:cover;
+}
+
+.bg-img-2
+{
+    background-image: url(../assets/sitepics/cube_Image.svg);
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+/* scale */
+.scale-0-5
+{
+    scale: 0.5;
+}
+
+.scale-1-5
+{
+    scale: 1.5;
+}
+
+.scale-2
+{
+    scale: 2;
+}
+
+.hover-scale-0-5:hover
+{
+    scale:0.5;
+}
+
+.hover-scale-1-5:hover
+{
+    scale:1.5;
+}
+
+.hover-scale-2:hover
+{
+    scale:2;
+}
+
+
+/* flex */
+.justify-content-evenly
+{
+    justify-content:space-evenly ;
+}
+
+/* horizontal-line */
+.hr-1
+{
+    width:80vw;
+    height:4px;
+}
+
+.hr-2
+{
+    width:25vw;
+}
+
+
+/* animations */
+@keyframes hover-box-shadow-anime-1
+{
+    0%
+    {
+        box-shadow:0px 0px 5px 1px white;
+        border-radius:0px;
+    }
+
+    10%
+    {
+        box-shadow:0px 0px 5px 1px rgb(255, 0, 0);
+    }
+
+    20%
+    {
+        box-shadow:0px 0px 5px 1px rgb(255, 242, 0);
+    }
+
+    30%
+    {
+        box-shadow:0px 0px 5px 1px rgb(21, 255, 0);
+        border-radius:15px;
+    }
+
+    40%
+    {
+        box-shadow:0px 0px 5px 1px rgb(0, 247, 255);
+    }
+    
+    50%
+    {
+        box-shadow:0px 0px 5px 1px rgb(0, 255, 229);
+        border-radius:0px;
+    }
+
+    60%
+    {
+        box-shadow:0px 0px 5px 1px rgb(123, 0, 255);
+    }
+
+    70%
+    {
+        box-shadow:0px 0px 5px 1px rgb(200, 0, 255);
+    }
+
+    80%
+    {
+        box-shadow:0px 0px 5px 1px rgb(255, 0, 64);
+        border-radius:15px;
+    }
+
+    90%
+    {
+        box-shadow:0px 0px 5px 1px rgb(0, 0, 0);
+    }
+
+    100%
+    {
+        box-shadow:0px 0px 5px 1px white;
+        border-radius:0px;
+    }
+    
+}
+
+
+
+/* Extras */
+
+
+
+
+
+
+
+     
+
+/*
+HTML links
+
+    <!-- My CSS link -->
+        <link rel="stylesheet" href="../css/styles.css">
+
+    <!-- Google Fonts -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+            <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <!-- Google Font orbitron -->
+        <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- Google Font Foldit -->
+        <link href="https://fonts.googleapis.com/css2?family=Foldit:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- Google fonts Bodoni Moda -->
+        <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;0,6..96,600;0,6..96,700;0,6..96,800;0,6..96,900;1,6..96,400;1,6..96,500;1,6..96,600;1,6..96,700;1,6..96,800;1,6..96,900&family=Foldit:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!--Google fonts Rubik pixels-->
+        <link href="https://fonts.googleapis.com/css2?family=Rubik+Pixels&display=swap" rel="stylesheet">
+    <!--Google fonts poirot-one-->
+        <link href="https://fonts.googleapis.com/css2?family=Poiret+One&display=swap" rel="stylesheet">
+
+    <!--Google fonts tangerine-->
+        <link href="https://fonts.googleapis.com/css2?family=Tangerine:wght@400;700&display=swap" rel="stylesheet">
+
+
+    <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    
+    <!-- Bootstrap JS -->
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+
+*/
