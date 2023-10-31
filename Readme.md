@@ -1,6 +1,6 @@
 
 
-![visitors](https://visitor-badge.laobi.icu/badge?page_id=christo-zero-john)
+<img src="https://visitor-badge.laobi.icu/badge?page_id=christo-zero-john">
 
 
 Heyya!
