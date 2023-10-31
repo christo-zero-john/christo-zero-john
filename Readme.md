@@ -1,3 +1,8 @@
+
+
+![visitors](https://visitor-badge.laobi.icu/badge?page_id=christo-zero-john.christo-zero-john)
+
+
 Heyya!
 It's me Tesnic here!
 From the land of kerala 🌴,  born in the summer 🌥️ of the year 2004 am a 2nd yr bca student at MAC Ramapuram 🏫.
