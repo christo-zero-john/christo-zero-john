@@ -14,7 +14,7 @@ My biggest dream is to reach the pinnacle of technology especially the computer 
 -/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/
 
 
-View My Portfolio at [tesnic.io](https://christo-zero-john.github.io/tesnic.io/)
+View My Portfolio at [tesnic.io](https://tesnic.netlify.app)
 
 # My Stats
 [![Top Languages](https://github-readme-stats.vercel.app/api/top-langs/?username=christo-zero-john&layout=donut&show_icons=true&theme=radical&show_owner=true&rank_icon=github&custom_title=Top%20Languages%20used%20by%20Tesnic)](https://github.com/christo-zero-john/github-readme-stats)
