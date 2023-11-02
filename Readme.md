@@ -5,8 +5,8 @@
 
 Heyya!<br>
 It's me Tesnic here!<br>
-From the land of kerala<br>
-🌴,  born in the summer 🌥️ of the year 2004 as the first child of my parents of the Kalapurackal Family, and am a 2nd yr bca student at MAC Ramapuram 🏫.<br>
+From the land of kerala🌴
+<br>,  born in the summer 🌥️ of the year 2004 as the first child of my parents of the Kalapurackal Family, and am a 2nd yr bca student at MAC Ramapuram 🏫.<br>
 Rookie web developer💻 and a small writer ✍️
 <br><br>
 Wanna Be a super pro in the Sector of CS especially the superdomain of web development. . .<br><br><br>
