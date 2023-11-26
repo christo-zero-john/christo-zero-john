@@ -25,3 +25,6 @@ View My Portfolio at [tesnic.io](https://tesnic.netlify.app)
 
 
 [![Christo's wakatime stats](https://github-readme-stats.vercel.app/api/wakatime?username=christojohn&show_icons=true&theme=synthwave&show_owner=true&rank_icon=github&custom_title=Coding%20duration%20of%20Tesnic%20(This%20week))](https://github.com/anuraghazra/github-readme-stats)
+
+
+<p><img align="center" src="https://github-readme-streak-stats.herokuapp.com/?user=milinddhamu&" alt="milinddhamu" /></p>
