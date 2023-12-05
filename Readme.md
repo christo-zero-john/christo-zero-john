@@ -22,7 +22,7 @@ check out my portfolio @ [tesnic.io](https://tesnic.netlify.app)
 
 <p>My Commit Streak by days<br><img align="center" src="https://github-readme-streak-stats.herokuapp.com/?user=christo-zero-john&" alt="ChristoJohn" /></p>
 
-[![Top Languages](https://github-readme-stats.vercel.app/api/top-langs/?username=christo-zero-john&layout=linear&show_icons=true&theme=radical&show_owner=true&rank_icon=github&custom_title=Top%20Languages%20used%20by%20Me)](https://github.com/christo-zero-john/github-readme-stats)
+[![Top Languages](https://github-readme-stats.vercel.app/api/top-langs/?username=christo-zero-john&layout=donut&show_icons=true&theme=radical&show_owner=true&rank_icon=github&custom_title=Top%20Languages%20used%20by%20Me)](https://github.com/christo-zero-john/github-readme-stats)
 
 
 [![GitHub stats](https://github-readme-stats.vercel.app/api?username=christo-zero-john&show_icons=true&theme=dark&show_owner=true&rank_icon=github&custom_title=My%20GitHub%20statistics)](https://github.com/christo-zero-john/github-readme-stats)
