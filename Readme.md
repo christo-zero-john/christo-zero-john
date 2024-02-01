@@ -10,7 +10,7 @@ It's me Tesnic here!<br>
 > wanna go for a cup 🥂
 
 ```
-Whenever I find something interesting, I'll make my version of it, unless I don't know how to do it... Thats ma policy •°•
+Whenever I find something interesting, I'll make my version of it, Thats ma policy •°•
 ```
 <br>
 
