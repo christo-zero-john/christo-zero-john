@@ -10,8 +10,9 @@ It's me Tesnic here!<br>
 > wanna go for a cup 🥂
 
 ```
-Whenever I find something interesting, I'll make my version of it, Thats ma policy •°•
+Building things that people could use •°•
 ```
+
 <br>
 
 check out my portfolio @ [tesnic.io](https://tesnic.netlify.app)
