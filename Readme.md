@@ -19,7 +19,7 @@ check out my portfolio @ [tesnic.io](https://tesnic.netlify.app)
 
 <br><br>
 
-# My Stats
+# My Stats 
 
 <p>My Commit Streak by days<br><img align="center" src="https://github-readme-streak-stats.herokuapp.com/?user=christo-zero-john&" alt="ChristoJohn" /></p>
 
