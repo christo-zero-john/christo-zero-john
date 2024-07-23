@@ -1,5 +1,3 @@
-
-
 <img align=center src="https://visitor-badge.laobi.icu/badge?page_id=christo-zero-john">
 
 
@@ -31,4 +29,4 @@ check out my portfolio @ [tesnic.io](https://tesnic.netlify.app)
 
 [![Christo's wakatime stats](https://github-readme-stats.vercel.app/api/wakatime?username=christojohn&show_icons=true&theme=monokai&show_owner=true&rank_icon=github&custom_title=My%20Coding%20duration)](https://github.com/christo-zero-john/github-readme-stats)
 
-
+---------------------------------------------------
