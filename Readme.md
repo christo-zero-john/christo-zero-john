@@ -11,6 +11,9 @@ It's me Tesnic here!<br>
 Building things that people could use •°•
 ```
 
+> Curious Ideas popping out of the head
+ 
+
 <br>
 
 check out my portfolio @ [tesnic.io](https://tesnic.vercel.app)
