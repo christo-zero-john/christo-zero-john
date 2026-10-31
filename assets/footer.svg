@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="90" viewBox="0 0 1200 90" role="img" aria-label="Built with intent. Shipped with care.">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#0B1423"/><stop offset="1" stop-color="#102435"/></linearGradient>
+    <linearGradient id="line" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#6DE3D4"/><stop offset="1" stop-color="#5D9BE6"/></linearGradient>
+    <style>
+      text{font-family:Inter,'Segoe UI',Arial,sans-serif}
+      @keyframes shine{0%,100%{opacity:.35}50%{opacity:1}}
+      .pulse{animation:shine 3s ease-in-out infinite}
+      @media(prefers-reduced-motion:reduce){*{animation:none!important}}
+    </style>
+  </defs>
+  <rect width="1200" height="90" rx="18" fill="url(#bg)"/>
+  <rect x="1" y="1" width="1198" height="88" rx="17" fill="none" stroke="#355568" stroke-opacity=".65"/>
+  <rect x="23" y="22" width="3" height="46" rx="1.5" fill="url(#line)" class="pulse"/>
+  <text x="48" y="55" font-size="22" font-weight="600" fill="#DDEEF2" letter-spacing=".55">Built with intent. <tspan fill="#79DDCE">Shipped with care.</tspan></text>
+  <text x="1150" y="51" font-size="12.5" fill="#829FAF" text-anchor="end" letter-spacing="2">CHRISTO JOHN / 2026</text>
+</svg>

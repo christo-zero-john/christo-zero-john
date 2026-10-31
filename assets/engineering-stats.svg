@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 272" role="img" aria-label="121 owned repositories including 32 private and 89 public repositories; 4 collaborator repositories">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#0D1828"/><stop offset="1" stop-color="#101C2D"/></linearGradient>
+    <linearGradient id="mint" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#6DE3D4"/><stop offset="1" stop-color="#57A9F8"/></linearGradient>
+    <pattern id="grid" width="35" height="35" patternUnits="userSpaceOnUse"><path d="M35 0 H0 V35" fill="none" stroke="#6DE3D4" stroke-opacity=".055"/></pattern>
+    <style>
+      .base { font-family: Inter, 'Segoe UI', system-ui, sans-serif; }
+      .mono { font-family: 'SFMono-Regular', Consolas, monospace; }
+      .sub { font-size: 15px; font-weight: 600; letter-spacing: 2.4px; fill: #7C96AC; }
+      .figure { font-size: 72px; font-weight: 720; fill: #EDF7FA; letter-spacing: -2px; }
+      .desc { font-size: 17px; fill: #A7BFCD; }
+      .note { font-size: 13px; fill: #89A6B9; }
+      @keyframes glow { 0%,100%{opacity:.65}50%{opacity:1} }
+      .animate-glow {animation:glow 3.2s ease-in-out infinite;}
+      @media (prefers-reduced-motion: reduce) { *{animation:none!important} }
+    </style>
+  </defs>
+  <rect width="1200" height="272" rx="22" fill="url(#bg)"/>
+  <rect width="1200" height="272" rx="22" fill="url(#grid)"/>
+  <rect x="1" y="1" width="1198" height="270" rx="21" fill="none" stroke="#345266" stroke-opacity=".7"/>
+  <text class="sub mono" x="44" y="48">GITHUB / REPOSITORY FOOTPRINT</text>
+  <circle cx="1145" cy="41" r="5" fill="#6DE3D4" class="animate-glow"/>
+  <text class="note mono" x="1130" y="47" text-anchor="end">2026-10-28</text>
+  <g class="base" transform="translate(44 0)">
+      <text class="figure" x="0" y="171">121</text>
+      <rect class="animate-glow" x="2" y="189" width="43" height="3" rx="2" fill="#6DE3D4"/>
+      <text class="desc" x="0" y="225">OWNED REPOSITORIES</text>
+    </g><line x1="290" y1="102" x2="290" y2="229" stroke="#375064" stroke-opacity=".7"/><g class="base" transform="translate(334 0)">
+      <text class="figure" x="0" y="171">89</text>
+      <rect class="animate-glow" x="2" y="189" width="43" height="3" rx="2" fill="#B8D1DE"/>
+      <text class="desc" x="0" y="225">PUBLIC</text>
+    </g><line x1="580" y1="102" x2="580" y2="229" stroke="#375064" stroke-opacity=".7"/><g class="base" transform="translate(624 0)">
+      <text class="figure" x="0" y="171">32</text>
+      <rect class="animate-glow" x="2" y="189" width="43" height="3" rx="2" fill="#73ACFA"/>
+      <text class="desc" x="0" y="225">PRIVATE</text>
+    </g><line x1="870" y1="102" x2="870" y2="229" stroke="#375064" stroke-opacity=".7"/><g class="base" transform="translate(914 0)">
+      <text class="figure" x="0" y="171">4</text>
+      <rect class="animate-glow" x="2" y="189" width="43" height="3" rx="2" fill="#E8BB91"/>
+      <text class="desc" x="0" y="225">COLLABORATIONS</text>
+    </g>
+  </svg>
