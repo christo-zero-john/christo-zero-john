@@ -70,49 +70,52 @@ async function loadAccount() {
   return {counts, contributions, date:nowDate()};
 }
 
-function surface(width,height) {
+function surface(width, height) {
   return `<defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#0D1828"/><stop offset="1" stop-color="#101C2D"/></linearGradient>
-    <linearGradient id="mint" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#6DE3D4"/><stop offset="1" stop-color="#57A9F8"/></linearGradient>
-    <pattern id="grid" width="35" height="35" patternUnits="userSpaceOnUse"><path d="M35 0 H0 V35" fill="none" stroke="#6DE3D4" stroke-opacity=".055"/></pattern>
+    <linearGradient id="dark" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#0B1013"/><stop offset="1" stop-color="#182022"/></linearGradient>
+    <linearGradient id="lime" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#CAF36D"/><stop offset="1" stop-color="#A6D958"/></linearGradient>
+    <pattern id="texture" width="32" height="32" patternUnits="userSpaceOnUse"><path d="M32 0H0V32" fill="none" stroke="#D8E7D3" stroke-opacity=".035"/></pattern>
     <style>
-      .base { font-family: Inter, 'Segoe UI', system-ui, sans-serif; }
+      .base { font-family: Inter, 'Segoe UI', Arial, sans-serif; }
       .mono { font-family: 'SFMono-Regular', Consolas, monospace; }
-      .sub { font-size: 15px; font-weight: 600; letter-spacing: 2.4px; fill: #7C96AC; }
-      .figure { font-size: 72px; font-weight: 720; fill: #EDF7FA; letter-spacing: -2px; }
-      .desc { font-size: 17px; fill: #A7BFCD; }
-      .note { font-size: 13px; fill: #89A6B9; }
-      @keyframes glow { 0%,100%{opacity:.65}50%{opacity:1} }
-      .animate-glow {animation:glow 3.2s ease-in-out infinite;}
-      @media (prefers-reduced-motion: reduce) { *{animation:none!important} }
+      .sub { font-size: 13px; font-weight: 600; letter-spacing: 2.6px; fill: #CAF36D; }
+      .figure { font-size: 76px; font-weight: 750; fill: #F3F5EF; letter-spacing: -3.8px; }
+      .desc { font-size: 15px; font-weight: 600; letter-spacing: 1.5px; fill: #A2B3AA; }
+      .note { font-size: 13px; fill: #92A79B; }
+      @keyframes pulse { 0%,100%{opacity:.55}50%{opacity:1} }
+      .animate-glow {animation:pulse 4s ease-in-out infinite}
+      @media(prefers-reduced-motion:reduce){*{animation:none!important}}
     </style>
   </defs>
-  <rect width="${width}" height="${height}" rx="22" fill="url(#bg)"/>
-  <rect width="${width}" height="${height}" rx="22" fill="url(#grid)"/>
-  <rect x="1" y="1" width="${width-2}" height="${height-2}" rx="21" fill="none" stroke="#345266" stroke-opacity=".7"/>`;
+  <rect width="${width}" height="${height}" rx="12" fill="url(#dark)"/>
+  <rect width="${width}" height="${height}" rx="12" fill="url(#texture)"/>
+  <rect x="1" y="1" width="${width-2}" height="${height-2}" rx="11" fill="none" stroke="#405149" stroke-opacity=".75"/>`;
 }
 
 function repoCard(counts,date) {
-  const metrics=[
-    {value:counts.owned,label:'OWNED REPOSITORIES',accent:'#6DE3D4'},
-    {value:counts.public,label:'PUBLIC',accent:'#B8D1DE'},
-    {value:counts.private,label:'PRIVATE',accent:'#73ACFA'},
-    {value:counts.collaborators,label:'COLLABORATIONS',accent:'#E8BB91'}
+  const metrics = [
+    {value:counts.owned,label:'OWNED REPOSITORIES'},
+    {value:counts.public,label:'PUBLIC'},
+    {value:counts.private,label:'PRIVATE'},
+    {value:counts.collaborators,label:'COLLABORATIONS'}
   ];
-  const columns=metrics.map((m,i)=>{
-    const x=44+i*290;
-    return `<g class="base" transform="translate(${x} 0)">
-      <text class="figure" x="0" y="171">${fmt(m.value)}</text>
-      <rect class="animate-glow" x="2" y="189" width="43" height="3" rx="2" fill="${m.accent}"/>
-      <text class="desc" x="0" y="225">${safe(m.label)}</text>
-    </g>${i<3?`<line x1="${x+246}" y1="102" x2="${x+246}" y2="229" stroke="#375064" stroke-opacity=".7"/>`:''}`;
+  const cells = metrics.map((m,i) => {
+    const x = 57 + i * 294;
+    const highlight = i===2 ? '#CAF36D' : '#F3F5EF';
+    return `<g class="base">
+      <text x="${x}" y="155" class="figure" fill="${highlight}" style="fill:${highlight}">${fmt(m.value)}</text>
+      <text x="${x+2}" y="190" class="desc">${safe(m.label)}</text>
+      ${i<3?`<line x1="${x+255}" y1="98" x2="${x+255}" y2="192" stroke="#52625B" stroke-opacity=".52"/>`:''}
+    </g>`;
   }).join('');
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 272" role="img" aria-label="${counts.owned} owned repositories including ${counts.private} private and ${counts.public} public repositories; ${counts.collaborators} collaborator repositories">
-  ${surface(1200,272)}
-  <text class="sub mono" x="44" y="48">GITHUB / REPOSITORY FOOTPRINT</text>
-  <circle cx="1145" cy="41" r="5" fill="#6DE3D4" class="animate-glow"/>
-  <text class="note mono" x="1130" y="47" text-anchor="end">${date}</text>
-  ${columns}
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 225" role="img" aria-label="${counts.owned} owned repositories, ${counts.public} public, ${counts.private} private, and ${counts.collaborators} collaborations">
+    ${surface(1200,225)}
+    <rect x="56" y="26" width="9" height="9" rx="2" fill="#CAF36D" class="animate-glow"/>
+    <text x="77" y="35" class="sub mono">THE BUILD LOG</text>
+    <text x="1144" y="35" text-anchor="end" class="note mono">UPDATED ${safe(date)}</text>
+    ${cells}
+    <rect x="56" y="207" width="1088" height="1" fill="#4D5B54" opacity=".55"/>
+    <rect x="56" y="206" width="120" height="3" fill="#CAF36D"/>
   </svg>`;
 }
 
@@ -122,10 +125,10 @@ function contributionCard(record,date) {
     return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 244" role="img" aria-label="Private-safe contribution chart activates after authenticated GitHub Actions setup">
     ${surface(1200,244)}
     <text class="sub mono" x="44" y="48">GITHUB / CONTRIBUTION SIGNAL</text>
-    <text class="base" x="44" y="116" fill="#EAF7FB" font-weight="650" font-size="27">Private-inclusive activity, without exposing private work.</text>
-    <text class="base" x="44" y="157" fill="#A7BFCD" font-size="18">Connect the read-only GitHub statistics token and run the included workflow.</text>
-    <rect x="44" y="185" width="1094" height="5" rx="2.5" fill="#284354"/>
-    <rect x="44" y="185" width="270" height="5" rx="2.5" fill="url(#mint)" class="animate-glow"/>
+    <text class="base" x="44" y="116" fill="#F3F5EF" font-weight="650" font-size="27">Private-inclusive activity, without exposing private work.</text>
+    <text class="base" x="44" y="157" fill="#ACBCB0" font-size="18">Connect the read-only GitHub statistics token and run the included workflow.</text>
+    <rect x="44" y="185" width="1094" height="5" rx="2.5" fill="#415048"/>
+    <rect x="44" y="185" width="270" height="5" rx="2.5" fill="url(#lime)" class="animate-glow"/>
     </svg>`;
   }
   const coll=contributions.contributionCalendar;
@@ -137,7 +140,7 @@ function contributionCard(record,date) {
     for(let d=0;d<7;d++) {
       const day=arr[w].contributionDays[d];
       const count=day?.contributionCount??0;
-      const tone=count===0?'#203547':count<=2?'#2C605C':count<=6?'#438E87':count<=12?'#66C4B7':'#A5F0D9';
+      const tone=count===0?'#27332C':count<=2?'#45683B':count<=6?'#739C49':count<=12?'#A0C956':'#CEF17C';
       const x=43+w*16.8, y=91+d*17.5;
       cells+=`<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="13.5" height="13.5" rx="3" fill="${tone}"><title>${count} contributions</title></rect>`;
     }
@@ -151,14 +154,14 @@ function contributionCard(record,date) {
     <text class="sub mono" x="44" y="50">GITHUB / LAST 12 MONTHS</text>
     <text class="note mono" x="1144" y="50" text-anchor="end">UPDATED ${safe(date)}</text>
     ${cells}
-    <line x1="956" y1="85" x2="956" y2="216" stroke="#345266"/>
+    <line x1="956" y1="85" x2="956" y2="216" stroke="#53645B"/>
     ${stats}
-    <text class="note" x="44" y="237">Aggregated activity only · No private repository identifiers</text>
+    <text class="note" x="44" y="237">GitHub contribution calendar · 12 months</text>
   </svg>`;
 }
 
 async function main(){
-  const record=snapshot?{counts:verified,contributions:null,date:'2026-10-28'}:await loadAccount();
+  const record=snapshot?{counts:verified,contributions:null,date:'2026-10-31'}:await loadAccount();
   await fs.mkdir(outDir,{recursive:true});
   await Promise.all([
     fs.writeFile(path.join(outDir,'engineering-stats.svg'), repoCard(record.counts,record.date)),

@@ -1,71 +1,46 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="346" viewBox="0 0 1200 346" role="img" aria-labelledby="title desc">
-  <title id="title">Christo John — Full Stack &amp; AI-Native Product Engineer</title>
-  <desc id="desc">A dark, minimal technical banner with refined cyan and blue accents, orbital shapes and a professional headline.</desc>
-  <defs>
-    <linearGradient id="base" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#0A1321"/><stop offset=".56" stop-color="#0C1B2B"/><stop offset="1" stop-color="#101E30"/></linearGradient>
-    <radialGradient id="halo"><stop stop-color="#58D3C5" stop-opacity=".22"/><stop offset=".58" stop-color="#3B8DC3" stop-opacity=".07"/><stop offset="1" stop-color="#273951" stop-opacity="0"/></radialGradient>
-    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#71E7D1"/><stop offset="1" stop-color="#73A7FA"/></linearGradient>
-    <pattern id="grid" width="28" height="28" patternUnits="userSpaceOnUse"><path d="M 28 0 L 0 0 0 28" fill="none" stroke="#7FE6D6" stroke-opacity=".085" stroke-width="1"/></pattern>
-    <pattern id="grain" width="5" height="5" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r=".5" fill="#CDE9F1" opacity=".13"/></pattern>
-    <filter id="soft"><feGaussianBlur stdDeviation="20"/></filter>
-    <style>
-      .sans{font-family:Inter,"Segoe UI",Arial,sans-serif}
-      .mono{font-family:"SFMono-Regular",Consolas,"Liberation Mono",monospace}
-      @keyframes drift { 0%,100%{ transform:translateY(0) } 50%{transform:translateY(-9px)} }
-      @keyframes pulse {0%,100%{opacity:.40}50%{opacity:1}}
-      @keyframes orbit {from {transform:rotate(0deg)}to{transform:rotate(360deg)}}
-      .drift {animation:drift 7s ease-in-out infinite}
-      .pulse {animation:pulse 3s ease-in-out infinite}
-      .orbit {transform-origin:944px 173px;animation:orbit 28s linear infinite}
-      @media(prefers-reduced-motion:reduce){*{animation:none!important}}
-    </style>
-  </defs>
-  <rect width="1200" height="346" rx="23" fill="url(#base)"/>
-  <rect width="1200" height="346" rx="23" fill="url(#grid)"/>
-  <rect width="1200" height="346" rx="23" fill="url(#grain)" opacity=".7"/>
-  <circle cx="945" cy="171" r="228" fill="url(#halo)"/>
-  <ellipse cx="940" cy="163" rx="205" ry="150" fill="#4EBAE0" opacity=".045" filter="url(#soft)"/>
-  <rect x="1" y="1" width="1198" height="344" rx="22" fill="none" stroke="#54758B" stroke-opacity=".42"/>
-  <rect x="37" y="36" width="136" height="28" rx="14" fill="#68DCCB" fill-opacity=".11" stroke="#6BE3D2" stroke-opacity=".44"/>
-  <circle cx="53" cy="50" r="3.2" fill="#77E9D5" class="pulse"/>
-  <text x="65" y="55" class="mono" font-size="11.5" fill="#A3F3E6" letter-spacing="1.25">ENGINEER / 01</text>
-
-  <text x="39" y="136" class="sans" font-size="73" fill="#F3F8FB" font-weight="760" letter-spacing="-3.5">Christo <tspan fill="url(#accent)">John.</tspan></text>
-  <rect x="39" y="157" width="72" height="4" rx="2" fill="url(#accent)"/>
-  <rect x="120" y="157" width="17" height="4" rx="2" fill="#365669"/>
-  <text x="39" y="206" class="sans" font-size="25" fill="#D8E8EE" font-weight="590" letter-spacing=".25">Full Stack &amp; AI-Native Product Engineer</text>
-  <text x="39" y="249" class="sans" font-size="17" fill="#93AFC2">Applied AI <tspan fill="#598B93">/</tspan> Cloud systems <tspan fill="#598B93">/</tspan> Product architecture</text>
-  <line x1="39" y1="287" x2="725" y2="287" stroke="#476579" stroke-opacity=".58"/>
-  <text x="39" y="313" class="mono" font-size="12" letter-spacing="1.05" fill="#7E9BAE">RESEARCH</text>
-  <text x="145" y="313" class="mono" font-size="12" fill="#6EE1D2">/</text>
-  <text x="162" y="313" class="mono" font-size="12" letter-spacing="1.05" fill="#7E9BAE">ARCHITECTURE</text>
-  <text x="306" y="313" class="mono" font-size="12" fill="#6EE1D2">/</text>
-  <text x="322" y="313" class="mono" font-size="12" letter-spacing="1.05" fill="#7E9BAE">BUILD</text>
-  <text x="397" y="313" class="mono" font-size="12" fill="#6EE1D2">/</text>
-  <text x="414" y="313" class="mono" font-size="12" letter-spacing="1.05" fill="#7E9BAE">VERIFY</text>
-  <text x="509" y="313" class="mono" font-size="12" fill="#6EE1D2">/</text>
-  <text x="526" y="313" class="mono" font-size="12" letter-spacing="1.05" fill="#7E9BAE">SHIP</text>
-
-  <!-- Abstract orbital system: subtle technical image, not a decorative stock illustration -->
-  <g transform="translate(0 0)" class="drift">
-    <circle cx="944" cy="171" r="112" fill="none" stroke="#6ADCCB" stroke-opacity=".17" stroke-width="1.2"/>
-    <circle cx="944" cy="171" r="83" fill="none" stroke="#76ACF8" stroke-opacity=".22" stroke-dasharray="6 12"/>
-    <circle cx="944" cy="171" r="140" fill="none" stroke="#6A98B7" stroke-opacity=".15" stroke-dasharray="1 9" stroke-width="2"/>
-    <path d="M 884 156 L 933 118 L 1005 142 L 995 205 L 937 239 L 876 202 Z" fill="#92DDDB" fill-opacity=".045" stroke="#73DACC" stroke-opacity=".26" stroke-width="1.5"/>
-    <path d="M 884 156 L 995 205 M 933 118 L 937 239 M 1005 142 L 876 202" stroke="#87B5D1" stroke-opacity=".19"/>
-    <circle cx="884" cy="156" r="4.5" fill="#73E7D7"/>
-    <circle cx="933" cy="118" r="4.5" fill="#5B97EE"/>
-    <circle cx="1005" cy="142" r="4.5" fill="#73E7D7"/>
-    <circle cx="995" cy="205" r="4.5" fill="#73E7D7"/>
-    <circle cx="937" cy="239" r="4.5" fill="#5B97EE"/>
-    <circle cx="876" cy="202" r="4.5" fill="#73E7D7"/>
-    <circle cx="944" cy="171" r="25" fill="#0F2535" stroke="url(#accent)" stroke-width="1.7"/>
-    <path d="M 934 163 L 925 171 L 934 179 M 954 163 L 963 171 L 954 179 M 950 160 L 940 182" stroke="#9BF2E8" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="340" viewBox="0 0 1200 340" role="img" aria-labelledby="hero-title hero-desc">
+<title id="hero-title">Christo John — Full-Stack Product Engineer</title>
+<desc id="hero-desc">Editorial dark graphite header with oversized type, subtle electric-lime accents, and a custom CJ monogram.</desc>
+<defs>
+  <linearGradient id="back" x1="0" y1="0" x2="1" y2="1">
+    <stop stop-color="#0B1013"/><stop offset=".65" stop-color="#10171A"/><stop offset="1" stop-color="#151D1F"/>
+  </linearGradient>
+  <linearGradient id="neon" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#CDF76B"/><stop offset="1" stop-color="#A7DA4A"/></linearGradient>
+  <pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse"><path d="M32 0H0V32" fill="none" stroke="#CDD8CD" opacity=".055"/></pattern>
+  <radialGradient id="aura"><stop stop-color="#B6E95D" stop-opacity=".13"/><stop offset="1" stop-color="#B6E95D" stop-opacity="0"/></radialGradient>
+  <clipPath id="mask"><rect x="1" y="1" width="1198" height="338" rx="12"/></clipPath>
+  <style>
+   .sans{font-family:Inter,"Segoe UI",Arial,sans-serif}
+   .mono{font-family:"SFMono-Regular",Consolas,"Liberation Mono",monospace}
+   @keyframes blink{0%,100%{opacity:.42}50%{opacity:1}}
+   @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+   .pulse{animation:blink 4s ease-in-out infinite}
+   .mark{animation:float 9s ease-in-out infinite;transform-origin:960px 190px}
+   @media(prefers-reduced-motion:reduce){.pulse,.mark{animation:none!important}}
+  </style>
+</defs>
+<rect width="1200" height="340" rx="13" fill="url(#back)"/>
+<g clip-path="url(#mask)">
+  <rect width="1200" height="340" fill="url(#grid)"/>
+  <ellipse cx="987" cy="166" rx="305" ry="288" fill="url(#aura)"/>
+  <path d="M738 0V340" stroke="#50605C" stroke-opacity=".45"/>
+  <path d="M791 65H1150M791 282H1150" stroke="#B7C7BA" stroke-opacity=".22"/>
+  <path d="M1125 49h25v25M790 276v25h25" fill="none" stroke="#C0D1C2" opacity=".22"/>
+  <g class="mark" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M957 111C930 91 897 91 875 107C846 127 840 156 840 190C840 227 858 262 896 273C920 280 942 275 960 260" stroke="#DDE8DE" stroke-width="19"/>
+    <path d="M1057 104V239C1057 273 1037 285 1000 282" stroke="#DDE8DE" stroke-width="19"/>
+    <path d="M957 111C930 91 897 91 875 107" stroke="url(#neon)" stroke-width="19"/>
+    <circle cx="963" cy="260" r="9.5" fill="#C8F467" stroke="none" class="pulse"/>
   </g>
-  <g class="orbit">
-    <circle cx="944" cy="59" r="6" fill="#71E7D1"/>
-    <circle cx="944" cy="59" r="11" fill="none" stroke="#71E7D1" stroke-opacity=".3"/>
+  <g class="sans">
+    <text x="74" y="55" font-size="13" font-weight="600" letter-spacing="3.1" fill="#C8F467">ENGINEERING <tspan fill="#78908B">/</tspan> DESIGN <tspan fill="#78908B">/</tspan> APPLIED AI</text>
+    <text x="67" y="160" font-size="100" font-weight="750" letter-spacing="-4.3" fill="#F3F5EF">CHRISTO</text>
+    <text x="67" y="263" font-size="100" font-weight="750" letter-spacing="-4.3" fill="#F3F5EF">JOHN<tspan fill="#C8F467">.</tspan></text>
+    <text x="74" y="305" font-size="16" font-weight="500" letter-spacing="1.8" fill="#A2B3AA">FULL-STACK PRODUCT ENGINEER</text>
   </g>
-  <text x="1103" y="59" text-anchor="end" class="mono" font-size="10.5" fill="#6A8B9E" letter-spacing="1">STATUS / BUILDING</text>
-  <text x="1106" y="312" text-anchor="end" class="mono" font-size="10.8" fill="#708DA1">KERALA, INDIA  ·  2026</text>
+  <rect x="73" y="325" width="1080" height="1" fill="#50615B" opacity=".50"/>
+  <rect x="73" y="324" width="130" height="3" fill="#C8F467"/>
+  <text class="mono" x="1146" y="311" font-size="11" text-anchor="end" letter-spacing="1.1" fill="#9DAFA6">KERALA · INDIA</text>
+</g>
+<rect x=".75" y=".75" width="1198.5" height="338.5" rx="12.5" fill="none" stroke="#405149" opacity=".70"/>
 </svg>
