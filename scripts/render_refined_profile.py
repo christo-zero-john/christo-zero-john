@@ -324,7 +324,39 @@ Commits are attributed using the account-linked Christo identity rules; unrelate
 <sub>GitHub profile data regenerated from the strict lifetime audit. The layout intentionally uses static, accessible vector graphics; no flashing GIFs, fragile JavaScript, or decorative badges.</sub>
 """
     README.write_text(prose,encoding="utf-8")
-    print("Refined, motion-free README generated from v3 audit:",time,"assets",len(files))
+    # A real browser application may be deployed separately through GitHub
+    # Pages or an existing portfolio host. Exclude private repo identifiers.
+    site = ROOT / "docs" / "experience"
+    site.mkdir(parents=True, exist_ok=True)
+    public_projects=[]
+    for key,repo,name,category,description in FEATURED:
+        item=allrepos.get(repo)
+        if not item or item.get("status")!="ok":
+            continue
+        m=item.get("metrics") or {}
+        dates,span=date_range(item)
+        public_projects.append({
+            "name":name,"repository":repo,"category":category,
+            "description":description,"url":"https://github.com/"+repo,
+            "commits":int(m.get("commits",0)),
+            "codeLinesChanged":int(m.get("code_lines_changed",0)),
+            "span":span,"dates":dates
+        })
+    payload={
+        "generated":data["run_at_utc"],"coverage":data["coverage"],
+        "repositories":int(data["repositories_scanned"]),
+        "commits":int(data["unique_attributed_sha_summary"]["commits"]),
+        "codeLinesChanged":int(data["unique_attributed_sha_summary"]["code_lines_changed"]),
+        "agentAssisted":int(data["summary"]["agent_assisted"]),
+        "languages":[{"name":key,"bytes":amount} for key,amount in
+            sorted((data.get("current_language_bytes") or {}).items(),
+                   key=lambda item:-item[1])[:5]],
+        "projects":public_projects,
+        "auditUrl":"https://github.com/christo-zero-john/christo-zero-john/blob/main/docs/github-audit/REPORT.md"
+    }
+    (site / "data.json").write_text(json.dumps(payload,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+    print("Refined README and public-only interactive site data generated:",time,
+          "SVG assets",len(files),"public projects",len(public_projects))
 
 
 def main():
