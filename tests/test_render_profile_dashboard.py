@@ -87,7 +87,7 @@ class DashboardTests(unittest.TestCase):
                 self.assertIn("## Work", content)
                 self.assertIn("15,882 attributed Git SHAs", content)
                 self.assertIn("Previous attribution-rule snapshot", content)
-                self.assertIn("Partial", content)
+                self.assertIn("requires a fresh full audit", content)
                 self.assertEqual(content.count(dashboard.OPEN), 1)
                 self.assertEqual(content.count(dashboard.CLOSE), 1)
                 self.assertFalse(dashboard.update_readme(fixture()))
