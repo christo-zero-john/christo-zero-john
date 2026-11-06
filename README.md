@@ -40,9 +40,9 @@ My focus is on making ambitious software practical — clear to use, robust unde
   </a>
 </p>
 
-**15,936 attributed Git SHAs** · **871,978 code lines changed** · **125 repositories scanned**.
+**15,944 attributed Git SHAs** · **872,440 code lines changed** · **125 repositories scanned**.
 
-<sub>Updated 06 NOV 2026 · 17:21 UTC · Partial — some discovery or fork comparisons require review. Email-confirmed: 15,936; provisional Christo pattern: 0. Code LOC is cumulative additions + deletions in qualifying commits, not unique code written. AI-tagged commits are repository/SHA occurrences where you are the author or co-author. Private repository names can be exposed by audit settings; this dashboard does not display them.</sub>
+<sub>Updated 06 NOV 2026 · 18:02 UTC · Partial — some discovery or fork comparisons require review. Email-confirmed: 15,944; provisional Christo pattern: 0. Code LOC is cumulative additions + deletions in qualifying commits, not unique code written. AI-tagged commits are repository/SHA occurrences where you are the author or co-author. Private repository names can be exposed by audit settings; this dashboard does not display them.</sub>
 
 **Current language footprint** — **Python** · **TypeScript** · **HTML** · **JavaScript** · **CSS**
 
