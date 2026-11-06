@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8" />
+<title>Christo John / The Build Log / Styleframes</title>
+<style>
+  @font-face{font-family:Instrument;src:url('./node_modules/@fontsource-variable/instrument-sans/files/instrument-sans-latin-wght-normal.woff2') format('woff2');font-weight:100 900}
+  @font-face{font-family:Plex;src:url('./node_modules/@fontsource/ibm-plex-mono/files/ibm-plex-mono-latin-500-normal.woff2') format('woff2');font-weight:500}
+  *{box-sizing:border-box}body{margin:0;background:#282c2c;color:#f3f1ea;font-family:Instrument,Arial,sans-serif}
+  .stage{display:flex;gap:22px;align-items:flex-start;padding:24px;width:max-content}
+  .frame{width:360px;height:640px;position:relative;overflow:hidden;border:1px solid #424a49;box-shadow:0 18px 50px #0005}
+  .dark{background:#11171a}.paper{background:#f3f1ea;color:#11171a}
+  .grain:after{content:'';position:absolute;inset:0;pointer-events:none;opacity:.17;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 150 150' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.18'/%3E%3C/svg%3E")}
+  .safe{position:absolute;inset:93px 32px 113px;border-left:1px solid #92a39c30;border-right:1px solid #92a39c30}
+  .mono{font-family:Plex,Consolas,monospace;font-weight:500;letter-spacing:.09em}
+  .kicker{position:absolute;left:45px;top:101px;font-size:10px;color:#7c8a89}
+  .folio{position:absolute;right:45px;top:101px;font-size:10px;color:#7c8a89}
+  .rule{position:absolute;left:45px;right:45px;height:1px;background:#6c7a7444}
+  .accent{color:#d3ee8d}.opening .mark{position:absolute;top:208px;left:45px;width:30px;height:30px;border-left:2px solid #d3ee8d;border-top:2px solid #d3ee8d}
+  .opening h1{position:absolute;left:42px;top:268px;margin:0;font-size:73px;line-height:.9;letter-spacing:-.075em;font-weight:750}
+  .opening .sub{position:absolute;left:45px;top:466px;font-size:11px;color:#7c8a89}
+  .timeline .year{position:absolute;top:193px;left:43px;font-size:120px;font-weight:750;letter-spacing:-.09em;line-height:1}
+  .timeline .vertical{position:absolute;left:51px;top:333px;height:205px;width:1px;background:#667875}
+  .timeline .dot{position:absolute;left:46px;top:365px;width:11px;height:11px;border-radius:50%;background:#d3ee8d}
+  .timeline .proj{position:absolute;left:77px;top:354px;font-size:18px;font-weight:650;letter-spacing:-.04em;max-width:235px;line-height:1.1}
+  .timeline .minor{position:absolute;left:77px;top:437px;font-size:11px;color:#7c8a89;line-height:1.6}
+  .number .big{position:absolute;top:235px;left:38px;font-size:105px;font-weight:760;letter-spacing:-.09em;line-height:1}
+  .number .label{position:absolute;top:359px;left:47px;font-size:13px;font-weight:680;line-height:1.4;letter-spacing:.05em}
+  .number .count{position:absolute;top:442px;left:47px;font-size:11px;color:#758482}
+  .number .line{position:absolute;left:47px;right:47px;top:422px;height:1px;background:#84947e66}
+  .footer{position:absolute;left:45px;bottom:99px;font-size:10px;color:#7c8a89}
+</style>
+<div class="stage">
+  <section class="frame dark grain opening"><div class="safe"></div><div class="kicker mono">THE BUILD LOG</div><div class="folio mono">01 / 07</div><div class="rule" style="top:124px"></div><div class="mark"></div><h1>CHRISTO<br>JOHN<span class="accent">.</span></h1><div class="sub mono">ENGINEERING / DESIGN / AI</div><div class="footer mono">2023 — 2026</div></section>
+  <section class="frame paper grain timeline"><div class="safe"></div><div class="kicker mono">A RECORD OF BUILDING</div><div class="folio mono">02 / 07</div><div class="rule" style="top:124px"></div><div class="year">2024</div><div class="vertical"></div><div class="dot"></div><div class="proj">complaint-management-system</div><div class="minor mono">5,139 ATTRIBUTED COMMITS<br>PUBLIC / OWNED</div><div class="footer mono">05 APR 2023 — 06 NOV 2026</div></section>
+  <section class="frame dark grain number"><div class="safe"></div><div class="kicker mono">THE WORK, IN NUMBERS</div><div class="folio mono">06 / 07</div><div class="rule" style="top:124px"></div><div class="big">15,882<span class="accent">.</span></div><div class="label">UNIQUE ATTRIBUTED<br>COMMITS</div><div class="line"></div><div class="count mono">125 REPOSITORIES SCANNED</div><div class="footer mono">CHRISTO JOHN / NOV 2026</div></section>
+</div>
+</html>
