@@ -174,7 +174,7 @@ def project_duration(record: dict) -> tuple[str, str, str]:
     return f"{days:,}D", d0.strftime("%d %b %Y").upper(), d1.strftime("%d %b %Y").upper()
 
 
-def project_svg(spec: dict, record: dict | None) -> str:
+def project_svg(spec: dict, record: dict | None, legacy_snapshot: bool = False) -> str:
     w, h = 660, 337
     m = (record or {}).get("metrics") or {}
     first = (record or {}).get("first_commit")
@@ -191,7 +191,7 @@ def project_svg(spec: dict, record: dict | None) -> str:
         f'<path d="M24 166 H635" stroke="{EDGE}" stroke-opacity=".8"/>',
         f'<path d="M24 279 H635" stroke="{EDGE}" stroke-opacity=".8"/>',
         tag(28, 44, spec["kind"], 12, MINT, 700, 1.2),
-        tag(629, 44, "VIEW SOURCE  ↗", 11, PALE, 700, .8, "end"),
+        tag(629, 44, "RECHECK REQUIRED" if legacy_snapshot else "VIEW SOURCE  ↗", 11, PALE, 700, .8, "end"),
         tag(28, 85, title, name_size, WHITE, 700, -.2),
         tag(29, 119, spec["description"][0], 16, PALE),
         tag(29, 145, spec["description"][1], 16, PALE),
@@ -245,7 +245,7 @@ def marked(text: str, name: str, replacement: str) -> str:
     return text[:a] + first + "\n\n" + replacement.strip() + "\n\n" + text[b:]
 
 
-def project_markup(spec: dict, record: dict | None) -> str:
+def project_markup(spec: dict, record: dict | None, legacy_snapshot: bool = False) -> str:
     metrics = (record or {}).get("metrics") or {}
     duration, begin, end = project_duration(record or {})
     since = "—" if begin == "UNAVAILABLE" else begin
@@ -262,8 +262,13 @@ def project_markup(spec: dict, record: dict | None) -> str:
             f'<strong>All changed text lines:</strong> {fmt(metrics.get("lines_changed"))}. '
             f'<strong>First / latest qualifying author dates:</strong> {since} / {until}. '
             f'<strong>Calendar span:</strong> {duration} (not total days worked). '
-            'Metrics include only identity-confirmed commits in the accessible repository history. '
-            'Code LOC is additions + deletions, not unique authored source.'
+            'Metrics represent attributed Git history from available repository refs. '
+            'Code LOC is additions + deletions, not unique authored source. '
+            + ('IMPORTANT: these figures come from a previous attribution rule; '
+               'rerun the workflow to recalculate using the Christo/fork policy.'
+               if legacy_snapshot else
+               'Email-verified matches and provisional Christo-name matches '
+               'are distinguished in the lifetime report.')
         )
     card = clickable(f'feature-{spec["id"]}.svg',
                      'https://github.com/' + spec["repo"],
@@ -356,6 +361,7 @@ def main() -> None:
         raise ValueError("No repositories were scanned")
     repos = {r["name"]: r for r in data.get("repositories", [])
              if isinstance(r, dict) and not r.get("private")}
+    legacy_snapshot = data.get("identity_policy_version") != 3
     content = README.read_text(encoding="utf-8")
     # Validate all boundaries before modifying any files.
     for label in ("PREMIUM_ACTIONS", "PREMIUM_PROJECTS", "PREMIUM_FOOTER"):
@@ -373,7 +379,7 @@ def main() -> None:
         (ASSETS / f"audit-{entry[0]}.svg").write_text(make_audit_svg(entry), encoding="utf-8")
     for spec in PROJECTS:
         (ASSETS / f'feature-{spec["id"]}.svg').write_text(
-            project_svg(spec, repos.get(spec["repo"])), encoding="utf-8")
+            project_svg(spec, repos.get(spec["repo"]), legacy_snapshot=legacy_snapshot), encoding="utf-8")
 
     chart = ASSETS / "lifetime-engineering.svg"
     lang = ASSETS / "language-landscape.svg"
@@ -387,7 +393,7 @@ def main() -> None:
     content = marked(content, "PREMIUM_ACTIONS", nav)
     pairs = []
     for spec in PROJECTS:
-        pairs.append(project_markup(spec, repos.get(spec["repo"])))
+        pairs.append(project_markup(spec, repos.get(spec["repo"]), legacy_snapshot=legacy_snapshot))
     content = marked(content, "PREMIUM_PROJECTS", grid(pairs, cols=2))
     content = marked(content, "PREMIUM_FOOTER", grid([
         clickable("action-portfolio.svg", ACTIONS[0][3], "Visit portfolio"),
