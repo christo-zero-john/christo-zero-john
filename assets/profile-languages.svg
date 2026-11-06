@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 152" role="img" aria-label="Current language share across repositories, all authors not personal contributions">
+<rect width="1200" height="152" rx="9" fill="#0D1415"/>
+<rect x="1" y="1" width="1198" height="151" rx="8" fill="none" stroke="#31403D"/>
+<text x="43" y="34" fill="#F3F2EB" font-size="14" font-family="Arial, Helvetica, sans-serif" font-weight="700" letter-spacing="1.3">LANGUAGE FOOTPRINT</text>
+<text x="1154" y="34" fill="#87988F" font-size="11" font-family="Arial, Helvetica, sans-serif" font-weight="600" letter-spacing="1" text-anchor="end">CURRENT DEFAULT-BRANCH BYTES · ALL AUTHORS</text>
+<rect x="43" y="54" width="421" height="12" fill="#BAD9C4"/>
+<rect x="464" y="54" width="345" height="12" fill="#91B9A8"/>
+<rect x="809" y="54" width="169" height="12" fill="#6C9989"/>
+<rect x="978" y="54" width="110" height="12" fill="#4F7B70"/>
+<rect x="1088" y="54" width="33" height="12" fill="#3B6059"/>
+<rect x="1121" y="54" width="34" height="12" fill="#31403D"/>
+<circle cx="49" cy="99" r="5" fill="#BAD9C4"/>
+<text x="63" y="103" fill="#F3F2EB" font-size="16" font-family="Arial, Helvetica, sans-serif" font-weight="600">Python</text>
+<text x="63" y="124" fill="#87988F" font-size="13" font-family="Arial, Helvetica, sans-serif" font-weight="400">37.8%</text>
+<circle cx="271" cy="99" r="5" fill="#91B9A8"/>
+<text x="285" y="103" fill="#F3F2EB" font-size="16" font-family="Arial, Helvetica, sans-serif" font-weight="600">TypeScript</text>
+<text x="285" y="124" fill="#87988F" font-size="13" font-family="Arial, Helvetica, sans-serif" font-weight="400">31.0%</text>
+<circle cx="493" cy="99" r="5" fill="#6C9989"/>
+<text x="507" y="103" fill="#F3F2EB" font-size="16" font-family="Arial, Helvetica, sans-serif" font-weight="600">HTML</text>
+<text x="507" y="124" fill="#87988F" font-size="13" font-family="Arial, Helvetica, sans-serif" font-weight="400">15.2%</text>
+<circle cx="715" cy="99" r="5" fill="#4F7B70"/>
+<text x="729" y="103" fill="#F3F2EB" font-size="16" font-family="Arial, Helvetica, sans-serif" font-weight="600">JavaScript</text>
+<text x="729" y="124" fill="#87988F" font-size="13" font-family="Arial, Helvetica, sans-serif" font-weight="400">9.8%</text>
+<circle cx="937" cy="99" r="5" fill="#3B6059"/>
+<text x="951" y="103" fill="#F3F2EB" font-size="16" font-family="Arial, Helvetica, sans-serif" font-weight="600">CSS</text>
+<text x="951" y="124" fill="#87988F" font-size="13" font-family="Arial, Helvetica, sans-serif" font-weight="400">3.0%</text>
+</svg>
