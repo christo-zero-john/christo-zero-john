@@ -461,7 +461,7 @@ def inspect_repo(repo: dict, identity: Identity, api: GitHubAPI) -> dict:
     return result
 
 
-def discover_global_authored_repos(api: GitHubAPI, login: str, until: dt.date) -> tuple[dict[str, dict], list[str]]:
+def discover_global_authored_repos(api: GitHubAPI, login: str, until: dt.date) -> tuple[dict[str, dict], list[str], set[str]]:
     """Find public repos missing from /user/repos via indexed account-linked author commits.
 
     GitHub commit search returns at most 1000 results per query; bisect dates to
@@ -469,6 +469,7 @@ def discover_global_authored_repos(api: GitHubAPI, login: str, until: dt.date) -
     """
     found: dict[str, dict] = {}
     warnings: list[str] = []
+    linked_author_emails: set[str] = set()
     calls = 0
 
     def search(start: dt.date, end: dt.date):
@@ -493,6 +494,12 @@ def discover_global_authored_repos(api: GitHubAPI, login: str, until: dt.date) -
                 batch = api.request("/search/commits", {"q": query, "per_page": 100, "page": page})
                 calls += 1
             for item in batch.get("items", []):
+                linked_user = item.get("author") or {}
+                author = (item.get("commit") or {}).get("author") or {}
+                if linked_user.get("login", "").casefold() == login.casefold():
+                    email = author.get("email", "").strip()
+                    if email and "@" in email:
+                        linked_author_emails.add(email)
                 item_repo = item.get("repository") or {}
                 full = item_repo.get("full_name")
                 if full:
@@ -502,7 +509,7 @@ def discover_global_authored_repos(api: GitHubAPI, login: str, until: dt.date) -
     except APIError as exc:
         warnings.append("Global public commit discovery incomplete: " + str(exc))
     log(f"Global author search: {len(found)} repositories found using {calls} API requests")
-    return found, warnings
+    return found, warnings, linked_author_emails
 
 
 def count_search(api: GitHubAPI, query: str) -> int:
@@ -866,11 +873,12 @@ def main() -> int:
             all_repos[repo["full_name"].casefold()] = repo
     log(f"Account-authorized repositories: {len(all_repos)}")
     warnings: list[str] = []
-    if not emails_response and not split_aliases(os.getenv("AUDIT_EMAILS", "")):
-        warnings.append("GitHub verified emails could not be loaded and AUDIT_EMAILS is empty; past author aliases may be missed")
     if GLOBAL_DISCOVERY:
-        external, issues = discover_global_authored_repos(api, username, as_of.date())
+        external, issues, discovered_emails = discover_global_authored_repos(api, username, as_of.date())
         warnings.extend(issues)
+        added = identity.add_account_linked_commit_emails(discovered_emails)
+        log(f"Account-linked author email aliases discovered: {added} new; "
+            f"{len(identity.emails)} known total (values kept private).")
         extras = sorted(set(external) - set(all_repos))
         for full_lower in extras:
             candidate = external[full_lower]
@@ -883,6 +891,10 @@ def main() -> int:
             except APIError as exc:
                 warnings.append("Unable to fetch a discovered external repository: " + str(exc))
         log(f"After global authored-commit discovery: {len(all_repos)} repositories")
+    if (not emails_response and not me.get("email") and not identity.linked_commit_emails
+            and not split_aliases(os.getenv("AUDIT_EMAILS", ""))):
+        warnings.append("Verified account emails and indexed account-linked emails were unavailable. "
+                        "Name-only matches on owned repositories are provisional; some history may be missed.")
     repos = sorted(all_repos.values(), key=lambda r: r["full_name"].casefold())
     results = []
     log(f"Starting full Git mirror scans ({MAX_WORKERS} parallel workers)")
