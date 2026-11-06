@@ -23,6 +23,8 @@ jobs:
       AUDIT_EMAILS: ${{ vars.AUDIT_EMAILS }}
       AUDIT_NAMES: ${{ vars.AUDIT_NAMES }}
       AUDIT_AGENT_IDENTIFIERS: ${{ vars.AUDIT_AGENT_IDENTIFIERS }}
+      AUDIT_APPROVED_AGENT_COMMITS: ${{ secrets.AUDIT_APPROVED_AGENT_COMMITS }}
+      AUDIT_LINGUIST_INDEX: /tmp/github-linguist-languages.json
       AUDIT_GLOBAL_DISCOVERY: 'true'
       AUDIT_INCLUDE_FORKS: 'true'
       AUDIT_SHOW_PRIVATE_NAMES: 'false'
@@ -35,14 +37,20 @@ jobs:
 
     steps:
       - name: Check out the profile repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           persist-credentials: true
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: '3.12'
+
+      - name: Install official Linguist metadata parser
+        run: python -m pip install 'PyYAML==6.0.2'
+
+      - name: Build official GitHub Linguist classification index
+        run: python scripts/build_linguist_index.py
 
       - name: Run audit integration tests
         run: python -m unittest discover -s tests -v
@@ -66,6 +74,9 @@ jobs:
           if [[ "$STATUS" == 'PARTIAL' ]]; then
             echo '::warning::Some repositories or GitHub API searches were incomplete. The report explicitly marks PARTIAL.'
           fi
+
+      - name: Add expanded in-table explanations and audit appendix
+        run: python scripts/annotate_audit_markdown.py
 
       - name: Save Markdown and JSON into profile repository
         shell: bash
