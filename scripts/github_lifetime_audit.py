@@ -6,7 +6,7 @@ Metric contract:
   Christo-name match in owned nonfork repositories, or approved exact agent SHA
 - a fork's upstream contributors and unrelated AI coauthors are never owner work
 - count at most once per repository + SHA; enumerate all accessible Git refs
-- LOC: Git numstat additions + deletions, including text/config/documentation; binary
+- LOC: Git numstat additions + deletions on non-merge qualifying commits, including text/config/documentation; binary
   diffs have no line totals; merges compared with first parent
 - current language bytes come from GitHub Linguist; historical language churn is
   inferred from changed filenames (not GitHub Linguist)
@@ -401,7 +401,11 @@ def read_git_history(mirror: Path, identity: Identity, repo_owner: str,
     qualifying_commits = {}  # internal only; withheld from public per-repo JSON
 
     def apply_change(add: int | None, delete: int | None, file_path: str):
-        if current is None or current["kind"] is None:
+        # A merge authored by the owner may merge OTHER people's commits.
+        # Its first-parent diff must never be credited as personally written LOC.
+        # Each original qualifying commit remains reachable and is counted
+        # separately by git log --all across every branch.
+        if current is None or current["kind"] is None or current["merge"]:
             return
         if add is None or delete is None:
             current_stats.binary_changes += 1
@@ -852,8 +856,9 @@ def render_reports(user: dict, repositories: list[dict], activity: dict,
         "This includes docs, configs, lockfiles, generated text and repeated edits; it is not current codebase size or unique lines written.",
         "3. **Code-classified LOC** uses filename extensions. It is an approximation and excludes many unrecognized formats.",
         "4. **Renames** use Git rename detection; binary changes have no meaningful line count.",
-        "5. **Merge diffs** are compared with their first parent. Their changes can overlap with commits on the merged branch, "
-        "so cumulative changed-line counts are not unique surviving lines.",
+        "5. **Merge commits** count as Git commits when attributed to you, but contribute **zero LOC** "
+        "because a merge's first-parent diff can import unrelated contributors' code. Original "
+        "qualifying commits from all refs are counted separately.",
         "6. **Forks** are included when available. Repo-level totals count the same SHA in two different repositories twice; "
         "the **unique attributed Git SHAs** and **unique LOC changed** fields deduplicate matching SHAs across repositories.",
         f"7. **Coverage scope:** {scope}",
