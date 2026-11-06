@@ -133,24 +133,21 @@ class AuditTests(unittest.TestCase):
         self.assertEqual(result["metrics"]["commits"], 1)
         self.assertEqual(result["metrics"]["additions"], 1)
 
-    def test_explicit_agent_sha_approval_only(self):
+    def test_standalone_agent_only_is_never_owner_work(self):
         ident = audit.Identity("christo-zero-john",
                                {"id": 129399273, "name": "Christo John"}, [])
         self.commit("agent.py", "agent_value = 1\n", "agent's standalone commit",
                     "Claude Code <noreply@anthropic.com>")
         sha = git(self.repo, "rev-parse", "HEAD")
-        key = "christo-zero-john/my-repo@" + sha
-        self.assertEqual(ident.category("Claude Code", "noreply@anthropic.com", "",
-                          "christo-zero-john", sha, "christo-zero-john/my-repo"),
-                          (None, False))
-        audit.APPROVED_AGENT_COMMITS.add(key)
-        try:
-            self.assertEqual(ident.category("Claude Code", "noreply@anthropic.com", "",
-                              "christo-zero-john", sha, "christo-zero-john/my-repo"),
-                              ("agent_only", True))
-        finally:
-            audit.APPROVED_AGENT_COMMITS.discard(key)
-
+        self.assertEqual(ident.category(
+            "Claude Code", "noreply@anthropic.com", "",
+            "christo-zero-john", sha, "christo-zero-john/my-repo"),
+            (None, False))
+        result = audit.read_git_history(
+            self.repo / ".git", ident, "christo-zero-john",
+            "christo-zero-john/my-repo")
+        self.assertEqual(result["metrics"]["commits"], 0)
+        self.assertEqual(result["excluded_unverified_agent"], 1)
 
     def test_fork_never_claims_christo_name_with_unlinked_email(self):
         ident = audit.Identity("christo-zero-john",
