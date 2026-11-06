@@ -1,0 +1,46 @@
+name: Test premium profile dashboard
+
+on:
+  pull_request:
+    paths:
+      - 'README.md'
+      - 'assets/profile-cover.svg'
+      - 'assets/lifetime-engineering.svg'
+      - 'assets/language-landscape.svg'
+      - 'scripts/render_profile_dashboard.py'
+      - 'scripts/github_lifetime_audit.py'
+      - 'tests/test_render_profile_dashboard.py'
+      - '.github/workflows/test-premium-profile.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  render-and-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Validate source and run all profile tests
+        run: |
+          python -m py_compile scripts/render_profile_dashboard.py scripts/github_lifetime_audit.py
+          python -m unittest discover -s tests -p 'test_render_profile_dashboard.py' -v
+      - name: Re-render using the committed strict audit snapshot
+        run: python scripts/render_profile_dashboard.py
+      - name: Verify static and generated SVGs
+        run: |
+          python - <<'PY'
+          from xml.etree import ElementTree
+          for name in ("profile-cover", "lifetime-engineering", "language-landscape"):
+              root = ElementTree.parse(f"assets/{name}.svg").getroot()
+              assert root.tag.endswith("svg"), name
+              print("Valid SVG:", name)
+          PY
+      - name: Check Git whitespace and changed outputs
+        run: |
+          git diff --check
+          git status --short
