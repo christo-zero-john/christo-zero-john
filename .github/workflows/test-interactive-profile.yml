@@ -1,15 +1,10 @@
-name: Verify interactive GitHub profile
+name: Legacy (manual only) — Verify interactive GitHub profile
 
 on:
-  pull_request:
-    paths:
-      - 'README.md'
-      - 'assets/**'
-      - 'scripts/render_interactive_profile.py'
-      - 'scripts/render_profile_dashboard.py'
-      - 'tests/test_render_interactive_profile.py'
-      - '.github/workflows/test-interactive-profile.yml'
   workflow_dispatch:
+
+# Legacy visual renderer retained for reference only. Current profile uses
+# test-refined-profile.yml and is published by the lifetime audit workflow.
 
 permissions:
   contents: read
