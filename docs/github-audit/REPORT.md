@@ -6,6 +6,14 @@
 **As of:** 2026-11-06 13:49 UTC  
 **Coverage:** PARTIAL — incomplete sources or provisional identity matches
 
+<!-- DEVELOPER_BIODATA_LINKS_START -->
+
+## Developer biodata and portfolio
+
+For a professional overview, start with the **[developer biodata](./PROFILE.md)**. Explore the **[technology evidence](./TECH_STACK.md)**, **[complete projects](./PROJECTS.md)** and **[engineering insights](./INSIGHTS.md)**.
+
+<!-- DEVELOPER_BIODATA_LINKS_END -->
+
 ## Lifetime engineering totals
 
 | Metric | Value |
