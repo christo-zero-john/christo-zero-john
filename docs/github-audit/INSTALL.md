@@ -61,16 +61,31 @@ Click **Run workflow**. Once completed, your README will link to:
 
 It also runs every Sunday. Delete the `schedule` block to make it manual-only.
 
-## What the numbers mean
+## Attribution requirements — strict mode
 
-- Reports include **both repository/SHA occurrences and cross-repository unique SHA totals**. The latter deduplicates the same Git commit appearing in forks or mirrors. Annual/monthly/language tables use per-repository occurrences.
-- `Attributed commits` includes **self authored + self co-authored + agent-only commits** attributed by detectable agent signatures in your repos. A SHA counts once per repo, not once per author/co-author. Commits with both you and an agent count as self-authored or self-coauthored, and separately as `agent-assisted` (not an extra commit).
-- `Lines added` and `lines deleted` are summed from Git **numstat** on every attributed commit across full reachable repository history. `Lines changed = additions + deletions`. All text files are included: code, documentation, configuration, generated text, and lockfiles. `Code-classified` is shown separately.
-- Merge diffs are compared to first parent; their changes can duplicate changes counted in the branch being merged. Renames are detected. Binary changes cannot be represented as line totals.
-- This is **cumulative churn**, not the size of the current codebase, not unique LOC ever written, and not a human-versus-agent code-generation estimate.
-- The report shows **PARTIAL** when scans fail, GitHub indexing searches are incomplete, or commits are attributed provisionally by author name. Fix these before publishing any counts as exhaustive.
-- GitHub's API cannot reconstruct deleted repos, never-pushed commits, invisible organization repos, all expired user events, or AI-generated code with no Git attribution. Public repo contributions from other maintainers may be found by global authored-commit search, but **coauthored-only external repos cannot be discovered reliably**.
-- The public report masks private repo names/URLs by default while including their aggregate counts. **Even aggregated private statistics may be sensitive**; review before sharing. Set `AUDIT_SHOW_PRIVATE_NAMES` to `true` **only if** disclosure is intentional.
+The old audit **incorrectly counted inherited upstream commits in forks as your own** merely because an AI co-author appeared in their message. All older totals are withdrawn until the strict workflow runs again.
+
+- **Directly authored:** exact Git author email in the verified/account-linked identity set.
+- **Co-authored by you:** exact developer email in a valid `Co-authored-by` trailer.
+- **Agent-assisted:** confirmed direct/co-authored commit with an identifiable agent trailer; no additional commit is credited.
+- **Agent-only:** excluded by default. To deliberately claim a specific agent-authored SHA you can create an optional Actions repository secret `AUDIT_APPROVED_AGENT_COMMITS`, containing comma-separated values of the form `owner/repo@0123456789abcdef0123456789abcdef01234567` (40-digit full SHA). Review each SHA carefully before adding it. This must not include unrelated upstream agents.
+- **Name-only author matches:** excluded by default, even in your own repositories. A matching Git author name isn't proof of identity.
+- **Fork inspection:** parent comparison is recorded for each accessible fork; an upstream ancestor does not confer authorship. Branches and tags are still enumerated.
+- **GitHub email discovery:** uses GitHub verified account emails (if the token allows) and original Git author addresses from commits linked by GitHub to your account. Manually setting `AUDIT_EMAILS` is optional.
+- **Reproducible histories:** only Git refs accessible to the token can be scanned, so deleted and never-pushed histories cannot be recreated.
+
+## GitHub Linguist language sources
+
+The workflow downloads the official GitHub Linguist language filename/extension registry before scanning and uses it to classify historical changed paths. It uses the GitHub /languages API for current per-repository default-branch language bytes. It does **not** pretend that filename metadata is equivalent to a complete GitHub Linguist content-level parse on every old Git blob.
+
+The report keeps all changed text lines, code-classified changed lines and generated/vendor/ambiguous paths separate. Every published metric table row receives a GitHub-native expandable `<details>` explanation linking to `APPENDIX.md`.
+
+## After merging this fix
+
+1. Verify `GH_AUDIT_READ_TOKEN` is configured. The script needs Contents: Read-only for personal repositories and Email addresses: Read-only when supported. All previous author-email variables can remain unset.
+2. Open the **GitHub lifetime engineering audit** workflow on the main branch and run it.
+3. Confirm the new report has `schema_version: 2` in `audit.json`, and review its coverage status, excluded upstream/agent signals, fork comparison columns, and chronological/language tables.
+4. Never reuse the legacy 2026-11-06 commit and LOC figures withdrawn in this PR.
 
 ## Tuning performance
 

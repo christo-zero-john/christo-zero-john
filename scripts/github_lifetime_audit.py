@@ -44,7 +44,11 @@ LOG_TIMEOUT = int(os.getenv("AUDIT_GIT_LOG_TIMEOUT_SECONDS", "1200"))
 DISCOVERY_MAX_QUERIES = int(os.getenv("AUDIT_DISCOVERY_MAX_QUERIES", "120"))
 SHOW_PRIVATE_NAMES = os.getenv("AUDIT_SHOW_PRIVATE_NAMES", "false").lower() == "true"
 GLOBAL_DISCOVERY = os.getenv("AUDIT_GLOBAL_DISCOVERY", "true").lower() == "true"
-ALLOW_AGENT_COLLAB = os.getenv("AUDIT_AGENT_COLLAB_REPOS", "false").lower() == "true"
+# Explicit, repo-and-SHA-specific user approvals; never infer agent ownership from repo ownership.
+APPROVED_AGENT_COMMITS = {
+    part.strip().casefold() for part in re.split(r"[,;\n]", os.getenv("AUDIT_APPROVED_AGENT_COMMITS", ""))
+    if part.strip()
+}
 INCLUDE_FORKS = os.getenv("AUDIT_INCLUDE_FORKS", "true").lower() == "true"
 FETCH_LANGUAGES = os.getenv("AUDIT_CURRENT_LANGUAGES", "true").lower() == "true"
 AGENT_IDENTIFIERS = [s.strip().casefold() for s in re.split(r"[,;]", (os.getenv(
@@ -162,8 +166,61 @@ class GitHubAPI:
             page += 1
 
 
+LINGUIST_INDEX_PATH = Path(os.getenv("AUDIT_LINGUIST_INDEX", "/tmp/github-linguist-languages.json"))
+if LINGUIST_INDEX_PATH.is_file():
+    LINGUIST_INDEX = json.loads(LINGUIST_INDEX_PATH.read_text(encoding="utf-8"))
+else:
+    LINGUIST_INDEX = None
+
+
+def excluded_source_path(path: str) -> bool:
+    parts = path.casefold().replace("\\\\", "/").split("/")
+    return (
+        any(x in parts for x in ("node_modules", ".next", "dist", "build", "vendor",
+                                  "vendors", "third_party", "third-party",
+                                  "generated", "coverage", ".venv", "venv", "target",
+                                  "__pycache__", ".turbo", "out"))
+        or parts[-1].endswith((".min.js", ".min.css", ".map", ".lock"))
+        or parts[-1] in ("package-lock.json", "pnpm-lock.yaml", "yarn.lock")
+    )
+
+
+def linguist_path_language(path: str) -> tuple[str, bool] | None:
+    # Official Linguist registry, with *uncertain* ambiguous filenames explicitly
+    # excluded from strict code-LOC totals. Content-level detection would require
+    # analyzing the blob at each historical commit.
+    if not LINGUIST_INDEX:
+        return None
+    filename = path.replace("\\\\", "/").rsplit("/", 1)[-1]
+    options = LINGUIST_INDEX.get("filenames", {}).get(filename)
+    if not options:
+        ext_map = LINGUIST_INDEX.get("extensions", {})
+        lower = filename.casefold()
+        # Try actual suffixes from longest to shortest instead of checking every
+        # Linguist extension for every Git-history file (large repositories).
+        options = []
+        for index, char in enumerate(lower):
+            if char == "." and lower[index:] in ext_map:
+                options = ext_map[lower[index:]]
+                break
+    dedup = {(x.get("name"), x.get("type")) for x in options}
+    if len(dedup) == 1:
+        name, kind = next(iter(dedup))
+        if excluded_source_path(path):
+            return "Generated / vendored source", False
+        return name, kind in ("programming", "markup")
+    if len(dedup) > 1:
+        return "Ambiguous Linguist filename", False
+    return "Unclassified by Linguist filename metadata", False
+
+
 def language_of(path: str) -> tuple[str, bool]:
+    authoritative = linguist_path_language(path)
+    if authoritative is not None:
+        return authoritative
     name = path.replace("\\", "/").rsplit("/", 1)[-1]
+    if excluded_source_path(path):
+        return "Generated / vendored source", False
     if name in SPECIAL_CODE:
         return SPECIAL_CODE[name], True
     ext = Path(name).suffix.casefold()
@@ -206,11 +263,7 @@ class Metrics:
 
 
 class Identity:
-    """Match GitHub-linked emails globally and names provisionally in owned repos.
-
-    Author names are not unique. Name-only matching is restricted to personal repos
-    and reported separately as provisional rather than verified attribution.
-    """
+    """Use only verified/linked emails for inclusion; keep name-only as excluded evidence."""
     def __init__(self, username: str, user: dict, emails: list[str]):
         self.username = username
         self.names = split_aliases(os.getenv("AUDIT_NAMES", "")) | {username.casefold()}
@@ -242,27 +295,34 @@ class Identity:
                 and not self.is_email_me(email))
 
     def is_me(self, name: str, email: str, repo_owner: str = "") -> bool:
-        return self.is_email_me(email) or self.is_name_only(name, email, repo_owner)
+        # Git author names are not unique. Never count name-only matches as verified work.
+        return self.is_email_me(email)
 
     def is_agent(self, name: str, email: str) -> bool:
         whole = (name + " " + email).casefold()
         return any(pattern.strip() in whole for pattern in AGENT_IDENTIFIERS)
 
     def category(self, author_name: str, author_email: str,
-                 message: str, repo_owner: str) -> tuple[str | None, bool]:
-        self_author = self.is_me(author_name, author_email, repo_owner)
+                 message: str, repo_owner: str, commit_sha: str = "",
+                 repo_full_name: str = "") -> tuple[str | None, bool]:
+        # A commit qualifies only when an exact known Git email matches the
+        # author or a Co-authored-by trailer. Agent-only work requires an explicit
+        # repo@SHA approval; the mere existence of a Claude coauthor in a fork
+        # is never proof the account owner did the work.
         agent_author = self.is_agent(author_name, author_email)
         partners = COAUTHOR.findall(message)
-        self_partner = any(self.is_me(name, email, repo_owner) for name, email in partners)
         agent_partner = any(self.is_agent(name, email) for name, email in partners)
-        agent_in_scope = repo_owner.casefold() == self.username.casefold() or ALLOW_AGENT_COLLAB
-        if self_author:
-            return "direct", (agent_author or agent_partner)
-        if self_partner:
+        if self.is_email_me(author_email):
+            return "direct", agent_partner
+        if any(self.is_email_me(email) for _, email in partners):
             return "coauthored", (agent_author or agent_partner)
-        if agent_in_scope and (agent_author or agent_partner):
+        key = f"{repo_full_name}@{commit_sha}".casefold()
+        if (repo_full_name and commit_sha and key in APPROVED_AGENT_COMMITS
+                and repo_owner.casefold() == self.username.casefold()
+                and agent_author):
             return "agent_only", True
         return None, False
+
 
 
 def nul_tokens(stream):
@@ -279,7 +339,7 @@ def nul_tokens(stream):
         buf = parts[-1]
 
 
-def read_git_history(mirror: Path, identity: Identity, repo_owner: str) -> dict:
+def read_git_history(mirror: Path, identity: Identity, repo_owner: str, repo_full_name: str = "") -> dict:
     """Read every reachable unique commit from a mirror; no first-parent *traversal*."""
     git_format = "%x1e%H%x1f%an%x1f%ae%x1f%aI%x1f%cn%x1f%ce%x1f%P%x1f%B%x1f"
     cmd = ["git", "--git-dir=" + str(mirror), "log", "--all", "--root",
@@ -296,6 +356,8 @@ def read_git_history(mirror: Path, identity: Identity, repo_owner: str) -> dict:
     authors: collections.Counter = collections.Counter()
     first_date, last_date = None, None
     reachable = 0
+    excluded_names = 0
+    excluded_agents = 0
     current = None
     current_stats = None
     expecting_rename = 0
@@ -323,10 +385,12 @@ def read_git_history(mirror: Path, identity: Identity, repo_owner: str) -> dict:
             languages[lang].code_deletions += delete
 
     def finish():
-        nonlocal current, current_stats, first_date, last_date, reachable
+        nonlocal current, current_stats, first_date, last_date, reachable, excluded_names, excluded_agents
         if current is None:
             return
         reachable += 1
+        excluded_names += int(current.get("excluded_name", False))
+        excluded_agents += int(current.get("excluded_agent", False))
         if current["kind"]:
             stat = current_stats
             stat.commits = 1
@@ -358,17 +422,20 @@ def read_git_history(mirror: Path, identity: Identity, repo_owner: str) -> dict:
                 sha, name, email, date, committer, committer_email, parents, message, _ = fields
                 if sha in unique_shas:
                     # Git log --all normally deduplicates per SHA, even across tags/branches.
-                    current = {"sha": sha, "kind": None, "date": date[:10], "merge": False, "agent_assisted": False, "name_only": False}
+                    current = {"sha": sha, "kind": None, "date": date[:10], "merge": False, "agent_assisted": False, "name_only": False, "excluded_name": False, "excluded_agent": False}
                 else:
                     unique_shas.add(sha)
-                    kind, assisted = identity.category(name, email, message, repo_owner)
-                    partners = COAUTHOR.findall(message) if kind == "coauthored" else []
-                    name_only = ((kind == "direct" and identity.is_name_only(name, email, repo_owner))
-                                 or (kind == "coauthored" and not any(
-                                     identity.is_email_me(co_email) for _, co_email in partners)))
+                    kind, assisted = identity.category(name, email, message, repo_owner, sha, repo_full_name)
+                    partners = COAUTHOR.findall(message)
+                    possible_name = identity.is_name_only(name, email, repo_owner) or any(
+                        identity.is_name_only(n, e, repo_owner) for n, e in partners)
+                    possible_agent = identity.is_agent(name, email) or any(
+                        identity.is_agent(n, e) for n, e in partners)
                     current = {"sha": sha, "kind": kind, "date": date[:10],
                                "merge": len(parents.split()) > 1, "agent_assisted": assisted,
-                               "name_only": name_only}
+                               "name_only": False,
+                               "excluded_name": kind is None and possible_name,
+                               "excluded_agent": kind is None and possible_agent}
                 current_stats = Metrics()
                 expecting_rename = 0
                 pending_rename = None
@@ -406,6 +473,7 @@ def read_git_history(mirror: Path, identity: Identity, repo_owner: str) -> dict:
     if code:
         raise RuntimeError(f"git log failed (exit {code}): {stderr[-300:]}")
     return {"metrics": overall.as_dict(), "qualifying_commits": qualifying_commits, "reachable_commits": reachable,
+            "excluded_name_only": excluded_names, "excluded_unverified_agent": excluded_agents,
             "first_commit": first_date, "last_commit": last_date,
             "years": {k: v.as_dict() for k, v in yearly.items()},
             "months": {k: v.as_dict() for k, v in monthly.items()},
@@ -447,10 +515,38 @@ def inspect_repo(repo: dict, identity: Identity, api: GitHubAPI) -> dict:
                 # Avoid echoing tokens or any credential-like information in the error.
                 err = err.replace(TOKEN, "[REDACTED]") if TOKEN else err
                 raise RuntimeError(f"clone error {clone.returncode}: {err}")
-            result.update(read_git_history(mirror, identity, result["owner"]))
+            result.update(read_git_history(mirror, identity, result["owner"], full))
     except (OSError, subprocess.TimeoutExpired, RuntimeError) as exc:
         result["status"] = "failed"
         result["error"] = str(exc).replace(TOKEN, "[REDACTED]") if TOKEN else str(exc)
+    # Verify fork/default-branch ancestry independently from Git authorship.
+    # 'ahead_by=0' confirms there are no fork-only commits on the DEFAULT
+    # branch relative to the current parent; other refs can still diverge.
+    if result["fork"]:
+        evidence = {"status": "unknown", "parent": None, "ahead_default": None,
+                    "behind_default": None}
+        try:
+            detailed = api.request("/repos/" + urllib.parse.quote(full, safe="/"))
+            parent = (detailed or {}).get("parent") or {}
+            parent_name = parent.get("full_name")
+            if parent_name:
+                evidence["parent"] = parent_name
+                parent_branch = parent.get("default_branch") or "main"
+                fork_branch = detailed.get("default_branch") or repo.get("default_branch") or "main"
+                comparison_endpoint = ("/repos/" + urllib.parse.quote(parent_name, safe="/") +
+                    "/compare/" + urllib.parse.quote(parent_branch, safe="") +
+                    "..." + urllib.parse.quote(result["owner"] + ":" + fork_branch, safe=":"))
+                comparison = api.request(comparison_endpoint, optional=True)
+                if comparison and isinstance(comparison.get("ahead_by"), int):
+                    evidence.update(status="checked", ahead_default=comparison["ahead_by"],
+                                    behind_default=comparison.get("behind_by"))
+                else:
+                    evidence["status"] = "comparison_unavailable"
+            else:
+                evidence["status"] = "parent_not_visible"
+        except APIError:
+            evidence["status"] = "error"
+        result["fork_evidence"] = evidence
     if FETCH_LANGUAGES:
         try:
             result["current_languages_bytes"] = api.request(
@@ -634,17 +730,24 @@ def render_reports(user: dict, repositories: list[dict], activity: dict,
     created_years = collections.Counter(r["created_at"][:4] for r in owned if r.get("created_at"))
     failures_label = ", ".join(repo_label(x, priv_indices) for x in failures[:12])
     provisional_names = total.name_only_attributed
-    incomplete = len(failures) > 0 or len(warnings) > 0 or provisional_names > 0
+    excluded_names = sum(r.get("excluded_name_only", 0) for r in ok_repos)
+    excluded_agents = sum(r.get("excluded_unverified_agent", 0) for r in ok_repos)
+    fork_unknown = sum(bool(r.get("fork")) and
+                       r.get("fork_evidence", {}).get("status") != "checked"
+                       for r in repositories)
+    incomplete = (len(failures) > 0 or len(warnings) > 0 or
+                  excluded_names > 0 or fork_unknown > 0)
     status = "PARTIAL — incomplete sources or provisional identity matches" if incomplete else "COMPLETE for enumerated accessible repositories"
     generated = as_of.strftime("%Y-%m-%d %H:%M UTC")
     docs = "[Overview](./REPORT.md) · [Repositories](./repositories.md) · [Timeline](./timeline.md) · [Languages](./languages.md) · [Activity](./activity.md)"
     scope = ("All available refs in each cloned repository (branches, tags, and refs advertised by GitHub); "
-             "each SHA once per repository. Agent-identifiable commits in owned repositories are included. "
-             "Other repositories count commits only when you are the author or co-author, "
-             "unless `AUDIT_AGENT_COLLAB_REPOS=true`.")
+             "each SHA once per repository. Verified author/coauthor email matches qualify. "
+             "Unrelated upstream commits and third-party agent co-authorship do not qualify. "
+             "Agent-only SHA approvals must be explicit in AUDIT_APPROVED_AGENT_COMMITS.")
     warning_block = ("\n**Audit gaps:** " + str(len(failures)) + " repository clone/scan failures; " +
                      str(len(warnings)) + " discovery/API warnings; " +
-                     fmt(provisional_names) + " provisional name-only attributed commits. " +
+                     fmt(provisional_names) + " name-only *included* commits; " + fmt(excluded_names) +
+                     " name-only matches excluded; " + fmt(fork_unknown) + " fork comparisons unavailable. " +
                      "Check the [repository report](./repositories.md) and workflow logs. " +
                      "Name-only matches are not verified authorship.\n") if incomplete else ""
     totals = total.as_dict()
@@ -667,7 +770,10 @@ def render_reports(user: dict, repositories: list[dict], activity: dict,
             ["Unique code-classified LOC changed", fmt(global_unique_data["code_lines_changed"])],
             ["Directly authored", fmt(totals["direct"])],
             ["Co-authored by you (not direct author)", fmt(totals["coauthored"])],
-            ["Agent-only attributed commits", fmt(totals["agent_only"])],
+            ["Explicitly approved agent-only commits", fmt(totals["agent_only"])],
+            ["Agent-linked commits excluded (not proven yours)", fmt(excluded_agents)],
+            ["Unverified name-only matches excluded", fmt(excluded_names)],
+            ["Fork default-branch ancestry checks unavailable", fmt(fork_unknown)],
             ["Commits matched by name only (provisional, owned repos)", fmt(totals["name_only_attributed"])],
             ["Known author email aliases (count only; not published)", fmt(len(identity.emails))],
             ["New account-linked email aliases discovered", fmt(identity.linked_commit_emails)],
@@ -695,7 +801,8 @@ def render_reports(user: dict, repositories: list[dict], activity: dict,
             [y, fmt(d["commits"]), fmt(d["additions"]), fmt(d["deletions"]), fmt(d["lines_changed"])]
             for y, d in sorted(yearly.items(), reverse=True)]),
         "## How to interpret the totals", "",
-        "1. **Attributed commits** = directly authored + co-authored-by-you + agent-only (exclusive groups).",
+        "1. **Attributed commits** = author email matched + co-author email matched + explicitly "
+        "approved agent-only SHAs. Git author names alone and agents in upstream forks are excluded.",
         "2. **Total LOC changed** = sum of Git `--numstat` added + deleted text lines across every attributed commit. "
         "This includes docs, configs, lockfiles, generated text and repeated edits; it is not current codebase size or unique lines written.",
         "3. **Code-classified LOC** uses filename extensions. It is an approximation and excludes many unrecognized formats.",
@@ -705,8 +812,8 @@ def render_reports(user: dict, repositories: list[dict], activity: dict,
         "6. **Forks** are included when available. Repo-level totals count the same SHA in two different repositories twice; "
         "the **unique attributed Git SHAs** and **unique LOC changed** fields deduplicate matching SHAs across repositories.",
         f"7. **Coverage scope:** {scope}",
-        "8. Email aliases are automatically discovered using verified account emails and account-linked "
-        "indexed commits. Name-only matches are provisional and restricted to owned repositories.",
+        "8. Email aliases are automatically discovered from GitHub account-linked indexed commits "
+        "and accessible verified-email APIs; name-only matches are NEVER included in verified totals.",
         "9. Commits on local branches never pushed to GitHub, deleted repositories, inaccessible private repositories, "
         "and contributions with no identifiable Git identity cannot be recovered as exact lifetime data.",
         "10. **Private-repository names and links** are masked in public Markdown/JSON by default. "
@@ -722,16 +829,24 @@ def render_reports(user: dict, repositories: list[dict], activity: dict,
     repo_rows = []
     for r in sorted(repositories, key=lambda x: (x["status"] != "ok", -(x.get("metrics", {}).get("commits", 0)), x["name"])):
         m = r.get("metrics", {})
+        fork_ev = r.get("fork_evidence") or {}
+        fork_review = ("not a fork" if not r.get("fork") else
+                       (("ahead " + str(fork_ev.get("ahead_default")) +
+                         ", behind " + str(fork_ev.get("behind_default"))) if
+                        fork_ev.get("status") == "checked" else "unverified"))
         repo_rows.append([link_repo(r, priv_indices), "private" if r["private"] else "public",
                           "fork" if r["fork"] else ("owned" if r["owner"].casefold() == user["login"].casefold() else "collab/org"),
                           r["status"].upper(), fmt(r.get("reachable_commits", 0)) if m else "—",
                           fmt(m.get("commits", 0)) if m else "—", fmt(m.get("additions", 0)) if m else "—",
-                          fmt(m.get("deletions", 0)) if m else "—"])
+                          fmt(m.get("deletions", 0)) if m else "—",
+                          fork_review,
+                          fmt(r.get("excluded_name_only", 0)),
+                          fmt(r.get("excluded_unverified_agent", 0))])
     (REPORT_DIR / "repositories.md").write_text("\n".join([
         "# Repositories — lifetime audit", "", docs, "", f"Updated {generated}.", "",
         "Every available repository was scanned, including forks unless configured otherwise. "
         "`Reachable` includes all authors; `Attributed` includes only your qualifying commits.", "",
-        md_table(["Repository", "Visibility", "Type", "Scan", "Reachable", "Attributed", "+ lines", "− lines"], repo_rows),
+        md_table(["Repository", "Visibility", "Type", "Scan", "Reachable", "Attributed", "+ lines", "− lines", "Fork default ancestry", "Name matches excluded", "AI-associated exclusions"], repo_rows),
         "", "## Failures", "",
         (f"{len(failures)} failed scans: {clean_md(failures_label)}." if failures else "No repository scan failures."),
         "", "Private names are masked unless explicitly enabled. Check workflow logs for diagnostic details.", ""
@@ -756,7 +871,9 @@ def render_reports(user: dict, repositories: list[dict], activity: dict,
     (REPORT_DIR / "languages.md").write_text("\n".join([
         "# Languages and file-history classifications", "", docs, "",
         "## Historical changed lines by filename", "",
-        "This classifies files modified in attributed commits using filename extensions. "
+        "This classifies changed filenames using the official GitHub Linguist language "
+        "definitions for filename and extension. Ambiguous classifications are kept separate. "
+        "Historical blobs are not fed through Linguist's full content parser. "
         "Documentation/configuration rows are part of the overall LOC total but not the code-only subset.", "",
         md_table(["Classification", "Added", "Deleted", "Changed"], [
             [lang, fmt(m["additions"]), fmt(m["deletions"]), fmt(m["lines_changed"])]
@@ -802,17 +919,25 @@ def render_reports(user: dict, repositories: list[dict], activity: dict,
         result = {"name": repo_label(r, priv_indices), "private": bool(r["private"]),
                   "fork": bool(r["fork"]), "status": r["status"],
                   "metrics": r.get("metrics"), "reachable_commits": r.get("reachable_commits"),
+                  "excluded_name_only": r.get("excluded_name_only", 0),
+                  "excluded_unverified_agent": r.get("excluded_unverified_agent", 0),
+                  "fork_evidence": ({k: v for k, v in r.get("fork_evidence", {}).items()
+                                      if k != "parent"} if r.get("private") and not SHOW_PRIVATE_NAMES
+                                    else r.get("fork_evidence")),
                   "first_commit": r.get("first_commit"), "last_commit": r.get("last_commit"),
                   "years": r.get("years", {}), "months": r.get("months", {}),
                   "languages": r.get("languages", {})}
         if allowed:
             result["url"] = r["html_url"]
         safe_repos.append(result)
-    data = {"schema_version": 1, "run_at_utc": as_of.isoformat(),
+    data = {"schema_version": 2, "run_at_utc": as_of.isoformat(),
             "account": user["login"], "coverage": "partial" if incomplete else "complete_for_enumerated_repos",
             "repositories_enumerated": len(repositories), "repositories_scanned": len(ok_repos),
             "repositories_failed": len(failures), "warnings": len(warnings),
             "name_only_attributed_commits": provisional_names,
+            "unverified_name_matches_excluded": excluded_names,
+            "unattributed_agent_linked_excluded": excluded_agents,
+            "unavailable_fork_ancestry_checks": fork_unknown,
             "known_email_alias_count": len(identity.emails),
             "account_linked_commit_email_aliases_added": identity.linked_commit_emails,
             "summary": totals, "unique_attributed_sha_summary": global_unique_data,
@@ -862,12 +987,18 @@ def update_readme(generated: str, incomplete: bool):
 def main() -> int:
     if shutil.which("git") is None:
         raise RuntimeError("Git executable not installed")
+    invalid_approvals = [item for item in APPROVED_AGENT_COMMITS
+                         if not re.fullmatch(r"[a-z0-9_.-]+/[a-z0-9_.-]+@[0-9a-f]{40}", item)]
+    if invalid_approvals:
+        raise RuntimeError("AUDIT_APPROVED_AGENT_COMMITS must use owner/repo@40-char-sha entries.")
     if not 1 <= MAX_WORKERS <= 12:
         raise RuntimeError("AUDIT_WORKERS must be between 1 and 12")
     if CLONE_TIMEOUT < 30 or LOG_TIMEOUT < 30 or DISCOVERY_MAX_QUERIES < 5:
         raise RuntimeError("Audit timeout/query-limit settings must be positive and realistic")
     from concurrent.futures import ThreadPoolExecutor, as_completed
     as_of = now_utc()
+    if LINGUIST_INDEX is None:
+        raise RuntimeError("Official GitHub Linguist language registry missing. Run build_linguist_index.py first.")
     api = GitHubAPI(TOKEN)
     me = api.request("/user")
     username = me.get("login", "")
@@ -926,6 +1057,9 @@ def main() -> int:
     bad_languages = sum(1 for r in results if r.get("language_error"))
     if bad_languages:
         warnings.append(f"Current language-byte API failed for {bad_languages} repositories")
+    # Never silently report all fork histories as personally authored.
+    # Fork ancestry is advisory evidence; exact author/coauthor email remains
+    # the gate for every attributed commit.
     render_reports(me, results, activity, warnings, as_of, identity)
     return 0
 
