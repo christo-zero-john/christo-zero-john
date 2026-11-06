@@ -27,7 +27,7 @@ jobs:
       AUDIT_LINGUIST_INDEX: /tmp/github-linguist-languages.json
       AUDIT_GLOBAL_DISCOVERY: 'true'
       AUDIT_INCLUDE_FORKS: 'true'
-      AUDIT_SHOW_PRIVATE_NAMES: 'false'
+      AUDIT_SHOW_PRIVATE_NAMES: 'true'
       AUDIT_AGENT_COLLAB_REPOS: 'false'
       AUDIT_CURRENT_LANGUAGES: 'true'
       AUDIT_WORKERS: '3'
