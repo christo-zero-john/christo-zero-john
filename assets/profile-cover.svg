@@ -1,13 +1,39 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 392" role="img" aria-label="Christo John, AI Product Engineer. Product thinking and production engineering.">
+  <defs>
+    <linearGradient id="ambient" x1="0%" y1="0%" x2="100%" y2="85%">
+      <stop offset="0" stop-color="#C2ECD1" stop-opacity=".10"/>
+      <stop offset=".52" stop-color="#C2ECD1" stop-opacity="0"/>
+      <stop offset="1" stop-color="#8AC4AE" stop-opacity=".045"/>
+    </linearGradient>
+    <linearGradient id="scan" x1="0%" x2="100%">
+      <stop offset="0" stop-color="#C2ECD1" stop-opacity="0"/>
+      <stop offset=".4" stop-color="#C2ECD1" stop-opacity=".8"/>
+      <stop offset=".6" stop-color="#F0F4EE" stop-opacity=".8"/>
+      <stop offset="1" stop-color="#C2ECD1" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <style><![CDATA[
+    @keyframes type-first{0%{opacity:0;clip-path:inset(0 100% 0 0)}8%{opacity:1}100%{clip-path:inset(0 0 0 0);opacity:1}}
+    @keyframes type-second{0%,8%{opacity:0;clip-path:inset(0 100% 0 0)}22%{opacity:1}100%{clip-path:inset(0 0 0 0);opacity:1}}
+    @keyframes drift{0%{transform:translateX(-450px);opacity:0}30%{opacity:.75}100%{transform:translateX(1450px);opacity:0}}
+    @keyframes breathe{0%,100%{opacity:.45}50%{opacity:1}}
+    .reveal-a{animation:type-first 1.4s .12s ease-out both}
+    .reveal-b{animation:type-second 1.65s .55s ease-out both}
+    .scan{animation:drift 9s linear infinite}
+    .alive{animation:breathe 3.5s ease-in-out infinite}
+    @media(prefers-reduced-motion:reduce){*{animation:none!important;clip-path:none!important;opacity:1!important}}
+  ]]></style>
   <rect width="1200" height="392" rx="14" fill="#101416"/>
   <rect x="1" y="1" width="1198" height="390" rx="13" fill="none" stroke="#374440"/>
+  <rect width="1198" height="390" rx="14" fill="url(#ambient)" opacity=".7"/>
+  <rect x="-160" y="6" width="240" height="3" fill="url(#scan)" class="scan"/>
   <line x1="52" y1="72" x2="1148" y2="72" stroke="#3E4945"/>
   <line x1="52" y1="326" x2="1148" y2="326" stroke="#3E4945"/>
-  <circle cx="61" cy="39" r="4" fill="#C2ECD1"/>
+  <circle class="alive" cx="61" cy="39" r="4" fill="#C2ECD1"/>
   <text x="78" y="45" fill="#F0F4EE" font-size="17" font-weight="700" letter-spacing="2.5" font-family="Arial, Helvetica, sans-serif">CHRISTO JOHN</text>
   <text x="1146" y="45" text-anchor="end" fill="#A9B9B3" font-size="13" font-weight="500" letter-spacing="1.3" font-family="Arial, Helvetica, sans-serif">AI PRODUCT ENGINEER / INDEPENDENT BUILDER</text>
-  <text x="54" y="171" fill="#F0F4EE" font-size="81" font-weight="700" letter-spacing="-3.0" font-family="Arial, Helvetica, sans-serif">Product thinking.</text>
-  <text x="54" y="266" fill="#C2ECD1" font-size="81" font-weight="700" letter-spacing="-3.0" font-family="Arial, Helvetica, sans-serif">Production engineering.</text>
+  <text class="reveal-a" x="54" y="171" fill="#F0F4EE" font-size="81" font-weight="700" letter-spacing="-3.0" font-family="Arial, Helvetica, sans-serif">Product thinking.</text>
+  <text class="reveal-b" x="54" y="266" fill="#C2ECD1" font-size="81" font-weight="700" letter-spacing="-3.0" font-family="Arial, Helvetica, sans-serif">Production engineering.</text>
   <text x="54" y="360" fill="#A9B9B3" font-size="14" font-weight="600" letter-spacing="1.75" font-family="Arial, Helvetica, sans-serif">DESIGN  /  BUILD  /  AUTOMATE  /  SHIP</text>
   <text x="1146" y="360" text-anchor="end" fill="#81918B" font-size="13" letter-spacing="1.2" font-family="Arial, Helvetica, sans-serif">SELECTED WORK &amp; ENGINEERING RECORD</text>
 </svg>
