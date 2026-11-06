@@ -45,11 +45,8 @@ LOG_TIMEOUT = int(os.getenv("AUDIT_GIT_LOG_TIMEOUT_SECONDS", "1200"))
 DISCOVERY_MAX_QUERIES = int(os.getenv("AUDIT_DISCOVERY_MAX_QUERIES", "120"))
 SHOW_PRIVATE_NAMES = os.getenv("AUDIT_SHOW_PRIVATE_NAMES", "false").lower() == "true"
 GLOBAL_DISCOVERY = os.getenv("AUDIT_GLOBAL_DISCOVERY", "true").lower() == "true"
-# Explicit, repo-and-SHA-specific user approvals; never infer agent ownership from repo ownership.
-APPROVED_AGENT_COMMITS = {
-    part.strip().casefold() for part in re.split(r"[,;\n]", os.getenv("AUDIT_APPROVED_AGENT_COMMITS", ""))
-    if part.strip()
-}
+# Agent metadata alone never establishes personal authorship.
+# All Claude/Codex assisted work counts through the owner's author/coauthor.
 INCLUDE_FORKS = os.getenv("AUDIT_INCLUDE_FORKS", "true").lower() == "true"
 FETCH_LANGUAGES = os.getenv("AUDIT_CURRENT_LANGUAGES", "true").lower() == "true"
 AGENT_IDENTIFIERS = [s.strip().casefold() for s in re.split(r"[,;]", (os.getenv(
@@ -355,11 +352,10 @@ class Identity:
         if any(self.attribution(name, email, repo_owner, is_fork)
                for name, email in partners):
             return "coauthored", (agent_author or agent_partner)
-        key = f"{repo_full_name}@{commit_sha}".casefold()
-        if (repo_full_name and commit_sha and key in APPROVED_AGENT_COMMITS
-                and repo_owner.casefold() == self.username.casefold()
-                and agent_author):
-            return "agent_only", True
+        # Owner's agents add Co-authored-by trailers to commits authored by the
+        # owner. Standalone agent accounts are NEVER counted without the owner
+        # author/coauthor identity, including in forks. This is intentionally
+        # stricter than legacy manual agent-only approvals.
         return None, False
 
 
@@ -817,7 +813,7 @@ def render_reports(user: dict, repositories: list[dict], activity: dict,
             ["Unique code-classified LOC changed", fmt(global_unique_data["code_lines_changed"])],
             ["Directly authored", fmt(totals["direct"])],
             ["Co-authored by you (not direct author)", fmt(totals["coauthored"])],
-            ["Explicitly approved agent-only commits", fmt(totals["agent_only"])],
+            ["Standalone agent-only commits (not counted)", fmt(totals["agent_only"])],
             ["Agent-linked commits excluded (not proven yours)", fmt(excluded_agents)],
             ["Unverified name-only matches excluded", fmt(excluded_names)],
             ["Fork default-branch ancestry checks unavailable", fmt(fork_unknown)],
@@ -850,7 +846,7 @@ def render_reports(user: dict, repositories: list[dict], activity: dict,
         "## How to interpret the totals", "",
         "1. **Attributed commits** = exact known GitHub email + Christo signal, "
         "or clearly flagged provisional Christo-name/email pattern match in repositories owned by "
-        "the account that are NOT forks, plus individually approved agent SHA. "
+        "the account that are NOT forks. "
         "Co-author trailers use the same rules. Unrelated agent metadata is excluded.",
         "2. **Total LOC changed** = sum of Git `--numstat` added + deleted text lines across every attributed commit. "
         "This includes docs, configs, lockfiles, generated text and repeated edits; it is not current codebase size or unique lines written.",
@@ -1042,10 +1038,6 @@ def update_readme(generated: str, incomplete: bool):
 def main() -> int:
     if shutil.which("git") is None:
         raise RuntimeError("Git executable not installed")
-    invalid_approvals = [item for item in APPROVED_AGENT_COMMITS
-                         if not re.fullmatch(r"[a-z0-9_.-]+/[a-z0-9_.-]+@[0-9a-f]{40}", item)]
-    if invalid_approvals:
-        raise RuntimeError("AUDIT_APPROVED_AGENT_COMMITS must use owner/repo@40-char-sha entries.")
     if not 1 <= MAX_WORKERS <= 12:
         raise RuntimeError("AUDIT_WORKERS must be between 1 and 12")
     if CLONE_TIMEOUT < 30 or LOG_TIMEOUT < 30 or DISCOVERY_MAX_QUERIES < 5:
