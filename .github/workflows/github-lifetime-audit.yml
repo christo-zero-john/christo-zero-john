@@ -8,7 +8,7 @@ on:
       - 'scripts/github_lifetime_audit.py'
       - 'scripts/render_profile_dashboard.py'
       - 'scripts/render_interactive_profile.py'
-      - 'scripts/render_motion_profile.py'
+      - 'scripts/render_refined_profile.py'
       - 'scripts/build_linguist_index.py'
       - 'scripts/annotate_audit_markdown.py'
       - '.github/workflows/github-lifetime-audit.yml'
@@ -89,14 +89,8 @@ jobs:
       - name: Add expanded in-table explanations and audit appendix
         run: python scripts/annotate_audit_markdown.py
 
-      - name: Render premium README dashboard from latest strict audit
-        run: python scripts/render_profile_dashboard.py
-
-      - name: Render animated project cards, navigation and interactive README
-        run: python scripts/render_interactive_profile.py
-
-      - name: Render true GIF animation and premium navigation
-        run: python scripts/render_motion_profile.py
+      - name: Publish restrained, GitHub-native profile from current verified audit
+        run: python scripts/render_refined_profile.py
 
       - name: Save Markdown and JSON into profile repository
         shell: bash
