@@ -310,7 +310,7 @@ class Identity:
 
     def attribution(self, name: str, email: str, repo_owner: str,
                     is_fork: bool = False) -> str | None:
-        named = self.has_christo(name) or self.has_christo(email)
+        named = self.has_christo(name) or self.has_christo(email.split("@", 1)[0])
         # Exact known email and account ID are the strong GitHub identity links,
         # but require the Christo marker to prevent crediting unrelated developers
         # if a historic address was reused or misattributed.
@@ -326,7 +326,7 @@ class Identity:
 
     def is_name_only(self, name: str, email: str, repo_owner: str,
                      is_fork: bool = False) -> bool:
-        return (self.has_christo(name) or self.has_christo(email)) and (
+        return (self.has_christo(name) or self.has_christo(email.split("@", 1)[0])) and (
             self.attribution(name, email, repo_owner, is_fork) != "verified"
         )
 
