@@ -126,7 +126,9 @@ def stat_svg(data: dict) -> str:
                   fill=COLORS["accent"] if i == 1 else COLORS["warm"], weight=700),
             xtext(x, 216, subtitle, size=13, fill=COLORS["muted"]),
         ])
-    coverage = "PARTIAL COVERAGE" if data["coverage"] == "partial" else "ENUMERATED SOURCES COMPLETE"
+    coverage = ("POLICY RECHECK PENDING" if data.get("identity_policy_version") != 3
+                else ("PARTIAL COVERAGE" if data["coverage"] == "partial"
+                      else "ENUMERATED SOURCES COMPLETE"))
     parts.extend([
         f'<line x1="38" y1="241" x2="1162" y2="241" stroke="{COLORS["border"]}"/>',
         xtext(48, 275, "REFRESHED " + date_label(data), size=12, fill=COLORS["muted"], spacing=.5),
@@ -189,6 +191,14 @@ def stats_markdown(data: dict) -> str:
     unique, summary = data["unique_attributed_sha_summary"], data["summary"]
     coverage = "Partial — some discovery or fork comparisons require review" \
         if data["coverage"] == "partial" else "Complete for enumerated accessible sources"
+    if data.get("identity_policy_version") != 3:
+        coverage = "Previous attribution-rule snapshot — requires a fresh full audit"
+    confirmed = max(0, int(unique.get("commits", 0)) -
+                    int(unique.get("name_only_attributed", 0)))
+    inferred = int(unique.get("name_only_attributed", 0))
+    identity_line = (f"Email-confirmed: {confirmed:,}; provisional Christo pattern: {inferred:,}."
+                     if data.get("identity_policy_version") == 3 else
+                     "These numbers predate the revised Christo/fork rules; do not cite until re-audited.")
     updated = date_label(data)
     languages = sorted(
         ((name, v) for name, v in (data.get("current_language_bytes") or {}).items()
@@ -204,9 +214,9 @@ def stats_markdown(data: dict) -> str:
   </a>
 </p>
 
-**{format_int(integer(unique, "commits"))} verified-identity Git SHAs** · **{format_int(integer(unique, "code_lines_changed"))} code lines changed** · **{format_int(integer(data, "repositories_scanned"))} repositories scanned**.
+**{format_int(integer(unique, "commits"))} attributed Git SHAs** · **{format_int(integer(unique, "code_lines_changed"))} code lines changed** · **{format_int(integer(data, "repositories_scanned"))} repositories scanned**.
 
-<sub>Updated {updated} · {coverage}. Code LOC is cumulative added + deleted programming/markup lines, not unique code written. AI-tagged commits are repository/SHA occurrences, not confirmed autonomous agent-authored commits. Private repository identities are withheld.</sub>
+<sub>Updated {updated} · {coverage}. {identity_line} Code LOC is cumulative additions + deletions in qualifying commits, not unique code written. AI-tagged commits are repository/SHA occurrences where you are the author or co-author. Private repository names can be exposed by audit settings; this dashboard does not display them.</sub>
 
 **Current language footprint** — {lang_line}
 
