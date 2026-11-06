@@ -1,0 +1,84 @@
+name: Verify interactive GitHub profile
+
+on:
+  pull_request:
+    paths:
+      - 'README.md'
+      - 'assets/**'
+      - 'scripts/render_interactive_profile.py'
+      - 'scripts/render_profile_dashboard.py'
+      - 'tests/test_render_interactive_profile.py'
+      - '.github/workflows/test-interactive-profile.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: interactive-profile-preview
+  cancel-in-progress: false
+
+jobs:
+  preview-and-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.head_ref || github.ref_name }}
+          persist-credentials: true
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Validate Python source and link card tests
+        run: |
+          python -m py_compile scripts/render_profile_dashboard.py scripts/render_interactive_profile.py
+          python -m unittest discover -s tests -p 'test_render_interactive_profile.py' -v
+          python -m unittest discover -s tests -p 'test_render_profile_dashboard.py' -v
+
+      - name: Render snapshot-backed SVG cards and profile preview
+        run: |
+          python scripts/render_profile_dashboard.py
+          python scripts/render_interactive_profile.py
+
+      - name: Verify generated images and links
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          from xml.etree import ElementTree
+          paths = sorted(Path('assets').glob('action-*.svg'))
+          paths += sorted(Path('assets').glob('audit-*.svg'))
+          paths += sorted(Path('assets').glob('feature-*.svg'))
+          paths += [Path('assets/profile-cover.svg'),
+                    Path('assets/lifetime-engineering.svg'),
+                    Path('assets/language-landscape.svg')]
+          assert len(paths) == 15, f"Expected 15 SVGs, got {len(paths)}"
+          for path in paths:
+              ElementTree.parse(path)
+          readme = Path('README.md').read_text()
+          assert not re.search(r'(?m)^\[[^]]+\]\([^)]+\)', readme)
+          assert readme.count('<details>') >= 4
+          assert readme.count('<a href=') >= 15
+          assert 'SECRET_PRIVATE_PROJECT' not in readme
+          print('Validated', len(paths), 'image assets and linked GitHub-native cards')
+          PY
+          git diff --check
+
+      # Seed the PR with the actual generated SVGs and README for visual review.
+      # Only this internal branch receives a commit; never force-push or change main.
+      - name: Publish generated preview to the pull request branch
+        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository && github.head_ref == 'feat/interactive-premium-profile'
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add README.md assets/
+          if ! git diff --cached --quiet; then
+            git commit -m 'design: seed premium SVG card previews'
+            git push origin HEAD:feat/interactive-premium-profile
+          else
+            echo 'SVG assets and README are already current.'
+          fi
