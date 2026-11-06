@@ -183,6 +183,7 @@ class Metrics:
     coauthored: int = 0
     agent_only: int = 0
     agent_assisted: int = 0
+    name_only_attributed: int = 0  # provisional attribution in owned repositories
     merges: int = 0
     additions: int = 0
     deletions: int = 0
@@ -205,19 +206,43 @@ class Metrics:
 
 
 class Identity:
+    """Match GitHub-linked emails globally and names provisionally in owned repos.
+
+    Author names are not unique. Name-only matching is restricted to personal repos
+    and reported separately as provisional rather than verified attribution.
+    """
     def __init__(self, username: str, user: dict, emails: list[str]):
+        self.username = username
         self.names = split_aliases(os.getenv("AUDIT_NAMES", "")) | {username.casefold()}
         if user.get("name"):
             self.names.add(user["name"].strip().casefold())
         self.emails = split_aliases(os.getenv("AUDIT_EMAILS", ""))
         self.emails.update(e.strip().casefold() for e in emails if e)
+        if user.get("email"):
+            self.emails.add(user["email"].strip().casefold())
         self.emails.add(username.casefold() + "@users.noreply.github.com")
         if user.get("id"):
             self.emails.add(f"{user['id']}+{username}@users.noreply.github.com".casefold())
-        self.username = username
+        self.linked_commit_emails = 0
 
-    def is_me(self, name: str, email: str) -> bool:
-        return email.strip().casefold() in self.emails or name.strip().casefold() in self.names
+    def add_account_linked_commit_emails(self, emails: set[str]) -> int:
+        """Trust only author emails of commits GitHub resolves to this account."""
+        normalized = {e.strip().casefold() for e in emails if e and "@" in e}
+        additions = normalized - self.emails
+        self.emails.update(normalized)
+        self.linked_commit_emails += len(additions)
+        return len(additions)
+
+    def is_email_me(self, email: str) -> bool:
+        return email.strip().casefold() in self.emails
+
+    def is_name_only(self, name: str, email: str, repo_owner: str) -> bool:
+        return (repo_owner.casefold() == self.username.casefold()
+                and name.strip().casefold() in self.names
+                and not self.is_email_me(email))
+
+    def is_me(self, name: str, email: str, repo_owner: str = "") -> bool:
+        return self.is_email_me(email) or self.is_name_only(name, email, repo_owner)
 
     def is_agent(self, name: str, email: str) -> bool:
         whole = (name + " " + email).casefold()
@@ -225,10 +250,10 @@ class Identity:
 
     def category(self, author_name: str, author_email: str,
                  message: str, repo_owner: str) -> tuple[str | None, bool]:
-        self_author = self.is_me(author_name, author_email)
+        self_author = self.is_me(author_name, author_email, repo_owner)
         agent_author = self.is_agent(author_name, author_email)
         partners = COAUTHOR.findall(message)
-        self_partner = any(self.is_me(name, email) for name, email in partners)
+        self_partner = any(self.is_me(name, email, repo_owner) for name, email in partners)
         agent_partner = any(self.is_agent(name, email) for name, email in partners)
         agent_in_scope = repo_owner.casefold() == self.username.casefold() or ALLOW_AGENT_COLLAB
         if self_author:
@@ -307,6 +332,7 @@ def read_git_history(mirror: Path, identity: Identity, repo_owner: str) -> dict:
             stat.commits = 1
             setattr(stat, current["kind"], 1)
             stat.agent_assisted = int(current["agent_assisted"] and current["kind"] != "agent_only")
+            stat.name_only_attributed = int(current["name_only"])
             stat.merges = int(current["merge"])
             overall.add(stat)
             day = current["date"]
@@ -332,12 +358,17 @@ def read_git_history(mirror: Path, identity: Identity, repo_owner: str) -> dict:
                 sha, name, email, date, committer, committer_email, parents, message, _ = fields
                 if sha in unique_shas:
                     # Git log --all normally deduplicates per SHA, even across tags/branches.
-                    current = {"sha": sha, "kind": None, "date": date[:10], "merge": False, "agent_assisted": False}
+                    current = {"sha": sha, "kind": None, "date": date[:10], "merge": False, "agent_assisted": False, "name_only": False}
                 else:
                     unique_shas.add(sha)
                     kind, assisted = identity.category(name, email, message, repo_owner)
+                    partners = COAUTHOR.findall(message) if kind == "coauthored" else []
+                    name_only = ((kind == "direct" and identity.is_name_only(name, email, repo_owner))
+                                 or (kind == "coauthored" and not any(
+                                     identity.is_email_me(co_email) for _, co_email in partners)))
                     current = {"sha": sha, "kind": kind, "date": date[:10],
-                               "merge": len(parents.split()) > 1, "agent_assisted": assisted}
+                               "merge": len(parents.split()) > 1, "agent_assisted": assisted,
+                               "name_only": name_only}
                 current_stats = Metrics()
                 expecting_rename = 0
                 pending_rename = None
