@@ -9,7 +9,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: profile-metrics
+  group: profile-publication
   cancel-in-progress: false
 
 jobs:
