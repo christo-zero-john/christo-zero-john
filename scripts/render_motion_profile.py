@@ -275,7 +275,11 @@ def navigation_svg(index: int, name: str, caption: str, target: str, broad: bool
 
 
 def rewrite(content: str, original: str, replacement: str) -> str:
+    # The preview can rerun on a branch that already contains generated GIF refs.
+    # Keep this deterministic and idempotent across repeated workflow runs.
     if original not in content:
+        if replacement in content:
+            return content
         raise ValueError(f"README is missing required path {original}")
     return content.replace(original, replacement)
 
