@@ -88,13 +88,11 @@ Real-time background replacement in the browser, with QR-based phone pairing, ph
 
 <!-- LIFETIME_GITHUB_AUDIT_START -->
 
-### Lifetime GitHub audit — figures under verification
+### Lifetime GitHub audit
 
-[**View the attribution audit and methodology →**](./docs/github-audit/REPORT.md)
-
-**Previous commit and LOC totals are withdrawn.** An audit bug incorrectly counted third-party AI-assisted upstream commits in forked repositories. The corrected GitHub Actions workflow must finish before any new numerical claim is published.
-
-[Metric definitions and fork safety](./docs/github-audit/APPENDIX.md)
+[**View complete engineering activity →**](./docs/github-audit/REPORT.md)  
+Commits · AI-agent contributions · cumulative LOC · languages · repositories · historical timeline.  
+<sub>Updated 2026-11-06 14:59 UTC · Partial coverage — see audit notes</sub>
 
 <!-- LIFETIME_GITHUB_AUDIT_END -->
 
