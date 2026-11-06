@@ -197,7 +197,7 @@ def project_svg(spec: dict, record: dict | None, legacy_snapshot: bool = False) 
         tag(29, 145, spec["description"][1], 16, PALE),
     ])
     values = [
-        (29, "VERIFIED COMMITS", commits, 40),
+        (29, "ATTRIBUTED COMMITS", commits, 40),
         (253, "STRICT CODE Δ", loc, 37),
         (491, "COMMIT SPAN", duration, 38),
     ]
@@ -257,7 +257,8 @@ def project_markup(spec: dict, record: dict | None, legacy_snapshot: bool = Fals
         details = "Project metrics unavailable from the latest scan."
     else:
         details = (
-            f'<strong>Qualifying author/coauthor commits:</strong> {fmt(metrics.get("commits"))}. '
+            f'<strong>Attributed author/coauthor commits:</strong> {fmt(metrics.get("commits"))}. '
+            f'<strong>Provisional Christo-pattern commits:</strong> {fmt(metrics.get("name_only_attributed", 0))}. '
             f'<strong>Code-classified text lines changed:</strong> {fmt(metrics.get("code_lines_changed"))}. '
             f'<strong>All changed text lines:</strong> {fmt(metrics.get("lines_changed"))}. '
             f'<strong>First / latest qualifying author dates:</strong> {since} / {until}. '
@@ -272,7 +273,7 @@ def project_markup(spec: dict, record: dict | None, legacy_snapshot: bool = Fals
         )
     card = clickable(f'feature-{spec["id"]}.svg',
                      'https://github.com/' + spec["repo"],
-                     f'Open {title} repository and see verified commit metrics')
+                     f'Open {title} repository and view attributed commit metrics')
     disclosure = (
         f'<details><summary>▸ Contribution evidence / {title}</summary>'
         f'<p>{details}</p>'
