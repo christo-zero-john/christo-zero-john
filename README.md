@@ -94,6 +94,8 @@ Real-time background replacement in the browser, with QR-based phone pairing, ph
 Commits · AI-agent contributions · cumulative LOC · languages · repositories · historical timeline.  
 <sub>Updated 2026-11-06 13:49 UTC · Partial coverage — see audit notes</sub>
 
+[**Developer biodata & portfolio**](./docs/github-audit/PROFILE.md) · [**Tech stack evidence**](./docs/github-audit/TECH_STACK.md) · [**All projects**](./docs/github-audit/PROJECTS.md)
+
 <!-- LIFETIME_GITHUB_AUDIT_END -->
 
 <br/>
