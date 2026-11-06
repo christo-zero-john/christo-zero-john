@@ -60,9 +60,9 @@ class AuditTests(unittest.TestCase):
         self.assertEqual(metrics["agent_only"], 0)
         self.assertEqual(metrics["agent_assisted"], 0)
         self.assertEqual(metrics["merges"], 1)
-        self.assertEqual(metrics["lines_changed"], 5)
+        self.assertEqual(metrics["lines_changed"], 3)
         self.assertEqual(summary["reachable_commits"], 5)
-        self.assertEqual(metrics["code_additions"], 4)
+        self.assertEqual(metrics["code_additions"], 2)
 
     def test_agent_only_not_claimed_in_other_peoples_repos(self):
         ident = audit.Identity("christo-zero-john", {"id": 129399273, "name": "Christo John"}, ["me@example.com"])
@@ -148,6 +148,25 @@ class AuditTests(unittest.TestCase):
             "christo-zero-john/my-repo")
         self.assertEqual(result["metrics"]["commits"], 0)
         self.assertEqual(result["excluded_unverified_agent"], 1)
+
+
+    def test_christo_merge_does_not_claim_other_developer_lines(self):
+        self.commit("root.py", "owner_code = True\n", "owner initial")
+        git(self.repo, "switch", "-q", "-c", "other-developer")
+        self.commit("thirdparty.py", "foreign = 1\nforeign = 2\nforeign = 3\n",
+                    "different author's implementation",
+                    "Other Programmer <notchristo@example.org>")
+        git(self.repo, "switch", "-q", "main")
+        git(self.repo, "merge", "-q", "--no-ff", "other-developer", "-m", "merge someone else's work")
+        ident = audit.Identity("christo-zero-john",
+                              {"id": 129399273, "name": "Christo John"}, ["me@example.com"])
+        result = audit.read_git_history(
+            self.repo / ".git", ident, "christo-zero-john", "christo-zero-john/my-project")
+        self.assertEqual(result["reachable_commits"], 3)
+        self.assertEqual(result["metrics"]["commits"], 2)  # owner initial + owner merge
+        self.assertEqual(result["metrics"]["merges"], 1)
+        self.assertEqual(result["metrics"]["code_additions"], 1)  # never 4
+        self.assertEqual(result["metrics"]["lines_changed"], 1)
 
     def test_fork_never_claims_christo_name_with_unlinked_email(self):
         ident = audit.Identity("christo-zero-john",
