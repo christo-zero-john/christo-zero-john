@@ -7,7 +7,9 @@
 - Repository: [christo-zero-john/openalgo-for-stocketREX](https://github.com/christo-zero-john/openalgo-for-stocketREX), a fork of [marketcalls/openalgo](https://github.com/marketcalls/openalgo)
 - GitHub comparison of default branches: **0 commits ahead**, **376 commits behind** upstream (verified November 6, 2026).
 - An [upstream commit](https://github.com/christo-zero-john/openalgo-for-stocketREX/commit/e78f2edee924141b8ff57a37da26132f5447fd5b) is authored by **marketcalls** and co-authored by an Anthropic agent, **not by Christo John**.
-- The old report wrongly counted upstream agent-linked work from this fork as personal activity. The former repository and account-wide commit/LOC statistics are **withdrawn**, not corrected merely by subtraction.
+- **Verified authorship exception:** [Commit `4dc48eb...`](https://github.com/marketcalls/openalgo/commit/4dc48eb00db9813769d2d9a839dcd828bad16674) is genuinely authored by the connected GitHub account (June 8, 2026): **69 added, 25 deleted, 94 changed lines**. It exists in the original upstream, so it is one contribution, not a new change made after forking.
+- The old metrics for this fork contain **1 directly authored commit and 1,619 incorrectly claimed agent-only commits**. All 1,619 appear in the legacy fork report because it treated other developers' Anthropic co-authors as the fork owner's agents.
+- The former account-wide commit/LOC statistics are **withdrawn** and must be recomputed, not simply corrected by subtraction.
 
 ## Strict replacement counting policy
 
