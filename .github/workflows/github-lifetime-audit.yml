@@ -8,6 +8,7 @@ on:
       - 'scripts/github_lifetime_audit.py'
       - 'scripts/render_profile_dashboard.py'
       - 'scripts/render_interactive_profile.py'
+      - 'scripts/render_motion_profile.py'
       - 'scripts/build_linguist_index.py'
       - 'scripts/annotate_audit_markdown.py'
       - '.github/workflows/github-lifetime-audit.yml'
