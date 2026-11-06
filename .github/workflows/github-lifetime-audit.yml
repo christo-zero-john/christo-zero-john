@@ -10,7 +10,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: github-lifetime-audit
+  group: profile-publication
   cancel-in-progress: false
 
 jobs:
@@ -39,6 +39,7 @@ jobs:
       - name: Check out the profile repository
         uses: actions/checkout@v5
         with:
+          ref: main
           persist-credentials: true
 
       - name: Set up Python
