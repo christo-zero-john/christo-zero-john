@@ -1,119 +1,115 @@
+<!-- PREMIUM_PROFILE_DASHBOARD -->
 <div align="center">
-  <a href="https://tesnic.vercel.app">
-    <img src="./assets/hero.svg" width="100%" alt="Christo John — Full-Stack Product Engineer. Applied AI, cloud systems and thoughtful interfaces." />
-  </a>
+  <img src="./assets/profile-cover.svg" alt="Christo John — AI Product Engineer. Product thinking. Production engineering." width="100%" />
 
-  <br/>
-
-  <a href="https://tesnic.vercel.app"><strong>Portfolio</strong></a>
-  &nbsp;&nbsp;·&nbsp;&nbsp;
-  <a href="https://www.linkedin.com/in/christo-john-kalapurackal/"><strong>LinkedIn</strong></a>
-  &nbsp;&nbsp;·&nbsp;&nbsp;
-  <a href="mailto:10.christojohn@gmail.com"><strong>Email</strong></a>
+  <p>
+    <a href="https://tesnic.vercel.app"><strong>Portfolio</strong></a>&nbsp;&nbsp; / &nbsp;&nbsp;
+    <a href="https://www.linkedin.com/in/christo-john-kalapurackal/"><strong>LinkedIn</strong></a>&nbsp;&nbsp; / &nbsp;&nbsp;
+    <a href="#selected-work"><strong>Selected work</strong></a>&nbsp;&nbsp; / &nbsp;&nbsp;
+    <a href="mailto:10.christojohn@gmail.com"><strong>Contact</strong></a>
+  </p>
 </div>
 
 <br/>
 
-### I build the product and the systems behind it.
+## The work
 
-I'm **Christo John** — a design-minded, full-stack engineer working across **product development, applied AI, automation, and cloud infrastructure**.
+I’m **Christo John**, an **AI Product Engineer** working at the intersection of product design, full-stack engineering, and applied AI. I take ideas from **Figma to production**: the interface, data model, integrations, infrastructure, and everything between.
 
-I like the difficult middle: turning an idea into a working interface, connecting it to real systems, handling edge cases, and taking it all the way to deployment.
-
-From Figma to frontend. From database contracts to background workers. From first prototype to a product someone can actually use.
+My focus is on making ambitious software practical — clear to use, robust underneath, and ready to ship.
 
 <br/>
 
-### Selected work
+## Engineering record
 
-<table>
-  <tr>
-    <td width="50%" valign="top">
-      <p><sub>01 / CREATIVE INFRASTRUCTURE</sub></p>
-      <p><strong>Video creation, engineered end to end.</strong></p>
-      <p>A browser-based creative platform backed by asynchronous rendering, cloud workers, object storage, and reliable export workflows.</p>
-      <p><code>Next.js</code> · <code>Remotion</code> · <code>AWS</code> · <code>TypeScript</code></p>
-    </td>
-    <td width="50%" valign="top">
-      <p><sub>02 / DATA &amp; DECISION SYSTEMS</sub></p>
-      <p><strong>Turning fragmented data into clear decisions.</strong></p>
-      <p>Research and analytics interfaces built around normalization, source provenance, secure data boundaries, and trustworthy calculations.</p>
-      <p><code>PostgreSQL</code> · <code>Supabase</code> · <code>SQL</code> · <code>React</code></p>
-    </td>
-  </tr>
-  <tr>
-    <td width="50%" valign="top">
-      <p><sub>03 / CONNECTED PRODUCTS</sub></p>
-      <p><strong>Making complex integrations feel simple.</strong></p>
-      <p>Full-stack product experiences built around external data services, localization, authentication, payments, and AI-assisted interactions.</p>
-      <p><code>Next.js</code> · <code>Django</code> · <code>REST APIs</code> · <code>Python</code></p>
-    </td>
-    <td width="50%" valign="top">
-      <p><sub>04 / AUTOMATION &amp; OPERATIONS</sub></p>
-      <p><strong>Workflows designed for more than the happy path.</strong></p>
-      <p>Cross-platform automation with authenticated callbacks, explicit states, recovery paths, and reconciliation when external systems are uncertain.</p>
-      <p><code>Webhooks</code> · <code>Playwright</code> · <code>Docker</code> · <code>n8n</code></p>
-    </td>
-  </tr>
-</table>
+<sub>01 / THE NUMBERS, WITH EVIDENCE</sub>
+
+<!-- PROFILE_STATS:START -->
+
+The live engineering record will appear here after the GitHub lifetime audit runs.
+
+[Open the detailed GitHub audit](./docs/github-audit/REPORT.md).
+
+<!-- PROFILE_STATS:END -->
 
 <br/>
 
-### In the open
+## Selected work
 
-<a href="https://github.com/christo-zero-john/virtual-background-photobooth"><strong>Virtual Background Photobooth ↗</strong></a>
+<sub>02 / A SMALL SELECTION FROM THE WORKBENCH</sub>
 
-Real-time background replacement in the browser, with QR-based phone pairing, photo delivery, and remote shutter control. Built with **MediaPipe, WebGL, and Supabase**.
+### [Virtual Background Photobooth](https://github.com/christo-zero-john/virtual-background-photobooth)
+A browser-based event photobooth with real-time background replacement, QR phone pairing, and remote camera controls.
+
+`Interactive media` &nbsp;·&nbsp; `WebGL` &nbsp;·&nbsp; `MediaPipe` &nbsp;·&nbsp; `Supabase`
+
+---
+
+### [ROCO — The Agentic Car](https://github.com/christo-zero-john/roco-the-agentic-car)
+An evolving 4WD robotics experiment, starting with mobile-controlled movement and exploring progressively more intelligent behavior.
+
+`Robotics` &nbsp;·&nbsp; `Prototyping` &nbsp;·&nbsp; `Agentic systems`
+
+---
+
+### [Movie Watch History Tracker](https://github.com/christo-zero-john/movie-watch-history-tracker-webapp)
+A React experience for tracking watched movies, exploring TMDB titles, and discovering what to watch next.
+
+`React` &nbsp;·&nbsp; `TMDB` &nbsp;·&nbsp; `Frontend product`
+
+---
+
+### [Complaint Management System](https://github.com/christo-zero-john/complaint-management-system)
+A PHP-based institutional complaint-management project, developed during my undergraduate studies.
+
+`PHP` &nbsp;·&nbsp; `Web applications` &nbsp;·&nbsp; `Data workflows`
+
+<p>
+  <a href="./docs/github-audit/repositories.md"><strong>Explore the complete audited repository index →</strong></a>
+</p>
 
 <br/>
 
-### Engineering stack
+## The toolkit
 
-| | |
-| :-- | :-- |
-| **Frontend** | TypeScript, JavaScript, React, Next.js, Tailwind CSS |
-| **Backend & data** | Python, Django, PostgreSQL, Supabase, REST APIs |
-| **Cloud & infrastructure** | AWS, Google Cloud, Docker, Vercel, S3, Lambda, SQS |
-| **AI, automation & media** | LLM integrations, Codex, Claude Code, Playwright, Remotion, FFmpeg |
-| **Design & quality** | Figma, Vitest, Testing Library, Playwright E2E |
+<sub>03 / FROM PROTOTYPE TO PRODUCTION</sub>
+
+**Primary workflow**
+
+`Next.js` &nbsp; `Supabase` &nbsp; `Figma` &nbsp; `Claude Code` &nbsp; `Codex`
+
+**Frontend and product:** TypeScript · React · Tailwind CSS · user experience design
+
+**Backend and data:** Python · Django · PostgreSQL · REST APIs
+
+**Infrastructure and automation:** AWS · Vercel · Docker · Playwright · cloud workflows
+
+**Creative and applied AI:** LLM integrations · Remotion · FFmpeg · agent-assisted engineering
+
+<sub>Personal toolkit and experience, not automatically inferred from language statistics. The independently measured language snapshot is in the engineering record above.</sub>
 
 <br/>
 
-### By the numbers
+## A little background
+
+<sub>04 / THE PATH HERE</sub>
+
+Previously worked across **product engineering and UI design at Neuegrid Design Studio**, and **full-stack development at Tomatrix Technologies**.
+
+Currently pursuing an **MCA (2025–2027)** after completing a **BCA (2022–2025)**. I work across the entire product lifecycle, with a particular interest in design-to-code systems, applied AI, and software that survives real-world edge cases.
+
+<br/>
+
+---
 
 <div align="center">
-  <img src="./assets/engineering-stats.svg" width="100%" alt="GitHub repository footprint — public and private repositories, plus collaborations." />
-</div>
-
-
-<!-- LIFETIME_GITHUB_AUDIT_START -->
-
-### Lifetime GitHub audit
-
-[**View complete engineering activity →**](./docs/github-audit/REPORT.md)  
-Commits · AI-agent contributions · cumulative LOC · languages · repositories · historical timeline.  
-<sub>Updated 2026-11-06 14:59 UTC · Partial coverage — see audit notes</sub>
-
-<!-- LIFETIME_GITHUB_AUDIT_END -->
-
-<br/>
-
-### Beyond the code
-
-**Full-stack engineering** for startups and client products. Previously worked across **product engineering and UI design at Neuegrid Design Studio**, and **full-stack development at Tomatrix Technologies**. Pursuing an **MCA (2025–2027)** after completing a **BCA (2022–2025)**.
-
-<br/>
-
-<div align="center">
-
-<strong>Good products need thoughtful engineering.</strong>
-
-<a href="mailto:10.christojohn@gmail.com">Let's work together</a>
-&nbsp;&nbsp;·&nbsp;&nbsp;
-<a href="https://tesnic.vercel.app">tesnic.vercel.app</a>
-
-<br/><br/>
-
-<img src="./assets/footer.svg" width="100%" alt="Christo John — design, build, iterate." />
-
+  <p><strong>Good interfaces deserve serious engineering.</strong></p>
+  <p>
+    <a href="https://tesnic.vercel.app">View portfolio</a>
+    &nbsp;&nbsp;·&nbsp;&nbsp;
+    <a href="mailto:10.christojohn@gmail.com">Get in touch</a>
+    &nbsp;&nbsp;·&nbsp;&nbsp;
+    <a href="./docs/github-audit/REPORT.md">Read the audit</a>
+  </p>
+  <sub>Designed with restraint. Built with evidence. Kept current by GitHub Actions.</sub>
 </div>
