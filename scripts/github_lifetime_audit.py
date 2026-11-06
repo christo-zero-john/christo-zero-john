@@ -633,7 +633,8 @@ def render_reports(user: dict, repositories: list[dict], activity: dict,
     owned = [r for r in repositories if r["owner"].casefold() == user["login"].casefold()]
     created_years = collections.Counter(r["created_at"][:4] for r in owned if r.get("created_at"))
     failures_label = ", ".join(repo_label(x, priv_indices) for x in failures[:12])
-    incomplete = len(failures) > 0 or len(warnings) > 0
+    provisional_names = total.name_only_attributed
+    incomplete = len(failures) > 0 or len(warnings) > 0 or provisional_names > 0
     status = "PARTIAL — some sources could not be fully audited" if incomplete else "COMPLETE for enumerated accessible repositories"
     generated = as_of.strftime("%Y-%m-%d %H:%M UTC")
     docs = "[Overview](./REPORT.md) · [Repositories](./repositories.md) · [Timeline](./timeline.md) · [Languages](./languages.md) · [Activity](./activity.md)"
@@ -642,8 +643,10 @@ def render_reports(user: dict, repositories: list[dict], activity: dict,
              "Other repositories count commits only when you are the author or co-author, "
              "unless `AUDIT_AGENT_COLLAB_REPOS=true`.")
     warning_block = ("\n**Audit gaps:** " + str(len(failures)) + " repository clone/scan failures; " +
-                     str(len(warnings)) + " discovery/API warnings. Check the [repository report](./repositories.md) "
-                     "and workflow logs. Do not treat these as complete account totals.\n") if incomplete else ""
+                     str(len(warnings)) + " discovery/API warnings; " +
+                     fmt(provisional_names) + " provisional name-only attributed commits. " +
+                     "Check the [repository report](./repositories.md) and workflow logs. " +
+                     "Name-only matches are not verified authorship.\n") if incomplete else ""
     totals = total.as_dict()
     lines = [
         "# Lifetime GitHub engineering audit", "", docs, "",
@@ -665,6 +668,9 @@ def render_reports(user: dict, repositories: list[dict], activity: dict,
             ["Directly authored", fmt(totals["direct"])],
             ["Co-authored by you (not direct author)", fmt(totals["coauthored"])],
             ["Agent-only attributed commits", fmt(totals["agent_only"])],
+            ["Commits matched by name only (provisional, owned repos)", fmt(totals["name_only_attributed"])],
+            ["Known author email aliases (count only; not published)", fmt(len(identity.emails))],
+            ["New account-linked email aliases discovered", fmt(identity.linked_commit_emails)],
             ["Direct/co-authored commits also tagged with an agent", fmt(totals["agent_assisted"])],
             ["Merge commits included", fmt(totals["merges"])],
             ["Lines added across attributed commits", fmt(totals["additions"])],
@@ -699,11 +705,13 @@ def render_reports(user: dict, repositories: list[dict], activity: dict,
         "6. **Forks** are included when available. Repo-level totals count the same SHA in two different repositories twice; "
         "the **unique attributed Git SHAs** and **unique LOC changed** fields deduplicate matching SHAs across repositories.",
         f"7. **Coverage scope:** {scope}",
-        "8. Commits on local branches never pushed to GitHub, deleted repositories, inaccessible private repositories, "
+        "8. Email aliases are automatically discovered using verified account emails and account-linked "
+        "indexed commits. Name-only matches are provisional and restricted to owned repositories.",
+        "9. Commits on local branches never pushed to GitHub, deleted repositories, inaccessible private repositories, "
         "and contributions with no identifiable Git identity cannot be recovered as exact lifetime data.",
-        "9. **Private-repository names and links** are masked in public Markdown/JSON by default. "
+        "10. **Private-repository names and links** are masked in public Markdown/JSON by default. "
         "The combined totals still include scanned private repositories.",
-        "10. GitHub's PR/issue/search indices and current follower/star counts are separate from Git commit history.",
+        "11. GitHub's PR/issue/search indices and current follower/star counts are separate from Git commit history.",
         "", "**Note:** The per-year, per-month, and per-language history tables use repository/SHA occurrences; "
         "they may include duplicate Git SHAs when a repository is forked or mirrored.", "",
         "## Explore", "", docs, "",
@@ -804,6 +812,9 @@ def render_reports(user: dict, repositories: list[dict], activity: dict,
             "account": user["login"], "coverage": "partial" if incomplete else "complete_for_enumerated_repos",
             "repositories_enumerated": len(repositories), "repositories_scanned": len(ok_repos),
             "repositories_failed": len(failures), "warnings": len(warnings),
+            "name_only_attributed_commits": provisional_names,
+            "known_email_alias_count": len(identity.emails),
+            "account_linked_commit_email_aliases_added": identity.linked_commit_emails,
             "summary": totals, "unique_attributed_sha_summary": global_unique_data,
             "owned_repositories_created_by_year": dict(created_years),
             "private_summary": private_total.as_dict(),
