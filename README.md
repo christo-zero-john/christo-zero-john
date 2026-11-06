@@ -1,14 +1,13 @@
 <!-- PREMIUM_PROFILE_DASHBOARD -->
 <div align="center">
   <img src="./assets/profile-cover.svg" alt="Christo John — AI Product Engineer. Product thinking. Production engineering." width="100%" />
-
-  <p>
-    <a href="https://tesnic.vercel.app"><strong>Portfolio</strong></a>&nbsp;&nbsp; / &nbsp;&nbsp;
-    <a href="https://www.linkedin.com/in/christo-john-kalapurackal/"><strong>LinkedIn</strong></a>&nbsp;&nbsp; / &nbsp;&nbsp;
-    <a href="#selected-work"><strong>Selected work</strong></a>&nbsp;&nbsp; / &nbsp;&nbsp;
-    <a href="mailto:10.christojohn@gmail.com"><strong>Contact</strong></a>
-  </p>
 </div>
+
+<!-- PREMIUM_ACTIONS:START -->
+
+The clickable navigation tiles will appear here.
+
+<!-- PREMIUM_ACTIONS:END -->
 
 <br/>
 
@@ -50,35 +49,13 @@ My focus is on making ambitious software practical — clear to use, robust unde
 
 <sub>02 / A SMALL SELECTION FROM THE WORKBENCH</sub>
 
-### [Virtual Background Photobooth](https://github.com/christo-zero-john/virtual-background-photobooth)
-A browser-based event photobooth with real-time background replacement, QR phone pairing, and remote camera controls.
+<!-- PREMIUM_PROJECTS:START -->
 
-`Interactive media` &nbsp;·&nbsp; `WebGL` &nbsp;·&nbsp; `MediaPipe` &nbsp;·&nbsp; `Supabase`
+Live project contribution cards will appear here.
 
----
+<!-- PREMIUM_PROJECTS:END -->
 
-### [ROCO — The Agentic Car](https://github.com/christo-zero-john/roco-the-agentic-car)
-An evolving 4WD robotics experiment, starting with mobile-controlled movement and exploring progressively more intelligent behavior.
-
-`Robotics` &nbsp;·&nbsp; `Prototyping` &nbsp;·&nbsp; `Agentic systems`
-
----
-
-### [Movie Watch History Tracker](https://github.com/christo-zero-john/movie-watch-history-tracker-webapp)
-A React experience for tracking watched movies, exploring TMDB titles, and discovering what to watch next.
-
-`React` &nbsp;·&nbsp; `TMDB` &nbsp;·&nbsp; `Frontend product`
-
----
-
-### [Complaint Management System](https://github.com/christo-zero-john/complaint-management-system)
-A PHP-based institutional complaint-management project, developed during my undergraduate studies.
-
-`PHP` &nbsp;·&nbsp; `Web applications` &nbsp;·&nbsp; `Data workflows`
-
-<p>
-  <a href="./docs/github-audit/repositories.md"><strong>Explore the complete audited repository index →</strong></a>
-</p>
+<sub>Commit spans are the elapsed calendar time between first and latest attributed Git author dates, not the number of working days. Card statistics count only qualifying Git contributions from the latest strict audit.</sub>
 
 <br/>
 
@@ -115,13 +92,15 @@ Currently pursuing an **MCA (2025–2027)** after completing a **BCA (2022–202
 ---
 
 <div align="center">
-  <p><strong>Good interfaces deserve serious engineering.</strong></p>
-  <p>
-    <a href="https://tesnic.vercel.app">View portfolio</a>
-    &nbsp;&nbsp;·&nbsp;&nbsp;
-    <a href="mailto:10.christojohn@gmail.com">Get in touch</a>
-    &nbsp;&nbsp;·&nbsp;&nbsp;
-    <a href="./docs/github-audit/REPORT.md">Read the audit</a>
-  </p>
-  <sub>Designed with restraint. Built with evidence. Kept current by GitHub Actions.</sub>
+
+**Good interfaces deserve serious engineering.**
+
+<!-- PREMIUM_FOOTER:START -->
+
+Styled actions will appear here.
+
+<!-- PREMIUM_FOOTER:END -->
+
+<sub>Design + data + engineering. Recomputed from verified Git history on every successful audit run.</sub>
+
 </div>
