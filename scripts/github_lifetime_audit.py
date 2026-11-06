@@ -291,9 +291,10 @@ class Identity:
 
     @staticmethod
     def has_christo(value: str) -> bool:
-        # Case-insensitive explicit identity fragment required by the owner.
-        # A matching name alone is NEVER called verified.
-        return "christo" in str(value).casefold()
+        # Match a Christo handle/name token, including christojohn and
+        # 10.christojohn, but NOT Christopher, notchristo or other incidental
+        # substring collisions. Name-only matches are still provisional.
+        return bool(re.search(r"(?<![a-z])christo(?!ph)", str(value), re.IGNORECASE))
 
     def is_email_me(self, email: str) -> bool:
         email = email.strip().casefold()
