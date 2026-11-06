@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import importlib.util
+import datetime as dt
 from pathlib import Path
 import subprocess
 import sys
@@ -68,6 +69,46 @@ class AuditTests(unittest.TestCase):
         self.assertEqual(ident.category("Claude Code", "claude@agents.local", "", "other-owner"), (None, False))
         self.assertEqual(ident.category("Claude Code", "claude@agents.local", "", "christo-zero-john"), ("agent_only", True))
         self.assertEqual(ident.category("Someone", "other@test.invalid", "Co-authored-by: Christo John <me@example.com>", "other-owner"), ("coauthored", False))
+
+
+    def test_historical_email_alias_discovery_is_account_verified(self):
+        class FakeAPI:
+            def request(self, endpoint, params):
+                self.endpoint = endpoint
+                return {
+                    "total_count": 2,
+                    "items": [
+                        {"author": {"login": "christo-zero-john"},
+                         "commit": {"author": {"email": "old-desktop@example.test"}},
+                         "repository": {"full_name": "christo-zero-john/app"}},
+                        {"author": {"login": "someone-else"},
+                         "commit": {"author": {"email": "not-mine@example.test"}},
+                         "repository": {"full_name": "someone-else/app"}}
+                    ]
+                }
+
+        _, warnings, emails = audit.discover_global_authored_repos(
+            FakeAPI(), "christo-zero-john", dt.date(2026, 11, 6))
+        self.assertFalse(warnings)
+        self.assertEqual(emails, {"old-desktop@example.test"})
+        ident = audit.Identity("christo-zero-john", {"id": 129399273, "name": "Christo John"}, [])
+        self.assertEqual(ident.add_account_linked_commit_emails(emails), 1)
+        self.assertTrue(ident.is_email_me("old-desktop@example.test"))
+        self.assertFalse(ident.is_email_me("not-mine@example.test"))
+        self.assertEqual(ident.category("Other Name", "old-desktop@example.test", "", "other-org"),
+                         ("direct", False))
+
+    def test_unverified_name_only_is_provisional_in_owned_repos(self):
+        ident = audit.Identity("christo-zero-john", {"id": 129399273, "name": "Christo John"}, [])
+        self.assertEqual(ident.category("Christo John", "unlinked@example.test", "", "other-org"),
+                         (None, False))
+        self.assertEqual(ident.category("Christo John", "unlinked@example.test", "", "christo-zero-john"),
+                         ("direct", False))
+        self.commit("unknown.py", "print(1)\n", "unknown email identity",
+                    "Christo John <unlinked@example.test>")
+        result = audit.read_git_history(self.repo / ".git", ident, "christo-zero-john")
+        self.assertEqual(result["metrics"]["commits"], 1)
+        self.assertEqual(result["metrics"]["name_only_attributed"], 1)
 
     def test_private_repo_names_are_masked(self):
         original = audit.SHOW_PRIVATE_NAMES

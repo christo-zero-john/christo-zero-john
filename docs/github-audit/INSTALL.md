@@ -15,9 +15,9 @@ Do **not** replace your existing `README.md`, `assets/engineering-stats.svg`, or
 
 Navigate to GitHub → Settings → Developer settings → Personal access tokens.
 
-**Recommended for personal repos:** a fine-grained token with resource owner `christo-zero-john`, `All repositories`, and **Contents: Read-only** and Metadata read. To fetch GitHub emails automatically, optionally allow **Email addresses: Read-only** (account permission). Note that a fine-grained token tied to a single resource owner might not cover your private repositories in other organizations.
+**Recommended for personal repos:** a fine-grained token with resource owner `christo-zero-john`, `All repositories`, and **Contents: Read-only** and Metadata read. To discover more historical aliases, enable **Email addresses: Read-only** (account permission), where available. Note that a fine-grained token tied to a single resource owner might not cover your private repositories in other organizations.
 
-**If you need *every* private organization and collaborator repo available to your account:** a classic PAT with `repo` and, if required for org enumeration, `read:org`; `user:email` optionally retrieves all verified emails. **Classic `repo` is a broad scope**; use a short-lived token, keep it secret, and rotate it. Organization policies may disallow or require approval of any PAT. No token can reveal repos you cannot access.
+**If you need *every* private organization and collaborator repo available to your account:** a classic PAT with `repo` and, if required for org enumeration, `read:org`; `user:email` retrieves verified email aliases if permitted. **Classic `repo` is a broad scope**; use a short-lived token, keep it secret, and rotate it. Organization policies may disallow or require approval of any PAT. No token can reveal repos you cannot access.
 
 Save the token as a profile repository **Actions secret** named exactly `GH_AUDIT_READ_TOKEN` at:
 
@@ -25,15 +25,27 @@ Save the token as a profile repository **Actions secret** named exactly `GH_AUDI
 
 The workflow's built-in `GITHUB_TOKEN` is used **only for committing the report back to the profile repo**. It is not relied on to access your other private repositories.
 
-## 3. Set identity aliases (important for exact attribution)
+## 3. Automatic identity discovery — no author emails required
 
-Repo → Settings → Secrets and variables → Actions → **Variables**:
+**AUDIT_EMAILS is optional. You can leave it unset.**
 
-- `AUDIT_EMAILS`: comma-separated list of **every email you have used as a Git commit author**, e.g. `email1@example.com,email2@example.com`; don't use secrets for this unless you'd prefer to keep private aliases out of the Actions variable settings. They are never printed to the report. These supplement verified email addresses returned by `/user/emails` if permitted.
-- `AUDIT_NAMES`: other names you've committed under (optional). Default identity set already includes your GitHub login and current GitHub display name. Names can collide; emails are more reliable.
-- `AUDIT_AGENT_IDENTIFIERS`: optional comma-separated substrings for identifying agent author/co-author names and emails. Default: `claude,anthropic,codex,copilot,cursor,aider,devin,gemini`.
+Before scanning histories, the workflow finds historical author emails automatically:
 
-Review the defaults in the workflow before running. Agent-only attribution is deliberately restricted to repositories **owned by you**, to avoid claiming unrelated commits made by agents in other people's projects. Set `AUDIT_AGENT_COLLAB_REPOS: 'true'` in the workflow only if that is justified.
+1. Starts with your GitHub login, numeric account ID, and standard GitHub no-reply addresses.
+2. Queries your verified account email addresses via the GitHub API when the access token allows it.
+3. Searches GitHub's historical commits by the account-linked author login, and extracts the original author email for any commit GitHub links to your account. This detects different GitHub Desktop identities, including many identities from prior installations.
+4. Matches all discovered email aliases when counting authored and co-authored commits across repositories.
+5. For repositories you own, commits with an exact matching Git author name but an unverified email are counted as **provisional name-only matches**. The report explicitly marks coverage **PARTIAL** and reports the provisional count. Author names are not proof of identity.
+
+Git author email aliases are used only in memory. The published Markdown and JSON show only alias counts, not actual email addresses.
+
+**Optional Actions repository variables:**
+
+- **AUDIT_EMAILS**: extra historical author emails if you later discover any missed identity; normally leave unset.
+- **AUDIT_NAMES**: additional names if GitHub Desktop used a different author name; normally leave unset.
+- **AUDIT_AGENT_IDENTIFIERS**: customize which bot and agent author/co-author identities count.
+
+A historical email not linked to your GitHub account and written under an unrecognized name **cannot be reliably proven to be yours** solely from Git history. GitHub's indexed commit search may also omit deleted or inaccessible history. The report must not describe this as exact, total lifetime authorship.
 
 ## 4. Grant workflow permission to update your README
 
@@ -56,7 +68,7 @@ It also runs every Sunday. Delete the `schedule` block to make it manual-only.
 - `Lines added` and `lines deleted` are summed from Git **numstat** on every attributed commit across full reachable repository history. `Lines changed = additions + deletions`. All text files are included: code, documentation, configuration, generated text, and lockfiles. `Code-classified` is shown separately.
 - Merge diffs are compared to first parent; their changes can duplicate changes counted in the branch being merged. Renames are detected. Binary changes cannot be represented as line totals.
 - This is **cumulative churn**, not the size of the current codebase, not unique LOC ever written, and not a human-versus-agent code-generation estimate.
-- The report may show **PARTIAL** coverage when clones fail, verified emails cannot be queried, or GitHub indexing searches are incomplete. Fix these before publishing any counts as exhaustive.
+- The report shows **PARTIAL** when scans fail, GitHub indexing searches are incomplete, or commits are attributed provisionally by author name. Fix these before publishing any counts as exhaustive.
 - GitHub's API cannot reconstruct deleted repos, never-pushed commits, invisible organization repos, all expired user events, or AI-generated code with no Git attribution. Public repo contributions from other maintainers may be found by global authored-commit search, but **coauthored-only external repos cannot be discovered reliably**.
 - The public report masks private repo names/URLs by default while including their aggregate counts. **Even aggregated private statistics may be sensitive**; review before sharing. Set `AUDIT_SHOW_PRIVATE_NAMES` to `true` **only if** disclosure is intentional.
 

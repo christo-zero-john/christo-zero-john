@@ -183,6 +183,7 @@ class Metrics:
     coauthored: int = 0
     agent_only: int = 0
     agent_assisted: int = 0
+    name_only_attributed: int = 0  # provisional attribution in owned repositories
     merges: int = 0
     additions: int = 0
     deletions: int = 0
@@ -205,19 +206,43 @@ class Metrics:
 
 
 class Identity:
+    """Match GitHub-linked emails globally and names provisionally in owned repos.
+
+    Author names are not unique. Name-only matching is restricted to personal repos
+    and reported separately as provisional rather than verified attribution.
+    """
     def __init__(self, username: str, user: dict, emails: list[str]):
+        self.username = username
         self.names = split_aliases(os.getenv("AUDIT_NAMES", "")) | {username.casefold()}
         if user.get("name"):
             self.names.add(user["name"].strip().casefold())
         self.emails = split_aliases(os.getenv("AUDIT_EMAILS", ""))
         self.emails.update(e.strip().casefold() for e in emails if e)
+        if user.get("email"):
+            self.emails.add(user["email"].strip().casefold())
         self.emails.add(username.casefold() + "@users.noreply.github.com")
         if user.get("id"):
             self.emails.add(f"{user['id']}+{username}@users.noreply.github.com".casefold())
-        self.username = username
+        self.linked_commit_emails = 0
 
-    def is_me(self, name: str, email: str) -> bool:
-        return email.strip().casefold() in self.emails or name.strip().casefold() in self.names
+    def add_account_linked_commit_emails(self, emails: set[str]) -> int:
+        """Trust only author emails of commits GitHub resolves to this account."""
+        normalized = {e.strip().casefold() for e in emails if e and "@" in e}
+        additions = normalized - self.emails
+        self.emails.update(normalized)
+        self.linked_commit_emails += len(additions)
+        return len(additions)
+
+    def is_email_me(self, email: str) -> bool:
+        return email.strip().casefold() in self.emails
+
+    def is_name_only(self, name: str, email: str, repo_owner: str) -> bool:
+        return (repo_owner.casefold() == self.username.casefold()
+                and name.strip().casefold() in self.names
+                and not self.is_email_me(email))
+
+    def is_me(self, name: str, email: str, repo_owner: str = "") -> bool:
+        return self.is_email_me(email) or self.is_name_only(name, email, repo_owner)
 
     def is_agent(self, name: str, email: str) -> bool:
         whole = (name + " " + email).casefold()
@@ -225,10 +250,10 @@ class Identity:
 
     def category(self, author_name: str, author_email: str,
                  message: str, repo_owner: str) -> tuple[str | None, bool]:
-        self_author = self.is_me(author_name, author_email)
+        self_author = self.is_me(author_name, author_email, repo_owner)
         agent_author = self.is_agent(author_name, author_email)
         partners = COAUTHOR.findall(message)
-        self_partner = any(self.is_me(name, email) for name, email in partners)
+        self_partner = any(self.is_me(name, email, repo_owner) for name, email in partners)
         agent_partner = any(self.is_agent(name, email) for name, email in partners)
         agent_in_scope = repo_owner.casefold() == self.username.casefold() or ALLOW_AGENT_COLLAB
         if self_author:
@@ -307,6 +332,7 @@ def read_git_history(mirror: Path, identity: Identity, repo_owner: str) -> dict:
             stat.commits = 1
             setattr(stat, current["kind"], 1)
             stat.agent_assisted = int(current["agent_assisted"] and current["kind"] != "agent_only")
+            stat.name_only_attributed = int(current["name_only"])
             stat.merges = int(current["merge"])
             overall.add(stat)
             day = current["date"]
@@ -332,12 +358,17 @@ def read_git_history(mirror: Path, identity: Identity, repo_owner: str) -> dict:
                 sha, name, email, date, committer, committer_email, parents, message, _ = fields
                 if sha in unique_shas:
                     # Git log --all normally deduplicates per SHA, even across tags/branches.
-                    current = {"sha": sha, "kind": None, "date": date[:10], "merge": False, "agent_assisted": False}
+                    current = {"sha": sha, "kind": None, "date": date[:10], "merge": False, "agent_assisted": False, "name_only": False}
                 else:
                     unique_shas.add(sha)
                     kind, assisted = identity.category(name, email, message, repo_owner)
+                    partners = COAUTHOR.findall(message) if kind == "coauthored" else []
+                    name_only = ((kind == "direct" and identity.is_name_only(name, email, repo_owner))
+                                 or (kind == "coauthored" and not any(
+                                     identity.is_email_me(co_email) for _, co_email in partners)))
                     current = {"sha": sha, "kind": kind, "date": date[:10],
-                               "merge": len(parents.split()) > 1, "agent_assisted": assisted}
+                               "merge": len(parents.split()) > 1, "agent_assisted": assisted,
+                               "name_only": name_only}
                 current_stats = Metrics()
                 expecting_rename = 0
                 pending_rename = None
@@ -430,7 +461,7 @@ def inspect_repo(repo: dict, identity: Identity, api: GitHubAPI) -> dict:
     return result
 
 
-def discover_global_authored_repos(api: GitHubAPI, login: str, until: dt.date) -> tuple[dict[str, dict], list[str]]:
+def discover_global_authored_repos(api: GitHubAPI, login: str, until: dt.date) -> tuple[dict[str, dict], list[str], set[str]]:
     """Find public repos missing from /user/repos via indexed account-linked author commits.
 
     GitHub commit search returns at most 1000 results per query; bisect dates to
@@ -438,6 +469,7 @@ def discover_global_authored_repos(api: GitHubAPI, login: str, until: dt.date) -
     """
     found: dict[str, dict] = {}
     warnings: list[str] = []
+    linked_author_emails: set[str] = set()
     calls = 0
 
     def search(start: dt.date, end: dt.date):
@@ -462,6 +494,12 @@ def discover_global_authored_repos(api: GitHubAPI, login: str, until: dt.date) -
                 batch = api.request("/search/commits", {"q": query, "per_page": 100, "page": page})
                 calls += 1
             for item in batch.get("items", []):
+                linked_user = item.get("author") or {}
+                author = (item.get("commit") or {}).get("author") or {}
+                if linked_user.get("login", "").casefold() == login.casefold():
+                    email = author.get("email", "").strip()
+                    if email and "@" in email:
+                        linked_author_emails.add(email)
                 item_repo = item.get("repository") or {}
                 full = item_repo.get("full_name")
                 if full:
@@ -471,7 +509,7 @@ def discover_global_authored_repos(api: GitHubAPI, login: str, until: dt.date) -
     except APIError as exc:
         warnings.append("Global public commit discovery incomplete: " + str(exc))
     log(f"Global author search: {len(found)} repositories found using {calls} API requests")
-    return found, warnings
+    return found, warnings, linked_author_emails
 
 
 def count_search(api: GitHubAPI, query: str) -> int:
@@ -595,8 +633,9 @@ def render_reports(user: dict, repositories: list[dict], activity: dict,
     owned = [r for r in repositories if r["owner"].casefold() == user["login"].casefold()]
     created_years = collections.Counter(r["created_at"][:4] for r in owned if r.get("created_at"))
     failures_label = ", ".join(repo_label(x, priv_indices) for x in failures[:12])
-    incomplete = len(failures) > 0 or len(warnings) > 0
-    status = "PARTIAL — some sources could not be fully audited" if incomplete else "COMPLETE for enumerated accessible repositories"
+    provisional_names = total.name_only_attributed
+    incomplete = len(failures) > 0 or len(warnings) > 0 or provisional_names > 0
+    status = "PARTIAL — incomplete sources or provisional identity matches" if incomplete else "COMPLETE for enumerated accessible repositories"
     generated = as_of.strftime("%Y-%m-%d %H:%M UTC")
     docs = "[Overview](./REPORT.md) · [Repositories](./repositories.md) · [Timeline](./timeline.md) · [Languages](./languages.md) · [Activity](./activity.md)"
     scope = ("All available refs in each cloned repository (branches, tags, and refs advertised by GitHub); "
@@ -604,8 +643,10 @@ def render_reports(user: dict, repositories: list[dict], activity: dict,
              "Other repositories count commits only when you are the author or co-author, "
              "unless `AUDIT_AGENT_COLLAB_REPOS=true`.")
     warning_block = ("\n**Audit gaps:** " + str(len(failures)) + " repository clone/scan failures; " +
-                     str(len(warnings)) + " discovery/API warnings. Check the [repository report](./repositories.md) "
-                     "and workflow logs. Do not treat these as complete account totals.\n") if incomplete else ""
+                     str(len(warnings)) + " discovery/API warnings; " +
+                     fmt(provisional_names) + " provisional name-only attributed commits. " +
+                     "Check the [repository report](./repositories.md) and workflow logs. " +
+                     "Name-only matches are not verified authorship.\n") if incomplete else ""
     totals = total.as_dict()
     lines = [
         "# Lifetime GitHub engineering audit", "", docs, "",
@@ -627,6 +668,9 @@ def render_reports(user: dict, repositories: list[dict], activity: dict,
             ["Directly authored", fmt(totals["direct"])],
             ["Co-authored by you (not direct author)", fmt(totals["coauthored"])],
             ["Agent-only attributed commits", fmt(totals["agent_only"])],
+            ["Commits matched by name only (provisional, owned repos)", fmt(totals["name_only_attributed"])],
+            ["Known author email aliases (count only; not published)", fmt(len(identity.emails))],
+            ["New account-linked email aliases discovered", fmt(identity.linked_commit_emails)],
             ["Direct/co-authored commits also tagged with an agent", fmt(totals["agent_assisted"])],
             ["Merge commits included", fmt(totals["merges"])],
             ["Lines added across attributed commits", fmt(totals["additions"])],
@@ -661,11 +705,13 @@ def render_reports(user: dict, repositories: list[dict], activity: dict,
         "6. **Forks** are included when available. Repo-level totals count the same SHA in two different repositories twice; "
         "the **unique attributed Git SHAs** and **unique LOC changed** fields deduplicate matching SHAs across repositories.",
         f"7. **Coverage scope:** {scope}",
-        "8. Commits on local branches never pushed to GitHub, deleted repositories, inaccessible private repositories, "
+        "8. Email aliases are automatically discovered using verified account emails and account-linked "
+        "indexed commits. Name-only matches are provisional and restricted to owned repositories.",
+        "9. Commits on local branches never pushed to GitHub, deleted repositories, inaccessible private repositories, "
         "and contributions with no identifiable Git identity cannot be recovered as exact lifetime data.",
-        "9. **Private-repository names and links** are masked in public Markdown/JSON by default. "
+        "10. **Private-repository names and links** are masked in public Markdown/JSON by default. "
         "The combined totals still include scanned private repositories.",
-        "10. GitHub's PR/issue/search indices and current follower/star counts are separate from Git commit history.",
+        "11. GitHub's PR/issue/search indices and current follower/star counts are separate from Git commit history.",
         "", "**Note:** The per-year, per-month, and per-language history tables use repository/SHA occurrences; "
         "they may include duplicate Git SHAs when a repository is forked or mirrored.", "",
         "## Explore", "", docs, "",
@@ -766,6 +812,9 @@ def render_reports(user: dict, repositories: list[dict], activity: dict,
             "account": user["login"], "coverage": "partial" if incomplete else "complete_for_enumerated_repos",
             "repositories_enumerated": len(repositories), "repositories_scanned": len(ok_repos),
             "repositories_failed": len(failures), "warnings": len(warnings),
+            "name_only_attributed_commits": provisional_names,
+            "known_email_alias_count": len(identity.emails),
+            "account_linked_commit_email_aliases_added": identity.linked_commit_emails,
             "summary": totals, "unique_attributed_sha_summary": global_unique_data,
             "owned_repositories_created_by_year": dict(created_years),
             "private_summary": private_total.as_dict(),
@@ -835,11 +884,12 @@ def main() -> int:
             all_repos[repo["full_name"].casefold()] = repo
     log(f"Account-authorized repositories: {len(all_repos)}")
     warnings: list[str] = []
-    if not emails_response and not split_aliases(os.getenv("AUDIT_EMAILS", "")):
-        warnings.append("GitHub verified emails could not be loaded and AUDIT_EMAILS is empty; past author aliases may be missed")
     if GLOBAL_DISCOVERY:
-        external, issues = discover_global_authored_repos(api, username, as_of.date())
+        external, issues, discovered_emails = discover_global_authored_repos(api, username, as_of.date())
         warnings.extend(issues)
+        added = identity.add_account_linked_commit_emails(discovered_emails)
+        log(f"Account-linked author email aliases discovered: {added} new; "
+            f"{len(identity.emails)} known total (values kept private).")
         extras = sorted(set(external) - set(all_repos))
         for full_lower in extras:
             candidate = external[full_lower]
@@ -852,6 +902,10 @@ def main() -> int:
             except APIError as exc:
                 warnings.append("Unable to fetch a discovered external repository: " + str(exc))
         log(f"After global authored-commit discovery: {len(all_repos)} repositories")
+    if (not emails_response and not me.get("email") and not identity.linked_commit_emails
+            and not split_aliases(os.getenv("AUDIT_EMAILS", ""))):
+        warnings.append("Verified account emails and indexed account-linked emails were unavailable. "
+                        "Name-only matches on owned repositories are provisional; some history may be missed.")
     repos = sorted(all_repos.values(), key=lambda r: r["full_name"].casefold())
     results = []
     log(f"Starting full Git mirror scans ({MAX_WORKERS} parallel workers)")
