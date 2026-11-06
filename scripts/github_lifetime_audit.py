@@ -306,7 +306,7 @@ class Identity:
             return True
         # GitHub's account ID is stable even if the GitHub login later changes.
         if self.account_id and re.fullmatch(
-                re.escape(self.account_id) + r"\\+[^@]+@users\\.noreply\\.github\\.com",
+                re.escape(self.account_id) + r"\+[^@]+@users\.noreply\.github\.com",
                 email):
             return True
         return False
