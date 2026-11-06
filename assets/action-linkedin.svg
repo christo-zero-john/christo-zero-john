@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 305 116" role="img" aria-label="LINKEDIN: PROFESSIONAL NETWORK">
+<rect width="305" height="116" rx="18" fill="#0E1315"/>
+<rect x="1" y="1" width="303" height="114" rx="17" fill="none" stroke="#405451" stroke-opacity=".85"/>
+<style><![CDATA[
+      @keyframes arise {0%{opacity:.02;transform:translateY(10px)} 100%{opacity:1;transform:translateY(0)}}
+      @keyframes trace {0%{stroke-dashoffset:700;opacity:.2} 100%{stroke-dashoffset:0;opacity:1}}
+      @keyframes glimmer {0%,100%{opacity:.32} 50%{opacity:.82}}
+      @keyframes growline {0%{transform:scaleX(.08)}100%{transform:scaleX(1)}}
+      @keyframes drift {0%{transform:translateX(-18px)}100%{transform:translateX(18px)}}
+      .appear {animation:arise .82s ease-out both}
+      .appear-late {animation:arise 1s .22s ease-out both}
+      .trace {stroke-dasharray:700;animation:trace 1.6s .25s ease-out both}
+      .glow {animation:glimmer 3.2s ease-in-out infinite}
+      .grow {transform-origin:left center;transform-box:fill-box;animation:growline 1.4s .16s ease-out both}
+      .float {animation:drift 8s ease-in-out infinite alternate}
+      @media(prefers-reduced-motion:reduce){*{animation:none!important}}
+    ]]></style>
+<path d="M1 83 H304" stroke="#405451" opacity=".62"/>
+<rect x="20" y="20" width="26" height="2" rx="1" fill="#C2ECD1" class="glow"/>
+<text x="58" y="27" font-size="10" fill="#7F9690" font-family="Inter, Segoe UI, Arial, sans-serif" font-weight="700" letter-spacing="1.0">02 / CONNECT</text>
+<text x="21" y="65" font-size="21" fill="#F4F7F3" font-family="Inter, Segoe UI, Arial, sans-serif" font-weight="700" letter-spacing="0.35">LINKEDIN</text>
+<text x="21" y="102" font-size="11" fill="#A9BDB5" font-family="Inter, Segoe UI, Arial, sans-serif" font-weight="500" letter-spacing="0.45">PROFESSIONAL NETWORK</text>
+<circle cx="279" cy="56" r="16" fill="#121A1B" stroke="#405451"/>
+<text x="279" y="63" font-size="22" fill="#C2ECD1" font-family="Inter, Segoe UI, Arial, sans-serif" font-weight="650" text-anchor="middle">↗</text>
+<path d="M27 6 H120" fill="none" class="trace" stroke="#C2ECD1" stroke-opacity=".38"/>
+</svg>
