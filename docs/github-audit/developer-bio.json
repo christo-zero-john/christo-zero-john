@@ -1,0 +1,68 @@
+{
+  "schema_version": 1,
+  "note": "Self-reported public professional information; edit this file when details change. Runtime GitHub metrics are independently generated.",
+  "name": "Christo John",
+  "role": "AI Product Engineer",
+  "headline": "Design-minded full-stack engineer building applied AI products, automation, data platforms, and production web experiences.",
+  "about": "I build both the product experience and the systems behind it: UI, backend, data models, integrations, infrastructure, and AI-assisted workflows.",
+  "portfolio": "https://tesnic.vercel.app",
+  "linkedin": "https://www.linkedin.com/in/christo-john-kalapurackal/",
+  "email": "10.christojohn@gmail.com",
+  "specializations": [
+    "AI product engineering",
+    "Full-stack product development",
+    "UI and interaction design",
+    "Applied AI and automation",
+    "Cloud systems and integrations"
+  ],
+  "primary_stack": [
+    "Next.js",
+    "Supabase",
+    "Figma",
+    "Claude Code",
+    "Codex"
+  ],
+  "other_stack": [
+    "TypeScript",
+    "JavaScript",
+    "React",
+    "Tailwind CSS",
+    "Python",
+    "Django",
+    "PostgreSQL",
+    "AWS",
+    "Docker",
+    "Vercel",
+    "Playwright",
+    "Remotion",
+    "FFmpeg"
+  ],
+  "experience": [
+    {
+      "role": "Product engineering and UI design",
+      "organization": "Neuegrid Design Studio",
+      "status": "previously"
+    },
+    {
+      "role": "Full-stack development",
+      "organization": "Tomatrix Technologies",
+      "status": "previously"
+    }
+  ],
+  "education": [
+    {
+      "qualification": "Master of Computer Applications (MCA)",
+      "period": "2025–2027",
+      "status": "pursuing"
+    },
+    {
+      "qualification": "Bachelor of Computer Applications (BCA)",
+      "period": "2022–2025",
+      "status": "completed"
+    }
+  ],
+  "featured_public_repositories": [
+    "christo-zero-john/virtual-background-photobooth"
+  ],
+  "disclosure": "Biographical information is curated from the existing public profile README and user-supplied descriptions; repository statistics and language measurements are calculated from Git history. No inference of age, address, employer dates or credentials."
+}
