@@ -166,8 +166,56 @@ class GitHubAPI:
             page += 1
 
 
+LINGUIST_INDEX_PATH = Path(os.getenv("AUDIT_LINGUIST_INDEX", "/tmp/github-linguist-languages.json"))
+if LINGUIST_INDEX_PATH.is_file():
+    LINGUIST_INDEX = json.loads(LINGUIST_INDEX_PATH.read_text(encoding="utf-8"))
+else:
+    LINGUIST_INDEX = None
+
+
+def excluded_source_path(path: str) -> bool:
+    parts = path.casefold().replace("\\\\", "/").split("/")
+    return (
+        any(x in parts for x in ("node_modules", ".next", "dist", "build", "vendor",
+                                  "vendors", "third_party", "third-party",
+                                  "generated", "coverage", ".venv", "venv", "target",
+                                  "__pycache__", ".turbo", "out"))
+        or parts[-1].endswith((".min.js", ".min.css", ".map", ".lock"))
+        or parts[-1] in ("package-lock.json", "pnpm-lock.yaml", "yarn.lock")
+    )
+
+
+def linguist_path_language(path: str) -> tuple[str, bool] | None:
+    # Official Linguist registry, with *uncertain* ambiguous filenames explicitly
+    # excluded from strict code-LOC totals. Content-level detection would require
+    # analyzing the blob at each historical commit.
+    if not LINGUIST_INDEX:
+        return None
+    filename = path.replace("\\\\", "/").rsplit("/", 1)[-1]
+    options = LINGUIST_INDEX.get("filenames", {}).get(filename)
+    if not options:
+        ext_map = LINGUIST_INDEX.get("extensions", {})
+        lower = filename.casefold()
+        matches = [ext for ext in ext_map if lower.endswith(ext)]
+        options = ext_map[max(matches, key=len)] if matches else []
+    dedup = {(x.get("name"), x.get("type")) for x in options}
+    if len(dedup) == 1:
+        name, kind = next(iter(dedup))
+        if excluded_source_path(path):
+            return "Generated / vendored source", False
+        return name, kind in ("programming", "markup")
+    if len(dedup) > 1:
+        return "Ambiguous Linguist filename", False
+    return "Unclassified by Linguist filename metadata", False
+
+
 def language_of(path: str) -> tuple[str, bool]:
+    authoritative = linguist_path_language(path)
+    if authoritative is not None:
+        return authoritative
     name = path.replace("\\", "/").rsplit("/", 1)[-1]
+    if excluded_source_path(path):
+        return "Generated / vendored source", False
     if name in SPECIAL_CODE:
         return SPECIAL_CODE[name], True
     ext = Path(name).suffix.casefold()
@@ -822,7 +870,9 @@ def render_reports(user: dict, repositories: list[dict], activity: dict,
     (REPORT_DIR / "languages.md").write_text("\n".join([
         "# Languages and file-history classifications", "", docs, "",
         "## Historical changed lines by filename", "",
-        "This classifies files modified in attributed commits using filename extensions. "
+        "This classifies changed filenames using the official GitHub Linguist language "
+        "definitions for filename and extension. Ambiguous classifications are kept separate. "
+        "Historical blobs are not fed through Linguist's full content parser. "
         "Documentation/configuration rows are part of the overall LOC total but not the code-only subset.", "",
         md_table(["Classification", "Added", "Deleted", "Changed"], [
             [lang, fmt(m["additions"]), fmt(m["deletions"]), fmt(m["lines_changed"])]
@@ -942,6 +992,8 @@ def main() -> int:
         raise RuntimeError("Audit timeout/query-limit settings must be positive and realistic")
     from concurrent.futures import ThreadPoolExecutor, as_completed
     as_of = now_utc()
+    if LINGUIST_INDEX is None:
+        raise RuntimeError("Official GitHub Linguist language registry missing. Run build_linguist_index.py first.")
     api = GitHubAPI(TOKEN)
     me = api.request("/user")
     username = me.get("login", "")
