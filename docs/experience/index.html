@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Christo John — AI Product Engineer. An evidence-backed engineering record and selected work.">
+  <title>Christo John — Engineering Index</title>
+  <style>
+    :root{color-scheme:dark;--background:#0b1111;--surface:#111b1b;--surface-hover:#162222;--border:#2b3934;--ink:#f2f1e9;--mute:#a0b0a5;--quiet:#7d9284;--accent:#c0e3ce}
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;background:var(--background);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
+    body:before{content:"";position:absolute;top:0;left:0;right:0;height:560px;background:radial-gradient(ellipse 52% 57% at 75% 12%,rgba(112,171,140,.075),transparent);z-index:-1;pointer-events:none}
+    a{color:inherit;text-decoration:none}button{font:inherit}
+    :focus-visible{outline:2px solid var(--accent);outline-offset:5px;border-radius:3px}
+    .wrap{width:min(1140px,calc(100% - 72px));margin-inline:auto}
+    .top{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);padding:25px 0;gap:24px}
+    .brand{font-size:14px;letter-spacing:.09em;font-weight:750}.brand em{font-style:normal;color:var(--accent)}
+    .topnav{display:flex;gap:35px;font-size:13px;font-weight:600;color:var(--mute)}
+    .topnav a:hover,.under:hover{color:var(--accent)}
+    .hero{padding:105px 0 92px;position:relative}
+    .eyebrow,.section-kicker{font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--accent)}
+    h1{font-size:clamp(54px,8.5vw,108px);line-height:1.01;max-width:1000px;letter-spacing:-.075em;margin:28px 0 25px;font-weight:720}
+    h1 .outline{color:var(--accent)}
+    .intro{font-size:18px;line-height:1.8;color:var(--mute);max-width:670px;margin:0}
+    .hero-actions{display:flex;gap:20px;align-items:center;margin-top:40px;flex-wrap:wrap}
+    .main-cta{display:inline-flex;gap:24px;align-items:center;background:var(--accent);border:1px solid var(--accent);color:#0b1913;padding:17px 22px;font-size:13px;font-weight:750;transition:background .22s ease,transform .22s ease}
+    .main-cta:hover{background:#e1f4e6;transform:translateY(-2px)}
+    .under{font-size:13px;font-weight:650;color:var(--mute);transition:color .2s ease}
+    .section-heading{display:flex;justify-content:space-between;align-items:end;gap:20px;margin:0 0 30px}
+    h2{font-size:clamp(30px,4vw,51px);letter-spacing:-.055em;font-weight:650;margin:10px 0 0}
+    .minor{color:var(--quiet);font-size:12px}
+    .stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid var(--border);border-bottom:1px solid var(--border);margin-bottom:28px}
+    .stat{padding:30px 25px 35px 0;position:relative;min-width:0}
+    .stat:not(:first-child){padding-left:26px;border-left:1px solid var(--border)}
+    .stat-label{color:var(--mute);text-transform:uppercase;letter-spacing:.11em;font-size:11px;font-weight:750;min-height:27px}
+    .stat-value{font-size:clamp(31px,4.5vw,57px);font-weight:720;letter-spacing:-.065em;line-height:1.2;font-variant-numeric:tabular-nums}
+    .stat:nth-child(2) .stat-value{color:var(--accent)}
+    .stat-explain{color:var(--quiet);font-size:12px;margin-top:11px;line-height:1.5}
+    .data-line{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;color:var(--mute);font-size:12px}
+    .data-line button{border:0;background:none;padding:0;color:var(--accent);font-weight:650;cursor:pointer}
+    .langs{margin:58px 0 112px}
+    .langs-caption{display:flex;justify-content:space-between;align-items:center;margin-bottom:17px;gap:15px;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--mute)}
+    .language-track{height:9px;display:flex;overflow:hidden;gap:3px}
+    .language-track span{height:100%;display:block}
+    .language-key{display:flex;gap:28px;flex-wrap:wrap;margin-top:20px}
+    .language-key small{display:flex;align-items:center;gap:8px;color:var(--mute);font-size:12px}
+    .language-key i{width:9px;height:9px;display:inline-block}
+    .filter{display:flex;gap:7px;flex-wrap:wrap}
+    .filter button{padding:10px 15px;background:transparent;border:1px solid transparent;color:var(--quiet);font-size:12px;cursor:pointer;border-radius:3px;transition:color .18s,border .18s}
+    .filter button[aria-pressed=true]{color:var(--ink);border-color:var(--border);background:var(--surface)}
+    .filter button:hover{color:var(--accent)}
+    .worklist{margin-top:24px;border-top:1px solid var(--border)}
+    .work{display:grid;grid-template-columns:1fr auto;align-items:center;gap:30px;padding:37px 28px;border-bottom:1px solid var(--border);transition:background .2s ease,color .2s ease}
+    .work:hover{background:var(--surface-hover)}
+    .work[hidden]{display:none}
+    .work-type{font-size:11px;letter-spacing:.15em;color:var(--accent);font-weight:700}
+    .work-title{font-size:clamp(21px,3vw,34px);font-weight:650;letter-spacing:-.035em;margin:12px 0 8px}
+    .work-desc{color:var(--mute);font-size:14px;line-height:1.6;margin:0}
+    .work-metrics{display:flex;gap:28px;align-items:center}
+    .work-metrics div{min-width:85px}
+    .work-metrics strong{display:block;font-size:19px;letter-spacing:-.04em;font-variant-numeric:tabular-nums}
+    .work-metrics small{display:block;color:var(--quiet);font-size:10px;letter-spacing:.08em;text-transform:uppercase;margin-top:6px}
+    .work-arrow{font-size:25px;color:var(--accent);align-self:center}
+    .notes{padding:35px 0 90px;display:flex;gap:20px;justify-content:space-between;align-items:center;flex-wrap:wrap}
+    .notes p{max-width:680px;color:var(--mute);font-size:13px;line-height:1.8}
+    footer{border-top:1px solid var(--border);padding:30px 0 55px;display:flex;justify-content:space-between;gap:25px;color:var(--quiet);font-size:12px;flex-wrap:wrap}
+    .dialog{border:1px solid #405a4b;border-radius:6px;background:#131f1b;color:var(--ink);width:min(600px,calc(100% - 24px));padding:32px;box-shadow:0 30px 120px #000b}
+    .dialog::backdrop{background:rgba(0,0,0,.72)}
+    .dialog h3{font-size:26px;letter-spacing:-.04em;margin:0 0 18px}
+    .dialog p{color:var(--mute);line-height:1.75}
+    .close{float:right;cursor:pointer;background:transparent;border:1px solid var(--border);color:var(--ink);border-radius:3px;width:34px;height:34px}
+    .empty{color:var(--mute);padding:30px 0}
+    @media(max-width:850px){
+      .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .stat:nth-child(3){border-left:0;padding-left:0;border-top:1px solid var(--border)}
+      .stat:nth-child(4){border-top:1px solid var(--border)}
+      .work{grid-template-columns:1fr}
+      .work-metrics{justify-content:flex-start}
+      .section-heading{align-items:start;flex-direction:column}
+    }
+    @media(max-width:520px){
+      .wrap{width:min(100% - 36px,1140px)}
+      .hero{padding:70px 0 60px}h1{letter-spacing:-.055em}
+      .topnav{gap:16px}.topnav a:last-child{display:none}
+      .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .stat{padding:24px 8px 25px 0!important}
+      .stat:nth-child(even){padding-left:15px!important}
+      .stat-value{font-size:35px}
+      .work{padding:27px 0}
+      .work-metrics{gap:20px}.work-metrics div{min-width:0}
+      .langs{margin-bottom:70px}
+    }
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{transition:none!important;animation:none!important}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="top">
+      <a href="#" class="brand">CHRISTO <em>JOHN</em></a>
+      <nav class="topnav" aria-label="Primary">
+        <a href="#work">Projects</a>
+        <a href="#record">Engineering record</a>
+        <a href="https://tesnic.vercel.app" target="_blank" rel="noopener noreferrer">Portfolio ↗</a>
+      </nav>
+    </header>
+    <main>
+      <section class="hero" aria-labelledby="head">
+        <span class="eyebrow">AI PRODUCT ENGINEER / INDEPENDENT BUILDER</span>
+        <h1 id="head">Design with intent.<br><span class="outline">Engineer for reality.</span></h1>
+        <p class="intro">I build product experiences across design, full-stack engineering and applied AI—from the first interaction to the last data integration.</p>
+        <div class="hero-actions">
+          <a class="main-cta" href="#work">Explore selected work <span aria-hidden="true">↘</span></a>
+          <a class="under" href="https://github.com/christo-zero-john" target="_blank" rel="noopener noreferrer">GitHub profile ↗</a>
+        </div>
+      </section>
+
+      <section id="record" aria-labelledby="record-title">
+        <div class="section-heading">
+          <div><span class="section-kicker">01 / RECORD</span><h2 id="record-title">Measured, not estimated.</h2></div>
+          <span class="minor" id="coverage">Loading audit snapshot…</span>
+        </div>
+        <div class="stats" id="stats" aria-live="off"></div>
+        <div class="data-line">
+          <span id="updated">Derived from account-linked Git history. No inherited fork attribution.</span>
+          <button type="button" id="explain">Read the attribution methodology ↗</button>
+        </div>
+        <section class="langs" aria-label="Current repository languages">
+          <div class="langs-caption"><span>Language landscape</span><span>GitHub Linguist / current snapshot / all authors</span></div>
+          <div class="language-track" id="lang-track" aria-hidden="true"></div>
+          <div class="language-key" id="lang-key"></div>
+        </section>
+      </section>
+
+      <section id="work" aria-labelledby="work-title">
+        <div class="section-heading">
+          <div><span class="section-kicker">02 / SELECTED PUBLIC WORK</span><h2 id="work-title">Proof in the projects.</h2></div>
+          <div class="filter" role="group" aria-label="Filter projects">
+            <button type="button" data-filter="all" aria-pressed="true">All work</button>
+            <button type="button" data-filter="product" aria-pressed="false">Product</button>
+            <button type="button" data-filter="systems" aria-pressed="false">Systems</button>
+            <button type="button" data-filter="experimental" aria-pressed="false">Experimental</button>
+          </div>
+        </div>
+        <div class="worklist" id="project-list"><p class="empty">Loading projects…</p></div>
+        <div class="notes">
+          <p>Project metrics represent attributed Git commits across accessible refs. Code lines changed = additions plus deletions, not unique original code. The shown duration is the elapsed calendar span between first and last qualifying commits—not time worked.</p>
+          <a class="under" href="https://github.com/christo-zero-john/christo-zero-john/blob/main/docs/github-audit/REPORT.md" target="_blank" rel="noopener noreferrer">Read the full evidence ↗</a>
+        </div>
+      </section>
+    </main>
+    <footer>
+      <span>Christo John / AI Product Engineer</span>
+      <span>Built with restraint. Audited from source.</span>
+      <a class="under" href="mailto:10.christojohn@gmail.com">Get in touch ↗</a>
+    </footer>
+  </div>
+  <dialog id="methodology" class="dialog" aria-labelledby="dialog-title">
+    <button class="close" type="button" id="dismiss" aria-label="Close">×</button>
+    <h3 id="dialog-title">How the numbers are defined.</h3>
+    <p>Attributed commits use Christo-linked author/co-author identities. Third-party upstream work in forks and standalone AI-agent commits without the owner's identity are excluded. Unknown-email name matches can be provisional only in owned non-fork repositories.</p>
+    <p>All accessible Git refs are scanned. Cross-repository identical SHAs are deduplicated in lifetime totals. Code changes are historical additions plus deletions in qualifying non-merge commits, not distinct lines personally invented. Current language proportions include all authors.</p>
+    <p><a class="under" href="https://github.com/christo-zero-john/christo-zero-john/blob/main/docs/github-audit/APPENDIX.md" target="_blank" rel="noopener noreferrer">Full methodology appendix ↗</a></p>
+  </dialog>
+
+  <script>
+    "use strict";
+    const fmt = value => new Intl.NumberFormat("en-US").format(Number(value) || 0);
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const $ = sel => document.querySelector(sel);
+    const create = (tag, cls, txt) => {
+      const el = document.createElement(tag);
+      if (cls) el.className = cls;
+      if (txt !== undefined) el.textContent = txt;
+      return el;
+    };
+    const category = value => /INTERACTIVE MEDIA|PRODUCT/.test(value) ? "product"
+      : /FULL-STACK|SYSTEMS/.test(value) ? "systems" : "experimental";
+    const palette = ["#bedbc8","#8db5a5","#669586","#477569","#315a50"];
+    const animate = (node, end) => {
+      if (reduced) { node.textContent = fmt(end); return; }
+      const begin = performance.now(), duration = 850;
+      function frame(now) {
+        const progress = Math.min(1, (now-begin)/duration);
+        const eased = 1-Math.pow(1-progress,3);
+        node.textContent = fmt(Math.round(end*eased));
+        if (progress<1) requestAnimationFrame(frame);
+      }
+      requestAnimationFrame(frame);
+    };
+    function stats(data) {
+      const cards = [
+        ["Repositories",data.repositories,"accessible Git histories"],
+        ["Attributed commits",data.commits,"deduplicated Git SHAs"],
+        ["Code lines changed",data.codeLinesChanged,"cumulative additions + deletions"],
+        ["AI-assisted",data.agentAssisted,"your commits with agent metadata"]
+      ];
+      const target = $("#stats"); target.replaceChildren();
+      const values = [];
+      for (const [name,n,desc] of cards) {
+        const card=create("div","stat");
+        card.append(create("div","stat-label",name));
+        const value=create("div","stat-value",reduced?fmt(n):"0");
+        card.append(value,create("div","stat-explain",desc));
+        target.append(card); values.push([value,n]);
+      }
+      if (!reduced && "IntersectionObserver" in window) {
+        const watcher = new IntersectionObserver(entries=>{
+          if (entries.some(e=>e.isIntersecting)) {
+            watcher.disconnect(); values.forEach(([el,n])=>animate(el,n));
+          }
+        },{threshold:0.35});
+        watcher.observe(target);
+      } else values.forEach(([el,n])=>el.textContent=fmt(n));
+      const updated = new Date(data.generated);
+      $("#updated").textContent="Updated "+updated.toLocaleDateString("en-GB",
+        {day:"2-digit",month:"short",year:"numeric",timeZone:"UTC"})+
+        " · "+ (data.coverage==="partial"?"Partial coverage":"Complete for enumerated repositories");
+      $("#coverage").textContent=data.coverage==="partial"?"Partial coverage / details in audit":"Account-linked Git history";
+      const langs=data.languages||[];
+      const sum=langs.reduce((x,y)=>x+Number(y.bytes||0),0);
+      $("#lang-track").replaceChildren(); $("#lang-key").replaceChildren();
+      langs.forEach((lang,i)=>{
+        const portion=sum>0?Math.round(lang.bytes/sum*1000)/10:0;
+        const segment=create("span"); segment.style.width=portion+"%"; segment.style.background=palette[i%palette.length];
+        $("#lang-track").append(segment);
+        const item=create("small"),dot=create("i");
+        dot.style.background=palette[i%palette.length];
+        item.append(dot,document.createTextNode(lang.name+" · "+portion.toFixed(1)+"%"));
+        $("#lang-key").append(item);
+      });
+    }
+    function projectRows(projects) {
+      const list=$("#project-list");list.replaceChildren();
+      for (const project of projects) {
+        const row=create("a","work");row.href=project.url;row.target="_blank";
+        row.rel="noopener noreferrer";row.dataset.kind=category(project.category);
+        row.setAttribute("aria-label","Open "+project.name+" repository");
+        const left=create("div");
+        left.append(create("div","work-type",project.category));
+        left.append(create("div","work-title",project.name));
+        left.append(create("p","work-desc",project.description));
+        const right=create("div","work-metrics");
+        for (const [label,value] of [
+          ["Commits",fmt(project.commits)],
+          ["Code lines Δ",fmt(project.codeLinesChanged)],
+          ["Commit span",project.span]
+        ]) {
+          const col=create("div");
+          col.append(create("strong","",value),create("small","",label));right.append(col);
+        }
+        right.append(create("span","work-arrow","↗"));
+        row.append(left,right);list.append(row);
+      }
+      if(!projects.length) list.append(create("p","empty","No public project metrics available."));
+    }
+    document.querySelectorAll("[data-filter]").forEach(btn => btn.addEventListener("click",()=>{
+      const filter=btn.dataset.filter;
+      document.querySelectorAll("[data-filter]").forEach(b=>
+        b.setAttribute("aria-pressed",String(b===btn)));
+      document.querySelectorAll(".work").forEach(row=>
+        row.hidden=filter!=="all"&&row.dataset.kind!==filter);
+    }));
+    $("#explain").addEventListener("click",()=>$("#methodology").showModal());
+    $("#dismiss").addEventListener("click",()=>$("#methodology").close());
+    $("#methodology").addEventListener("click",e=>{if(e.target===e.currentTarget)e.target.close();});
+    fetch("./data.json",{cache:"no-store"}).then(response=>{
+      if(!response.ok) throw new Error("Data unavailable");
+      return response.json();
+    }).then(data=>{
+      stats(data); projectRows(data.projects||[]);
+    }).catch(()=>{
+      $("#stats").textContent="Metrics could not be loaded. View the source audit on GitHub.";
+      $("#project-list").textContent="Project data unavailable. Please check that the generated data.json was published.";
+      $("#coverage").textContent="Data unavailable";
+    });
+  </script>
+</body>
+</html>
