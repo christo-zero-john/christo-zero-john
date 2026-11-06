@@ -45,7 +45,7 @@ DISCOVERY_MAX_QUERIES = int(os.getenv("AUDIT_DISCOVERY_MAX_QUERIES", "120"))
 SHOW_PRIVATE_NAMES = os.getenv("AUDIT_SHOW_PRIVATE_NAMES", "false").lower() == "true"
 GLOBAL_DISCOVERY = os.getenv("AUDIT_GLOBAL_DISCOVERY", "true").lower() == "true"
 # Explicit, repo-and-SHA-specific user approvals; never infer agent ownership from repo ownership.
-APPROVED_AGENT_COMMITS = split_env_agent_approvals = {
+APPROVED_AGENT_COMMITS = {
     part.strip().casefold() for part in re.split(r"[,;\n]", os.getenv("AUDIT_APPROVED_AGENT_COMMITS", ""))
     if part.strip()
 }
@@ -196,8 +196,13 @@ def linguist_path_language(path: str) -> tuple[str, bool] | None:
     if not options:
         ext_map = LINGUIST_INDEX.get("extensions", {})
         lower = filename.casefold()
-        matches = [ext for ext in ext_map if lower.endswith(ext)]
-        options = ext_map[max(matches, key=len)] if matches else []
+        # Try actual suffixes from longest to shortest instead of checking every
+        # Linguist extension for every Git-history file (large repositories).
+        options = []
+        for index, char in enumerate(lower):
+            if char == "." and lower[index:] in ext_map:
+                options = ext_map[lower[index:]]
+                break
     dedup = {(x.get("name"), x.get("type")) for x in options}
     if len(dedup) == 1:
         name, kind = next(iter(dedup))
@@ -258,11 +263,7 @@ class Metrics:
 
 
 class Identity:
-    """Match GitHub-linked emails globally and names provisionally in owned repos.
-
-    Author names are not unique. Name-only matching is restricted to personal repos
-    and reported separately as provisional rather than verified attribution.
-    """
+    """Use only verified/linked emails for inclusion; keep name-only as excluded evidence."""
     def __init__(self, username: str, user: dict, emails: list[str]):
         self.username = username
         self.names = split_aliases(os.getenv("AUDIT_NAMES", "")) | {username.casefold()}
@@ -986,6 +987,10 @@ def update_readme(generated: str, incomplete: bool):
 def main() -> int:
     if shutil.which("git") is None:
         raise RuntimeError("Git executable not installed")
+    invalid_approvals = [item for item in APPROVED_AGENT_COMMITS
+                         if not re.fullmatch(r"[a-z0-9_.-]+/[a-z0-9_.-]+@[0-9a-f]{40}", item)]
+    if invalid_approvals:
+        raise RuntimeError("AUDIT_APPROVED_AGENT_COMMITS must use owner/repo@40-char-sha entries.")
     if not 1 <= MAX_WORKERS <= 12:
         raise RuntimeError("AUDIT_WORKERS must be between 1 and 12")
     if CLONE_TIMEOUT < 30 or LOG_TIMEOUT < 30 or DISCOVERY_MAX_QUERIES < 5:
