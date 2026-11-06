@@ -1,17 +1,10 @@
-name: Test premium profile dashboard
+name: Legacy (manual only) — Test premium profile dashboard
 
 on:
-  pull_request:
-    paths:
-      - 'README.md'
-      - 'assets/profile-cover.svg'
-      - 'assets/lifetime-engineering.svg'
-      - 'assets/language-landscape.svg'
-      - 'scripts/render_profile_dashboard.py'
-      - 'scripts/github_lifetime_audit.py'
-      - 'tests/test_render_profile_dashboard.py'
-      - '.github/workflows/test-premium-profile.yml'
   workflow_dispatch:
+
+# Legacy visual renderer retained for reference only. Current profile uses
+# test-refined-profile.yml and is published by the lifetime audit workflow.
 
 permissions:
   contents: read
