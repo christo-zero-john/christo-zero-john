@@ -10,7 +10,7 @@
 <text x="1152" y="113" font-size="17" fill="#F0F4EE" font-weight="550" font-family="Inter, Segoe UI, Arial, sans-serif" text-anchor="end">37.7%</text>
 <text x="50" y="164" font-size="17" fill="#F0F4EE" font-weight="550" font-family="Inter, Segoe UI, Arial, sans-serif">TypeScript</text>
 <rect x="270" y="148" width="666" height="14" rx="7" fill="#556863" opacity=".30"/>
-<rect x="270" y="148" width="549" height="14" rx="7" fill="#C2ECD1" opacity="0.88"/>
+<rect x="270" y="148" width="548" height="14" rx="7" fill="#C2ECD1" opacity="0.88"/>
 <text x="1152" y="164" font-size="17" fill="#F0F4EE" font-weight="550" font-family="Inter, Segoe UI, Arial, sans-serif" text-anchor="end">31.1%</text>
 <text x="50" y="215" font-size="17" fill="#F0F4EE" font-weight="550" font-family="Inter, Segoe UI, Arial, sans-serif">HTML</text>
 <rect x="270" y="199" width="666" height="14" rx="7" fill="#556863" opacity=".30"/>
@@ -19,7 +19,7 @@
 <text x="50" y="266" font-size="17" fill="#F0F4EE" font-weight="550" font-family="Inter, Segoe UI, Arial, sans-serif">JavaScript</text>
 <rect x="270" y="250" width="666" height="14" rx="7" fill="#556863" opacity=".30"/>
 <rect x="270" y="250" width="174" height="14" rx="7" fill="#C2ECD1" opacity="0.64"/>
-<text x="1152" y="266" font-size="17" fill="#F0F4EE" font-weight="550" font-family="Inter, Segoe UI, Arial, sans-serif" text-anchor="end">9.9%</text>
+<text x="1152" y="266" font-size="17" fill="#F0F4EE" font-weight="550" font-family="Inter, Segoe UI, Arial, sans-serif" text-anchor="end">9.8%</text>
 <text x="50" y="317" font-size="17" fill="#F0F4EE" font-weight="550" font-family="Inter, Segoe UI, Arial, sans-serif">CSS</text>
 <rect x="270" y="301" width="666" height="14" rx="7" fill="#556863" opacity=".30"/>
 <rect x="270" y="301" width="52" height="14" rx="7" fill="#C2ECD1" opacity="0.52"/>
