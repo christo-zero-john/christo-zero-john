@@ -27,7 +27,7 @@ The five project names above are public and owned by the account in the audit. T
 
 ## Creative direction
 
-**Editorial evidence, with a pulse.** The visual is a large-format typographic publication set in motion. A vertical date rule becomes the timeline spine; repository rows become rhythmic printed evidence; one field of type expands to reveal the lifetime number. The camera stays steady. At most one scene uses a perspective move. All transitions have a physical cause: a printed line continues, a ledger scrolls, or a crop becomes the next frame.
+**Editorial evidence, with a pulse.** The visual is a large-format typographic publication set in motion. A vertical date rule becomes the timeline spine; repository rows become rhythmic printed evidence; one field of type expands to reveal the lifetime number. The camera stays steady. Shot changes are clean editorial cuts placed after each reading hold; their contrast comes from alternating warm paper and dark graphite.
 
 The design uses near-black graphite `#11171A`, warm paper `#F3F1EA`, muted steel `#7C8A89`, and one restrained citron `#D3EE8D`. Titles use a contemporary grotesk with tight spacing; numbers and labels use a clear monospaced face. Contrast is high, ornament sparse, texture very fine. The accent appears only on a date marker, one active repository, and the final numerical reveal.
 
@@ -43,9 +43,9 @@ The film is 1,260 frames. Each segment has one primary movement and a genuine st
 | 2 | 135–315 / 4.5–10.5s | Vertical timeline travels through 2023, 2024, 2025, 2026; motion accelerates, then brakes on the present. | 05 APR 2023 → 06 NOV 2026 | Four understated ticks with a short low-frequency lift into the brake. |
 | 3 | 315–555 / 10.5–18.5s | Public repository names enter as a typeset index. Three rows take focus in turn; remaining rows give breadth, not clutter. | SELECTED WORK / five audit-sourced repository names and their per-repo attributed commits | Dry paper/machined texture, a single transition swell. |
 | 4 | 555–735 / 18.5–24.5s | The index resolves into three stacked disciplines. Each line arrives on a measured beat. | DESIGN THINKING / FULL STACK DEVELOPMENT / PLANNING → DEPLOYMENT | Percussive pulse gains weight; leave the third line exposed. |
-| 5 | 735–870 / 24.5–29s | One compact tool line traces a workflow from design to engineering. | FIGMA · NEXT.JS · SUPABASE · VS CODE · CLAUDE · CODEX | Softer rhythmic detail; no six identical sound hits. |
+| 5 | 735–870 / 24.5–29s | A six-entry typographic tool index builds in two columns. | FIGMA · NEXT.JS · SUPABASE · VS CODE · CLAUDE · CODEX | Softer rhythmic detail; no six identical sound hits. |
 | 6 | 870–1080 / 29–36s | Ledger rows compress into a fine line; it opens into `15,882`, with the caption locked below. The number rests for more than one second. | 15,882 / UNIQUE ATTRIBUTED COMMITS / 125 REPOSITORIES SCANNED | Main musical arrival, one physical impact, long harmonic tail. |
-| 7 | 1080–1260 / 36–42s | Camera backs away from the number to reveal a final, calm typographic portrait. Hold the name through the last 1.5s. | CHRISTO JOHN / ASPIRING AI PRODUCT ENGINEER | Percussion drops; warm chord and controlled decay. |
+| 7 | 1080–1260 / 36–42s | A clean cut returns to a calm typographic portrait. Hold the name through the last 1.5s. | CHRISTO JOHN / ASPIRING AI PRODUCT ENGINEER | Percussion drops; warm chord and controlled decay. |
 
 No spoken voice is required. The words are the script. The number and name are the two deliberate memory points. Source time and account link can live in the post caption, keeping the frame clean.
 
@@ -55,7 +55,7 @@ No spoken voice is required. The words are the script. The number and name are t
 - `timeline-travel`: adapt the accelerate/brake grammar to a vertical year spine; dates are the audit's dates.
 - `document-typewriter-reveal`: use only the disciplined reveal grammar for the real audit-derived repository index, without imitating a product UI.
 - `paper-title-card`: adapt the word-by-word compression to the three disciplines, with portrait type scale.
-- `ui-to-brand-morph`: adapt only the causal compression/reveal grammar for the number-to-name closing sequence; no invented company logo.
+- `ui-to-brand-morph`: adapt only the compression/reveal grammar for the numerical reveal; no invented company logo.
 
 Each selected card must be checked against its Gallery record and accurate demo source before implementation. Portrait adaptation and render inspection govern the final timing.
 

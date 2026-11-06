@@ -4,9 +4,11 @@
   "private": true,
   "scripts": {
     "check": "tsc --noEmit",
-    "still": "remotion still src/index.ts BuildLogFilm",
-    "render": "remotion render src/index.ts BuildLogFilm out/build-log-instagram.mp4",
-    "studio": "remotion studio src/index.ts"
+    "still": "remotion still src/index.tsx BuildLogFilm",
+    "render": "remotion render src/index.tsx BuildLogFilm out/build-log-instagram.mp4 --codec=h264 --crf=17",
+    "render:nobgm": "remotion render src/index.tsx BuildLogFilm out/build-log-instagram-no-music.mp4 --props=props-nobgm.json --codec=h264 --crf=17",
+    "cover": "remotion still src/index.tsx BuildLogCover out/build-log-cover.png",
+    "studio": "remotion studio src/index.tsx"
   },
   "dependencies": {
     "@fontsource-variable/instrument-sans": "5.2.7",
