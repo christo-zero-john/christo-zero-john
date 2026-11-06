@@ -5,22 +5,22 @@ This is the reference for every expandable Info cell in the generated audit tabl
 <a id="identity"></a>
 ## Authorship and confirmed Git identities
 
-Direct authorship needs a known account-linked email plus Christo in the author name or email local-part, or the immutable GitHub numeric no-reply account ID. A name/email fragment containing Christo under an unknown email in a personally owned NONFORK repository is counted separately as PROVISIONAL (and the audit remains PARTIAL). Name-only upstream fork commits never qualify. Real email values remain private.
+Direct authorship requires a Christo marker in the Git author name or email local-part plus exact account-linked email evidence, or an immutable numeric GitHub account ID in the no-reply address. Unknown-email Christo matches in owned NONFORK repositories are counted as PROVISIONAL, clearly labeled in the totals and coverage. An upstream fork does not qualify by matching name alone. The email list is not published.
 
 <a id="coauthors"></a>
 ## Co-authored Git commits
 
-A commit authored by someone else qualifies as co-authored by the developer only when a Co-authored-by trailer passes the same Christo policy, including clearly marked provisional matches on owned nonforks. The same Git SHA counts once even when several qualifying trailers occur. An unrelated agent named in a co-author trailer does not make that commit yours.
+A commit authored by someone else qualifies as co-authored by the developer only when its Co-authored-by trailer passes the same Christo identity policy: known linked email plus Christo marker, or a clearly provisional match in an owned nonfork repository. The same Git SHA counts once even when several qualifying trailers occur. An unrelated agent named in a co-author trailer does not make that commit yours.
 
 <a id="agents"></a>
 ## AI-assisted versus agent-authored commits
 
-An agent-assisted commit is a human-authored or human-coauthored commit also featuring detectable agent metadata. This is a descriptive flag, not an extra commit. Agent-only commits are excluded unless the owner actually appears as the Git author or coauthor. A Claude/Codex trailer only flags an already matching owner commit; it never credits an unrelated upstream commit. Claude/Codex contribution trailers in somebody else's upstream history are not proof of ownership. AI-written code without identifiable Git metadata cannot be measured exactly.
+An agent-assisted commit is a human-authored or human-coauthored commit also featuring detectable agent metadata. This is a descriptive flag, not an extra commit. Standalone agent-only commits are never credited without the developer appearing as an author/coauthor. Claude/Codex coauthors only FLAG an already qualifying developer commit and are not a separate credit. Claude/Codex contribution trailers in somebody else's upstream history are not proof of ownership. AI-written code without identifiable Git metadata cannot be measured exactly.
 
 <a id="forks"></a>
 ## Forked repositories and upstream ancestry
 
-A fork includes inherited upstream history. Mere possession of a fork does not transfer author credit. Each contributed fork commit must pass verified owner authorship or coauthorship. Matching an upstream author name alone never qualifies. The audit separately checks a fork default branch against its parent using GitHub's compare API. Ahead 0 means no fork-only commits on that default branch versus the upstream comparison; other branches can diverge. Behind measures upstream commits absent from the fork. An unavailable ancestry check is disclosed and does not authorize inherited history.
+A fork includes inherited upstream history. Mere possession of a fork does not transfer author credit. Every claimed fork commit must pass strict account-linked Christo authorship; unknown-email name-only matches in forks are excluded. The audit separately checks a fork default branch against its parent using GitHub's compare API. Ahead 0 means no fork-only commits on that default branch versus the upstream comparison; other branches can diverge. Behind measures upstream commits absent from the fork. An unavailable ancestry check is disclosed and does not authorize inherited history.
 
 <a id="counts"></a>
 ## Commit counting and deduplication
@@ -30,7 +30,7 @@ One Git SHA counts once per repository across all reachable branches and tags. R
 <a id="loc"></a>
 ## Historical lines of code and cumulative changes
 
-Git --numstat reports added and deleted text lines within every included commit. Changed lines equals additions plus deletions. This is historical churn, not the current size of a project or a number of original lines authored by a human. Repeated edits, code moved between files, merges, imports and generated content can increase the total. Binary changes do not have numeric line counts. Merge commits contribute zero LOC: otherwise a merge authored by the owner could credit changes written by somebody else. Qualifying non-merge commits are still scanned across all advertised branches.
+Git --numstat reports added and deleted text lines within every included commit. Changed lines equals additions plus deletions. This is historical churn, not the current size of a project or a number of original lines authored by a human. Repeated edits, code moved between files, merges, imports and generated content can increase the total. Binary changes do not have numeric line counts. Owner-authored merge commits contribute zero LOC because their first-parent diffs may include other developers' changes. The underlying qualifying commits on all reachable branches are counted separately.
 
 <a id="languages"></a>
 ## GitHub Linguist and language classifications
@@ -55,7 +55,7 @@ PR, issue, reviewer and commenter counts come from GitHub's indexed Search APIs.
 <a id="coverage"></a>
 ## Coverage, accuracy, and excluded evidence
 
-COMPLETE means no known errors for enumerated accessible repositories and search sources; it does not mean all deleted, local-only, unpushed or inaccessible work was reconstructed. PARTIAL indicates scan, API, GitHub index or ancestry gaps. Provisional Christo-name-only matches are included only for owned nonfork repositories and trigger PARTIAL coverage. Name-only matches on forks and unrelated agent-only commits are excluded. Errors and exclusions are summarized so published totals are not misrepresented as unquestionable lifetime truth.
+COMPLETE means no known errors for enumerated accessible repositories and search sources; it does not mean all deleted, local-only, unpushed or inaccessible work was reconstructed. PARTIAL indicates scan, API, GitHub index or ancestry gaps. Christo name-only matches in owned nonfork repositories are PROVISIONAL and trigger PARTIAL status; forked or external name-only matches and standalone agents are excluded. Errors and exclusions are summarized so published totals are not misrepresented as unquestionable lifetime truth.
 
 <a id="portfolio"></a>
 ## Repository ownership, visibility and project summaries
@@ -70,7 +70,7 @@ Access tokens and author email addresses are never placed into the public report
 ## Data-source hierarchy
 
 1. **Verified authored/co-authored work:** exact Git email identity plus attributed commit histories.
-2. **AI-assisted work:** identified Claude/Codex coauthors flag already attributed owner commits; standalone agent-only commits are not credited.
+2. **AI-assisted work:** Claude/Codex coauthor metadata flags an already attributed Christo commit; standalone agent-only commits are not credited.
 3. **GitHub Linguist:** current language bytes and official filename metadata, not a claim of full historical per-blob parsing.
 4. **Repository/PR metadata:** live snapshots and indexed search, not human skill verification.
 5. **Self-reported biodata:** work history, education and preferred tools remain separate from audit metrics.
