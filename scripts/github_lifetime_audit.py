@@ -681,17 +681,24 @@ def render_reports(user: dict, repositories: list[dict], activity: dict,
     created_years = collections.Counter(r["created_at"][:4] for r in owned if r.get("created_at"))
     failures_label = ", ".join(repo_label(x, priv_indices) for x in failures[:12])
     provisional_names = total.name_only_attributed
-    incomplete = len(failures) > 0 or len(warnings) > 0 or provisional_names > 0
+    excluded_names = sum(r.get("excluded_name_only", 0) for r in ok_repos)
+    excluded_agents = sum(r.get("excluded_unverified_agent", 0) for r in ok_repos)
+    fork_unknown = sum(bool(r.get("fork")) and
+                       r.get("fork_evidence", {}).get("status") != "checked"
+                       for r in repositories)
+    incomplete = (len(failures) > 0 or len(warnings) > 0 or
+                  excluded_names > 0 or fork_unknown > 0)
     status = "PARTIAL — incomplete sources or provisional identity matches" if incomplete else "COMPLETE for enumerated accessible repositories"
     generated = as_of.strftime("%Y-%m-%d %H:%M UTC")
     docs = "[Overview](./REPORT.md) · [Repositories](./repositories.md) · [Timeline](./timeline.md) · [Languages](./languages.md) · [Activity](./activity.md)"
     scope = ("All available refs in each cloned repository (branches, tags, and refs advertised by GitHub); "
-             "each SHA once per repository. Agent-identifiable commits in owned repositories are included. "
-             "Other repositories count commits only when you are the author or co-author, "
-             "unless `AUDIT_AGENT_COLLAB_REPOS=true`.")
+             "each SHA once per repository. Verified author/coauthor email matches qualify. "
+             "Unrelated upstream commits and third-party agent co-authorship do not qualify. "
+             "Agent-only SHA approvals must be explicit in AUDIT_APPROVED_AGENT_COMMITS.")
     warning_block = ("\n**Audit gaps:** " + str(len(failures)) + " repository clone/scan failures; " +
                      str(len(warnings)) + " discovery/API warnings; " +
-                     fmt(provisional_names) + " provisional name-only attributed commits. " +
+                     fmt(provisional_names) + " name-only *included* commits; " + fmt(excluded_names) +
+                     " name-only matches excluded; " + fmt(fork_unknown) + " fork comparisons unavailable. " +
                      "Check the [repository report](./repositories.md) and workflow logs. " +
                      "Name-only matches are not verified authorship.\n") if incomplete else ""
     totals = total.as_dict()
@@ -714,7 +721,10 @@ def render_reports(user: dict, repositories: list[dict], activity: dict,
             ["Unique code-classified LOC changed", fmt(global_unique_data["code_lines_changed"])],
             ["Directly authored", fmt(totals["direct"])],
             ["Co-authored by you (not direct author)", fmt(totals["coauthored"])],
-            ["Agent-only attributed commits", fmt(totals["agent_only"])],
+            ["Explicitly approved agent-only commits", fmt(totals["agent_only"])],
+            ["Agent-linked commits excluded (not proven yours)", fmt(excluded_agents)],
+            ["Unverified name-only matches excluded", fmt(excluded_names)],
+            ["Fork default-branch ancestry checks unavailable", fmt(fork_unknown)],
             ["Commits matched by name only (provisional, owned repos)", fmt(totals["name_only_attributed"])],
             ["Known author email aliases (count only; not published)", fmt(len(identity.emails))],
             ["New account-linked email aliases discovered", fmt(identity.linked_commit_emails)],
@@ -742,7 +752,8 @@ def render_reports(user: dict, repositories: list[dict], activity: dict,
             [y, fmt(d["commits"]), fmt(d["additions"]), fmt(d["deletions"]), fmt(d["lines_changed"])]
             for y, d in sorted(yearly.items(), reverse=True)]),
         "## How to interpret the totals", "",
-        "1. **Attributed commits** = directly authored + co-authored-by-you + agent-only (exclusive groups).",
+        "1. **Attributed commits** = author email matched + co-author email matched + explicitly "
+        "approved agent-only SHAs. Git author names alone and agents in upstream forks are excluded.",
         "2. **Total LOC changed** = sum of Git `--numstat` added + deleted text lines across every attributed commit. "
         "This includes docs, configs, lockfiles, generated text and repeated edits; it is not current codebase size or unique lines written.",
         "3. **Code-classified LOC** uses filename extensions. It is an approximation and excludes many unrecognized formats.",
@@ -752,8 +763,8 @@ def render_reports(user: dict, repositories: list[dict], activity: dict,
         "6. **Forks** are included when available. Repo-level totals count the same SHA in two different repositories twice; "
         "the **unique attributed Git SHAs** and **unique LOC changed** fields deduplicate matching SHAs across repositories.",
         f"7. **Coverage scope:** {scope}",
-        "8. Email aliases are automatically discovered using verified account emails and account-linked "
-        "indexed commits. Name-only matches are provisional and restricted to owned repositories.",
+        "8. Email aliases are automatically discovered from GitHub account-linked indexed commits "
+        "and accessible verified-email APIs; name-only matches are NEVER included in verified totals.",
         "9. Commits on local branches never pushed to GitHub, deleted repositories, inaccessible private repositories, "
         "and contributions with no identifiable Git identity cannot be recovered as exact lifetime data.",
         "10. **Private-repository names and links** are masked in public Markdown/JSON by default. "
@@ -769,16 +780,24 @@ def render_reports(user: dict, repositories: list[dict], activity: dict,
     repo_rows = []
     for r in sorted(repositories, key=lambda x: (x["status"] != "ok", -(x.get("metrics", {}).get("commits", 0)), x["name"])):
         m = r.get("metrics", {})
+        fork_ev = r.get("fork_evidence") or {}
+        fork_review = ("not a fork" if not r.get("fork") else
+                       (("ahead " + str(fork_ev.get("ahead_default")) +
+                         ", behind " + str(fork_ev.get("behind_default"))) if
+                        fork_ev.get("status") == "checked" else "unverified"))
         repo_rows.append([link_repo(r, priv_indices), "private" if r["private"] else "public",
                           "fork" if r["fork"] else ("owned" if r["owner"].casefold() == user["login"].casefold() else "collab/org"),
                           r["status"].upper(), fmt(r.get("reachable_commits", 0)) if m else "—",
                           fmt(m.get("commits", 0)) if m else "—", fmt(m.get("additions", 0)) if m else "—",
-                          fmt(m.get("deletions", 0)) if m else "—"])
+                          fmt(m.get("deletions", 0)) if m else "—",
+                          fork_review,
+                          fmt(r.get("excluded_name_only", 0)),
+                          fmt(r.get("excluded_unverified_agent", 0))])
     (REPORT_DIR / "repositories.md").write_text("\n".join([
         "# Repositories — lifetime audit", "", docs, "", f"Updated {generated}.", "",
         "Every available repository was scanned, including forks unless configured otherwise. "
         "`Reachable` includes all authors; `Attributed` includes only your qualifying commits.", "",
-        md_table(["Repository", "Visibility", "Type", "Scan", "Reachable", "Attributed", "+ lines", "− lines"], repo_rows),
+        md_table(["Repository", "Visibility", "Type", "Scan", "Reachable", "Attributed", "+ lines", "− lines", "Fork default ancestry", "Name matches excluded", "AI-associated exclusions"], repo_rows),
         "", "## Failures", "",
         (f"{len(failures)} failed scans: {clean_md(failures_label)}." if failures else "No repository scan failures."),
         "", "Private names are masked unless explicitly enabled. Check workflow logs for diagnostic details.", ""
@@ -849,17 +868,25 @@ def render_reports(user: dict, repositories: list[dict], activity: dict,
         result = {"name": repo_label(r, priv_indices), "private": bool(r["private"]),
                   "fork": bool(r["fork"]), "status": r["status"],
                   "metrics": r.get("metrics"), "reachable_commits": r.get("reachable_commits"),
+                  "excluded_name_only": r.get("excluded_name_only", 0),
+                  "excluded_unverified_agent": r.get("excluded_unverified_agent", 0),
+                  "fork_evidence": ({k: v for k, v in r.get("fork_evidence", {}).items()
+                                      if k != "parent"} if r.get("private") and not SHOW_PRIVATE_NAMES
+                                    else r.get("fork_evidence")),
                   "first_commit": r.get("first_commit"), "last_commit": r.get("last_commit"),
                   "years": r.get("years", {}), "months": r.get("months", {}),
                   "languages": r.get("languages", {})}
         if allowed:
             result["url"] = r["html_url"]
         safe_repos.append(result)
-    data = {"schema_version": 1, "run_at_utc": as_of.isoformat(),
+    data = {"schema_version": 2, "run_at_utc": as_of.isoformat(),
             "account": user["login"], "coverage": "partial" if incomplete else "complete_for_enumerated_repos",
             "repositories_enumerated": len(repositories), "repositories_scanned": len(ok_repos),
             "repositories_failed": len(failures), "warnings": len(warnings),
             "name_only_attributed_commits": provisional_names,
+            "unverified_name_matches_excluded": excluded_names,
+            "unattributed_agent_linked_excluded": excluded_agents,
+            "unavailable_fork_ancestry_checks": fork_unknown,
             "known_email_alias_count": len(identity.emails),
             "account_linked_commit_email_aliases_added": identity.linked_commit_emails,
             "summary": totals, "unique_attributed_sha_summary": global_unique_data,
@@ -973,6 +1000,9 @@ def main() -> int:
     bad_languages = sum(1 for r in results if r.get("language_error"))
     if bad_languages:
         warnings.append(f"Current language-byte API failed for {bad_languages} repositories")
+    # Never silently report all fork histories as personally authored.
+    # Fork ancestry is advisory evidence; exact author/coauthor email remains
+    # the gate for every attributed commit.
     render_reports(me, results, activity, warnings, as_of, identity)
     return 0
 
