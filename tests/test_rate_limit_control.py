@@ -121,9 +121,10 @@ class RateLimitTests(unittest.TestCase):
         self.assertEqual(do.call_count, 1)
 
     def test_retries_eventually_fail_safely(self):
+        def always_throttled(*_args, **_kwargs):
+            raise error(429, {"Retry-After":"1"}, "rate limit exceeded")
         with patch.object(audit.urllib.request, "urlopen",
-                          side_effect=lambda *a, **k:
-                          error(429, {"Retry-After":"1"}, "rate limit exceeded")) as do:
+                          side_effect=always_throttled) as do:
             with self.assertRaisesRegex(audit.APIError, "rate limit still blocked"):
                 self.api.request("/search/commits", {"q":"author:christo"})
         self.assertEqual(do.call_count, 7)
