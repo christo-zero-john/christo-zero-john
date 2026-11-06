@@ -88,6 +88,8 @@ My focus is on making ambitious software practical — clear to use, robust unde
 
 <!-- PREMIUM_PROJECTS:END -->
 
+<strong>Project cards currently show PREVIOUS-SCAN numbers and require regeneration under identity policy v3. They are visual previews, not final totals.</strong>
+
 <sub>Commit spans are the elapsed calendar time between first and latest attributed Git author dates, not the number of working days. Card statistics count only qualifying Git contributions from the latest strict audit.</sub>
 
 <br/>
