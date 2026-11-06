@@ -32,13 +32,13 @@ FONT = "Arial, Helvetica, sans-serif"
 FEATURED = [
     ("photobooth", "christo-zero-john/virtual-background-photobooth",
      "Virtual Background Photobooth", "INTERACTIVE MEDIA",
-     "Real-time background replacement · Remote shutter · Browser experience"),
+     "Live background replacement · QR pairing · Remote shutter"),
     ("movie", "christo-zero-john/movie-watch-history-tracker-webapp",
      "Movie Watch History Tracker", "PRODUCT / FRONTEND",
      "A personal movie journal and discovery experience powered by TMDB"),
     ("complaints", "christo-zero-john/complaint-management-system",
      "Complaint Management System", "FULL-STACK / SYSTEMS",
-     "Institutional issue reporting and management, built during undergraduate study"),
+     "Institutional complaint reporting and tracking system"),
     ("roco", "christo-zero-john/roco-the-agentic-car",
      "ROCO / The Agentic Car", "HARDWARE / PROTOTYPING",
      "A hands-on 4WD robotics and agentic systems experiment"),
@@ -207,10 +207,7 @@ def project_svg(spec, record, idx):
     dates,duration=date_range(record or {})
     commits=number(m["commits"]) if available else "—"
     code=number(m["code_lines_changed"]) if available else "—"
-    if len(title) > 30:
-        font_size=32
-    else:
-        font_size=39
+    font_size=30 if len(title)>22 else 37
     p=[
         f'<rect x="1" y="1" width="1198" height="194" rx="8" fill="none" stroke="{EDGE}"/>',
         svg_text(41, 37, f"0{idx}  /  {category}", 12, ACCENT, 700, 1.1),
@@ -274,8 +271,8 @@ def produce(data):
     time=last.strftime("%d %b %Y / %H:%M UTC")
     coverage="Partial" if data["coverage"]=="partial" else "Complete for enumerated repositories"
     privacy="Private repository names are intentionally omitted from this public profile."
-    verified = int(data.get("unique_attributed_sha_summary",{}).get("commits",0))-int(
-        data.get("unique_attributed_sha_summary",{}).get("name_only_attributed",0))
+    verified = max(0,int(data.get("unique_attributed_sha_summary",{}).get("commits",0))-int(
+        data.get("unique_attributed_sha_summary",{}).get("name_only_attributed",0)))
     prose = f"""<!-- REFINED_PROFILE_V2 -->
 <p align="center">
   <img src="./assets/profile-editorial.svg" alt="Christo John, AI Product Engineer" width="100%" />
