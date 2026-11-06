@@ -635,7 +635,7 @@ def render_reports(user: dict, repositories: list[dict], activity: dict,
     failures_label = ", ".join(repo_label(x, priv_indices) for x in failures[:12])
     provisional_names = total.name_only_attributed
     incomplete = len(failures) > 0 or len(warnings) > 0 or provisional_names > 0
-    status = "PARTIAL — some sources could not be fully audited" if incomplete else "COMPLETE for enumerated accessible repositories"
+    status = "PARTIAL — incomplete sources or provisional identity matches" if incomplete else "COMPLETE for enumerated accessible repositories"
     generated = as_of.strftime("%Y-%m-%d %H:%M UTC")
     docs = "[Overview](./REPORT.md) · [Repositories](./repositories.md) · [Timeline](./timeline.md) · [Languages](./languages.md) · [Activity](./activity.md)"
     scope = ("All available refs in each cloned repository (branches, tags, and refs advertised by GitHub); "
