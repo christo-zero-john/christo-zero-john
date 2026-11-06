@@ -35,12 +35,12 @@ jobs:
 
     steps:
       - name: Check out the profile repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           persist-credentials: true
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: '3.12'
 
@@ -57,6 +57,9 @@ jobs:
 
       - name: Generate full lifetime report
         run: python scripts/github_lifetime_audit.py
+
+      - name: Generate detailed developer biodata, technical stack, portfolio and insights
+        run: python scripts/generate_developer_profile.py
 
       - name: Show coverage status
         shell: bash

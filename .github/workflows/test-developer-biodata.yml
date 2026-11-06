@@ -1,0 +1,27 @@
+name: Test lifetime audit report generators
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/github_lifetime_audit.py'
+      - 'scripts/generate_developer_profile.py'
+      - 'tests/**'
+      - '.github/workflows/test-developer-biodata.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test-generators:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Verify script syntax
+        run: python -m py_compile scripts/github_lifetime_audit.py scripts/generate_developer_profile.py
+      - name: Run integration and privacy tests
+        run: python -m unittest discover -s tests -v
