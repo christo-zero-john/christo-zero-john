@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 610 145" role="img" aria-label="ATTRIBUTION NOTES. Forks, AI agents &amp; methodology">
+<rect width="610" height="145" rx="18" fill="#0E1315"/>
+<rect x="1" y="1" width="608" height="143" rx="17" fill="none" stroke="#405451" stroke-opacity=".85"/>
+<style><![CDATA[
+      @keyframes arise {0%{opacity:.02;transform:translateY(10px)} 100%{opacity:1;transform:translateY(0)}}
+      @keyframes trace {0%{stroke-dashoffset:700;opacity:.2} 100%{stroke-dashoffset:0;opacity:1}}
+      @keyframes glimmer {0%,100%{opacity:.32} 50%{opacity:.82}}
+      @keyframes growline {0%{transform:scaleX(.08)}100%{transform:scaleX(1)}}
+      @keyframes drift {0%{transform:translateX(-18px)}100%{transform:translateX(18px)}}
+      .appear {animation:arise .82s ease-out both}
+      .appear-late {animation:arise 1s .22s ease-out both}
+      .trace {stroke-dasharray:700;animation:trace 1.6s .25s ease-out both}
+      .glow {animation:glimmer 3.2s ease-in-out infinite}
+      .grow {transform-origin:left center;transform-box:fill-box;animation:growline 1.4s .16s ease-out both}
+      .float {animation:drift 8s ease-in-out infinite alternate}
+      @media(prefers-reduced-motion:reduce){*{animation:none!important}}
+    ]]></style>
+<rect x="0" y="0" width="6" height="145" rx="3" fill="#C2ECD1" opacity=".75"/>
+<path d="M22 37 H585" stroke="#405451" stroke-opacity=".45"/>
+<text x="26" y="28" font-size="12" fill="#C2ECD1" font-family="Inter, Segoe UI, Arial, sans-serif" font-weight="700" letter-spacing="1.35">04 / PROOF</text>
+<text x="25" y="83" font-size="27" fill="#F4F7F3" font-family="Inter, Segoe UI, Arial, sans-serif" font-weight="700" letter-spacing="0.35">ATTRIBUTION NOTES</text>
+<text x="26" y="119" font-size="15" fill="#A9BDB5" font-family="Inter, Segoe UI, Arial, sans-serif" font-weight="500">Forks, AI agents &amp; methodology</text>
+<circle cx="558" cy="86" r="24" fill="#121A1B" stroke="#405451"/>
+<text x="558" y="95" font-size="27" fill="#C2ECD1" font-family="Inter, Segoe UI, Arial, sans-serif" font-weight="550" text-anchor="middle">↗</text>
+<path class="trace" d="M0 143 H600" fill="none" stroke="#C2ECD1" stroke-width="2" stroke-opacity=".6"/>
+</svg>

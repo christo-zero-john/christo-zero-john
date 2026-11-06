@@ -2,6 +2,15 @@ name: GitHub lifetime engineering audit
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/github_lifetime_audit.py'
+      - 'scripts/render_profile_dashboard.py'
+      - 'scripts/render_interactive_profile.py'
+      - 'scripts/build_linguist_index.py'
+      - 'scripts/annotate_audit_markdown.py'
+      - '.github/workflows/github-lifetime-audit.yml'
   schedule:
     # Every Sunday, 03:17 UTC. Remove schedule: if you only want manual runs.
     - cron: '17 3 * * 0'
@@ -23,7 +32,6 @@ jobs:
       AUDIT_EMAILS: ${{ vars.AUDIT_EMAILS }}
       AUDIT_NAMES: ${{ vars.AUDIT_NAMES }}
       AUDIT_AGENT_IDENTIFIERS: ${{ vars.AUDIT_AGENT_IDENTIFIERS }}
-      AUDIT_APPROVED_AGENT_COMMITS: ${{ secrets.AUDIT_APPROVED_AGENT_COMMITS }}
       AUDIT_LINGUIST_INDEX: /tmp/github-linguist-languages.json
       AUDIT_GLOBAL_DISCOVERY: 'true'
       AUDIT_INCLUDE_FORKS: 'true'
@@ -82,12 +90,15 @@ jobs:
       - name: Render premium README dashboard from latest strict audit
         run: python scripts/render_profile_dashboard.py
 
+      - name: Render animated project cards, navigation and interactive README
+        run: python scripts/render_interactive_profile.py
+
       - name: Save Markdown and JSON into profile repository
         shell: bash
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add README.md docs/github-audit assets/lifetime-engineering.svg assets/language-landscape.svg
+          git add README.md docs/github-audit assets/
           if git diff --cached --quiet; then
             echo 'No report changes.'
           else

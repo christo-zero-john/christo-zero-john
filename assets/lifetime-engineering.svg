@@ -22,5 +22,25 @@
 <text x="921" y="216" font-size="13" fill="#81918B" font-weight="400" font-family="Inter, Segoe UI, Arial, sans-serif">Repo/SHA occurrences†</text>
 <line x1="38" y1="241" x2="1162" y2="241" stroke="#3C4848"/>
 <text x="48" y="275" font-size="12" fill="#81918B" font-weight="400" font-family="Inter, Segoe UI, Arial, sans-serif" letter-spacing="0.5">REFRESHED 06 NOV 2026 · 16:40 UTC</text>
-<text x="1152" y="275" font-size="12" fill="#A9B9B3" font-weight="400" font-family="Inter, Segoe UI, Arial, sans-serif" text-anchor="end" letter-spacing="1">PARTIAL COVERAGE</text>
+<text x="1152" y="275" font-size="12" fill="#A9B9B3" font-weight="400" font-family="Inter, Segoe UI, Arial, sans-serif" text-anchor="end" letter-spacing="1">POLICY RECHECK PENDING</text>
+<style><![CDATA[
+      /* premium-count-motion: progressive enhancement with static numeric fallback */
+      @keyframes cover {0%,7%,78%{opacity:1}100%{opacity:0}}
+      @keyframes count0 {0%,23%{opacity:1}24%,100%{opacity:0}}
+      @keyframes count1 {0%,23%{opacity:0}24%,48%{opacity:1}49%,100%{opacity:0}}
+      @keyframes count2 {0%,48%{opacity:0}49%,73%{opacity:1}74%,100%{opacity:0}}
+      @keyframes count3 {0%,73%{opacity:0}74%,95%{opacity:1}96%,100%{opacity:0}}
+      @keyframes arrive {from{opacity:.2;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+      .counter-veil{opacity:0;animation:cover 1.6s .15s ease-out 1 both}
+      .st0,.st1,.st2,.st3{opacity:0}
+      .st0{animation:count0 1.6s .15s steps(1,end) 1}
+      .st1{animation:count1 1.6s .15s steps(1,end) 1}
+      .st2{animation:count2 1.6s .15s steps(1,end) 1}
+      .st3{animation:count3 1.6s .15s steps(1,end) 1}
+      @media(prefers-reduced-motion:reduce){*{animation:none!important}.counter-veil{opacity:0!important}}
+    ]]></style>
+<g class="counter-veil"><rect x="45" y="132" width="258" height="67" rx="4" fill="#0E1315"/><g class="st0"><text x="48" y="185" font-size="56" fill="#F4F7F3" font-family="Inter, Segoe UI, Arial, sans-serif" font-weight="700">9</text></g><g class="st1"><text x="48" y="185" font-size="56" fill="#F4F7F3" font-family="Inter, Segoe UI, Arial, sans-serif" font-weight="700">35</text></g><g class="st2"><text x="48" y="185" font-size="56" fill="#F4F7F3" font-family="Inter, Segoe UI, Arial, sans-serif" font-weight="700">71</text></g><g class="st3"><text x="48" y="185" font-size="56" fill="#F4F7F3" font-family="Inter, Segoe UI, Arial, sans-serif" font-weight="700">101</text></g></g>
+<g class="counter-veil"><rect x="336" y="132" width="258" height="67" rx="4" fill="#0E1315"/><g class="st0"><text x="339" y="185" font-size="56" fill="#F4F7F3" font-family="Inter, Segoe UI, Arial, sans-serif" font-weight="700">1,113</text></g><g class="st1"><text x="339" y="185" font-size="56" fill="#F4F7F3" font-family="Inter, Segoe UI, Arial, sans-serif" font-weight="700">4,451</text></g><g class="st2"><text x="339" y="185" font-size="56" fill="#F4F7F3" font-family="Inter, Segoe UI, Arial, sans-serif" font-weight="700">9,061</text></g><g class="st3"><text x="339" y="185" font-size="56" fill="#F4F7F3" font-family="Inter, Segoe UI, Arial, sans-serif" font-weight="700">12,877</text></g></g>
+<g class="counter-veil"><rect x="627" y="132" width="258" height="67" rx="4" fill="#0E1315"/><g class="st0"><text x="630" y="185" font-size="40" fill="#F4F7F3" font-family="Inter, Segoe UI, Arial, sans-serif" font-weight="700">72,207</text></g><g class="st1"><text x="630" y="185" font-size="40" fill="#F4F7F3" font-family="Inter, Segoe UI, Arial, sans-serif" font-weight="700">288,829</text></g><g class="st2"><text x="630" y="185" font-size="40" fill="#F4F7F3" font-family="Inter, Segoe UI, Arial, sans-serif" font-weight="700">587,973</text></g><g class="st3"><text x="630" y="185" font-size="40" fill="#F4F7F3" font-family="Inter, Segoe UI, Arial, sans-serif" font-weight="700">835,541</text></g></g>
+<g class="counter-veil"><rect x="918" y="132" width="258" height="67" rx="4" fill="#0E1315"/><g class="st0"><text x="921" y="185" font-size="56" fill="#F4F7F3" font-family="Inter, Segoe UI, Arial, sans-serif" font-weight="700">195</text></g><g class="st1"><text x="921" y="185" font-size="56" fill="#F4F7F3" font-family="Inter, Segoe UI, Arial, sans-serif" font-weight="700">781</text></g><g class="st2"><text x="921" y="185" font-size="56" fill="#F4F7F3" font-family="Inter, Segoe UI, Arial, sans-serif" font-weight="700">1,591</text></g><g class="st3"><text x="921" y="185" font-size="56" fill="#F4F7F3" font-family="Inter, Segoe UI, Arial, sans-serif" font-weight="700">2,261</text></g></g>
 </svg>

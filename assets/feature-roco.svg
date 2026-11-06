@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 660 337" role="img" aria-label="ROCO / The Agentic Car: 68 qualified commits, 664 strict code-changed lines, 1D between first and last qualifying commits">
+<rect width="660" height="337" rx="18" fill="#0E1315"/>
+<rect x="1" y="1" width="658" height="335" rx="17" fill="none" stroke="#405451" stroke-opacity=".85"/>
+<style><![CDATA[
+      @keyframes arise {0%{opacity:.02;transform:translateY(10px)} 100%{opacity:1;transform:translateY(0)}}
+      @keyframes trace {0%{stroke-dashoffset:700;opacity:.2} 100%{stroke-dashoffset:0;opacity:1}}
+      @keyframes glimmer {0%,100%{opacity:.32} 50%{opacity:.82}}
+      @keyframes growline {0%{transform:scaleX(.08)}100%{transform:scaleX(1)}}
+      @keyframes drift {0%{transform:translateX(-18px)}100%{transform:translateX(18px)}}
+      .appear {animation:arise .82s ease-out both}
+      .appear-late {animation:arise 1s .22s ease-out both}
+      .trace {stroke-dasharray:700;animation:trace 1.6s .25s ease-out both}
+      .glow {animation:glimmer 3.2s ease-in-out infinite}
+      .grow {transform-origin:left center;transform-box:fill-box;animation:growline 1.4s .16s ease-out both}
+      .float {animation:drift 8s ease-in-out infinite alternate}
+      @media(prefers-reduced-motion:reduce){*{animation:none!important}}
+    ]]></style>
+<rect x="18" y="18" width="624" height="301" rx="12" fill="#121A1B" fill-opacity=".5"/>
+<path d="M24 166 H635" stroke="#405451" stroke-opacity=".8"/>
+<path d="M24 279 H635" stroke="#405451" stroke-opacity=".8"/>
+<text x="28" y="44" font-size="12" fill="#C2ECD1" font-family="Inter, Segoe UI, Arial, sans-serif" font-weight="700" letter-spacing="1.2">ROBOTICS / EXPERIMENTAL</text>
+<text x="629" y="44" font-size="11" fill="#A9BDB5" font-family="Inter, Segoe UI, Arial, sans-serif" font-weight="700" letter-spacing="0.8" text-anchor="end">RECHECK REQUIRED</text>
+<text x="28" y="85" font-size="30" fill="#F4F7F3" font-family="Inter, Segoe UI, Arial, sans-serif" font-weight="700" letter-spacing="-0.2">ROCO / The Agentic Car</text>
+<text x="29" y="119" font-size="16" fill="#A9BDB5" font-family="Inter, Segoe UI, Arial, sans-serif" font-weight="500">A 4WD hardware experiment moving</text>
+<text x="29" y="145" font-size="16" fill="#A9BDB5" font-family="Inter, Segoe UI, Arial, sans-serif" font-weight="500">toward increasingly intelligent control.</text>
+<text x="29" y="191" font-size="11" fill="#7F9690" font-family="Inter, Segoe UI, Arial, sans-serif" font-weight="700" letter-spacing="1.1">ATTRIBUTED COMMITS</text>
+<g class="appear-late"><text x="29" y="244" font-size="40" fill="#F4F7F3" font-family="Inter, Segoe UI, Arial, sans-serif" font-weight="700">68</text></g>
+<text x="253" y="191" font-size="11" fill="#7F9690" font-family="Inter, Segoe UI, Arial, sans-serif" font-weight="700" letter-spacing="1.1">STRICT CODE Δ</text>
+<g class="appear-late"><text x="253" y="244" font-size="37" fill="#C2ECD1" font-family="Inter, Segoe UI, Arial, sans-serif" font-weight="700">664</text></g>
+<text x="491" y="191" font-size="11" fill="#7F9690" font-family="Inter, Segoe UI, Arial, sans-serif" font-weight="700" letter-spacing="1.1">COMMIT SPAN</text>
+<g class="appear-late"><text x="491" y="244" font-size="38" fill="#F4F7F3" font-family="Inter, Segoe UI, Arial, sans-serif" font-weight="700">1D</text></g>
+<text x="29" y="306" font-size="12" fill="#A9BDB5" font-family="Inter, Segoe UI, Arial, sans-serif" font-weight="600" letter-spacing="0.2">08 APR 2026 → 09 APR 2026</text>
+<text x="632" y="306" font-size="11" fill="#7F9690" font-family="Inter, Segoe UI, Arial, sans-serif" font-weight="650" letter-spacing="0.25" text-anchor="end">ROBOTICS · PROTOTYPING · AGENTS</text>
+<path d="M29 266 H634" stroke="#C2ECD1" stroke-opacity=".22" stroke-width="2" class="trace"/>
+</svg>

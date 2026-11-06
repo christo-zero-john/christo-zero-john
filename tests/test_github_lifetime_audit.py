@@ -60,9 +60,9 @@ class AuditTests(unittest.TestCase):
         self.assertEqual(metrics["agent_only"], 0)
         self.assertEqual(metrics["agent_assisted"], 0)
         self.assertEqual(metrics["merges"], 1)
-        self.assertEqual(metrics["lines_changed"], 5)
+        self.assertEqual(metrics["lines_changed"], 3)
         self.assertEqual(summary["reachable_commits"], 5)
-        self.assertEqual(metrics["code_additions"], 4)
+        self.assertEqual(metrics["code_additions"], 2)
 
     def test_agent_only_not_claimed_in_other_peoples_repos(self):
         ident = audit.Identity("christo-zero-john", {"id": 129399273, "name": "Christo John"}, ["me@example.com"])
@@ -95,7 +95,11 @@ class AuditTests(unittest.TestCase):
         self.assertEqual(ident.add_account_linked_commit_emails(emails), 1)
         self.assertTrue(ident.is_email_me("old-desktop@example.test"))
         self.assertFalse(ident.is_email_me("not-mine@example.test"))
+        # Deliberately suppress linked-but-unrelated author names unless the
+        # author name or email also carries the owner's "christo" marker.
         self.assertEqual(ident.category("Other Name", "old-desktop@example.test", "", "other-org"),
+                         (None, False))
+        self.assertEqual(ident.category("Christo Old Desktop", "old-desktop@example.test", "", "other-org"),
                          ("direct", False))
 
     def test_unverified_name_only_is_provisional_in_owned_repos(self):
@@ -103,12 +107,13 @@ class AuditTests(unittest.TestCase):
         self.assertEqual(ident.category("Christo John", "unlinked@example.test", "", "other-org"),
                          (None, False))
         self.assertEqual(ident.category("Christo John", "unlinked@example.test", "", "christo-zero-john"),
-                         (None, False))
+                         ("direct", False))
         self.commit("unknown.py", "print(1)\n", "unknown email identity",
                     "Christo John <unlinked@example.test>")
         result = audit.read_git_history(self.repo / ".git", ident, "christo-zero-john")
-        self.assertEqual(result["metrics"]["commits"], 0)
-        self.assertEqual(result["excluded_name_only"], 1)
+        self.assertEqual(result["metrics"]["commits"], 1)
+        self.assertEqual(result["metrics"]["name_only_attributed"], 1)
+        self.assertEqual(result["excluded_name_only"], 0)
 
 
     def test_claude_coauthor_on_upstream_fork_is_not_mine(self):
@@ -128,23 +133,116 @@ class AuditTests(unittest.TestCase):
         self.assertEqual(result["metrics"]["commits"], 1)
         self.assertEqual(result["metrics"]["additions"], 1)
 
-    def test_explicit_agent_sha_approval_only(self):
+    def test_standalone_agent_only_is_never_owner_work(self):
         ident = audit.Identity("christo-zero-john",
                                {"id": 129399273, "name": "Christo John"}, [])
         self.commit("agent.py", "agent_value = 1\n", "agent's standalone commit",
                     "Claude Code <noreply@anthropic.com>")
         sha = git(self.repo, "rev-parse", "HEAD")
-        key = "christo-zero-john/my-repo@" + sha
-        self.assertEqual(ident.category("Claude Code", "noreply@anthropic.com", "",
-                          "christo-zero-john", sha, "christo-zero-john/my-repo"),
-                          (None, False))
-        audit.APPROVED_AGENT_COMMITS.add(key)
-        try:
-            self.assertEqual(ident.category("Claude Code", "noreply@anthropic.com", "",
-                              "christo-zero-john", sha, "christo-zero-john/my-repo"),
-                              ("agent_only", True))
-        finally:
-            audit.APPROVED_AGENT_COMMITS.discard(key)
+        self.assertEqual(ident.category(
+            "Claude Code", "noreply@anthropic.com", "",
+            "christo-zero-john", sha, "christo-zero-john/my-repo"),
+            (None, False))
+        result = audit.read_git_history(
+            self.repo / ".git", ident, "christo-zero-john",
+            "christo-zero-john/my-repo")
+        self.assertEqual(result["metrics"]["commits"], 0)
+        self.assertEqual(result["excluded_unverified_agent"], 1)
+
+
+    def test_christo_merge_does_not_claim_other_developer_lines(self):
+        self.commit("root.py", "owner_code = True\n", "owner initial")
+        git(self.repo, "switch", "-q", "-c", "other-developer")
+        self.commit("thirdparty.py", "foreign = 1\nforeign = 2\nforeign = 3\n",
+                    "different author's implementation",
+                    "Other Programmer <notchristo@example.org>")
+        git(self.repo, "switch", "-q", "main")
+        git(self.repo, "merge", "-q", "--no-ff", "other-developer", "-m", "merge someone else's work")
+        ident = audit.Identity("christo-zero-john",
+                              {"id": 129399273, "name": "Christo John"}, ["me@example.com"])
+        result = audit.read_git_history(
+            self.repo / ".git", ident, "christo-zero-john", "christo-zero-john/my-project")
+        self.assertEqual(result["reachable_commits"], 3)
+        self.assertEqual(result["metrics"]["commits"], 2)  # owner initial + owner merge
+        self.assertEqual(result["metrics"]["merges"], 1)
+        self.assertEqual(result["metrics"]["code_additions"], 1)  # never 4
+        self.assertEqual(result["metrics"]["lines_changed"], 1)
+
+    def test_fork_never_claims_christo_name_with_unlinked_email(self):
+        ident = audit.Identity("christo-zero-john",
+                               {"id": 129399273, "name": "Christo John"}, ["10.christojohn@gmail.com"])
+        self.commit("fork.py", "other = 1\n", "upstream with similar name",
+                    "Christo Other <random@thirdparty.test>")
+        result = audit.read_git_history(self.repo / ".git", ident,
+                                        "christo-zero-john",
+                                        "christo-zero-john/other-fork", is_fork=True)
+        self.assertEqual(result["metrics"]["commits"], 0)
+        self.assertEqual(result["excluded_name_only"], 1)
+        self.assertEqual(result["metrics"]["code_lines_changed"], 0)
+
+    def test_matching_named_author_with_custom_desktop_email_in_own_nonfork(self):
+        self.commit("app.py", "a = 1\n", "commit under GitHub Desktop alias",
+                    "Christo Kalapurackal <desktop-generated-443@users.noreply.github.com>")
+        ident = audit.Identity("christo-zero-john",
+                               {"id": 129399273, "name": "Christo John"}, [])
+        result = audit.read_git_history(self.repo / ".git", ident,
+                                        "christo-zero-john",
+                                        "christo-zero-john/my-app", is_fork=False)
+        self.assertEqual(result["metrics"]["commits"], 1)
+        self.assertEqual(result["metrics"]["name_only_attributed"], 1)
+        self.assertEqual(result["metrics"]["code_additions"], 1)
+
+    def test_christo_marker_rejects_incidental_name_and_email_substrings(self):
+        ident = audit.Identity("christo-zero-john",
+                               {"id": 129399273, "name": "Christo John"}, [])
+        self.assertFalse(ident.has_christo("Christopher Smith"))
+        self.assertFalse(ident.has_christo("notchristo"))
+        self.assertTrue(ident.has_christo("Christo John"))
+        self.assertTrue(ident.has_christo("129399273+christo-old-handle"))
+        self.assertTrue(ident.has_christo("10.christojohn"))
+        self.assertIsNone(ident.attribution(
+            "Other Developer", "notchristo@other.org", "christo-zero-john"))
+
+    def test_numeric_github_id_survives_username_changes(self):
+        ident = audit.Identity("christo-zero-john",
+                               {"id": 129399273, "name": "Christo John"}, [])
+        self.assertTrue(ident.is_email_me("129399273+christo-old-handle@users.noreply.github.com"))
+        self.assertFalse(ident.is_email_me("999999999+christo-old-handle@users.noreply.github.com"))
+        self.assertEqual(ident.category("Christo Previous", 
+                         "129399273+christo-old-handle@users.noreply.github.com",
+                         "", "other-organization"), ("direct", False))
+
+    def test_unmerged_feature_branch_and_unrelated_author_excluded(self):
+        self.commit("main.py", "mine = True\n", "main human")
+        git(self.repo, "switch", "-q", "-c", "experimental")
+        self.commit("experimental.py", "feature = True\n",
+                    "feature authored by Christo", "Christo Builder <random-desktop@other.test>")
+        self.commit("upstream.py", "notmine = True\n",
+                    "foreign developer", "Another Developer <foreign@example.test>")
+        git(self.repo, "switch", "-q", "main")
+        ident = audit.Identity("christo-zero-john",
+                               {"id": 129399273, "name": "Christo John"}, ["me@example.com"])
+        result = audit.read_git_history(self.repo / ".git", ident,
+                                        "christo-zero-john",
+                                        "christo-zero-john/my-app", is_fork=False)
+        self.assertEqual(result["reachable_commits"], 3)
+        self.assertEqual(result["metrics"]["commits"], 2)
+        self.assertEqual(result["metrics"]["name_only_attributed"], 1)
+        self.assertEqual(result["metrics"]["code_additions"], 2)
+
+    def test_human_christo_with_claude_coauthor_is_one_commit(self):
+        ident = audit.Identity("christo-zero-john",
+                               {"id": 129399273, "name": "Christo John"},
+                               ["10.christojohn@gmail.com"])
+        self.commit("feature.py", "x = True\n",
+                    "implemented with agent\n\nCo-authored-by: Claude Code <noreply@anthropic.com>",
+                    "Christo John <10.christojohn@gmail.com>")
+        result = audit.read_git_history(self.repo / ".git", ident,
+                                        "christo-zero-john", "christo-zero-john/app")
+        self.assertEqual(result["metrics"]["commits"], 1)
+        self.assertEqual(result["metrics"]["direct"], 1)
+        self.assertEqual(result["metrics"]["agent_assisted"], 1)
+        self.assertEqual(result["metrics"]["agent_only"], 0)
 
     def test_private_repo_names_are_masked(self):
         original = audit.SHOW_PRIVATE_NAMES

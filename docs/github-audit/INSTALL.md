@@ -1,100 +1,64 @@
-# Installation — GitHub Lifetime Audit
+# Lifetime GitHub Audit — installation, identity rules and reliability
 
-Target profile repository: `christo-zero-john/christo-zero-john`.
+This workflow publishes **Christo John's** GitHub engineering activity to the public profile repository `christo-zero-john/christo-zero-john`. The published metrics reflect a carefully specified attribution policy, **not** blanket ownership of all code in owned or forked repositories.
 
-## 1. Merge the pull request
+## Getting started
 
-This pull request adds the **two source files** in your existing profile repository, at these paths:
+1. Merge the PR with the current code, and ensure the profile repository contains `.github/workflows/github-lifetime-audit.yml`, `scripts/github_lifetime_audit.py`, `scripts/render_profile_dashboard.py`, and `scripts/render_interactive_profile.py`.
+2. In repository **Settings → Secrets and variables → Actions**, create the secret `GH_AUDIT_READ_TOKEN`. Use a fine-grained PAT with **Contents: Read-only**, **Metadata: Read-only**, **Email addresses: Read-only** and access to all personal repositories you wish to scan.
+3. If you need to analyze private organization/collaborator repositories, expand token access as permitted by the organization. A classic PAT with `repo` may cover more repositories, but **is not read-only** and is more powerful; use a short expiration and revoke it when unnecessary.
+4. In repository **Settings → Actions → General**, allow the workflow to write contents to your profile repository so it can publish README/Markdown/SVG updates.
+5. Run [GitHub lifetime engineering audit](https://github.com/christo-zero-john/christo-zero-john/actions/workflows/github-lifetime-audit.yml) against `main`. It also runs weekly and after changes to audit/profile-renderer source on `main`.
 
-- `.github/workflows/github-lifetime-audit.yml`
-- `scripts/github_lifetime_audit.py`
+No `AUDIT_EMAILS` or `AUDIT_NAMES` variable is required for normal setup.
 
-Do **not** replace your existing `README.md`, `assets/engineering-stats.svg`, or statistics workflow. The generator appends or replaces only a small delimited section in the README.
+## Current attribution policy (identity_policy_version 3)
 
-## 2. Create a read token for cross-repository scanning
+**Two kinds of evidence, clearly separated:**
 
-Navigate to GitHub → Settings → Developer settings → Personal access tokens.
+| Class | When a commit qualifies | Trust level |
+| --- | --- | --- |
+| Verified direct author | Git author email is an exact known GitHub-linked alias **and** author name/email local-part contains `christo` (case-insensitive), or numeric GitHub no-reply ID matches the account | Strong |
+| Verified coauthor | Same rule applied to a valid `Co-authored-by` trailer | Strong |
+| Old GitHub Desktop identity | Git author/coauthor name or email local-part contains `christo`, but the author email is unknown; repository is **owned by the account and NOT a fork** | **Provisional** |
+| Unknown email in a fork or collaboration | Name contains `christo`, but no known account-linked email or numeric ID | **Excluded** |
+| Other contributors | Neither known linked owner identity nor eligible provisional name marker | **Excluded** |
+| Claude/Codex coauthor | Already qualifying owner-authored or owner-coauthored commit also credits an identifiable agent | Count **once**, with an AI-assisted flag |
+| Standalone Claude/Codex commit | Owner does not appear as a qualifying author/coauthor | **Excluded** |
+| Owner-authored merge | Identity qualifies, but the merge introduces lines from merged commits | Count merge **commit**, assign **0 merge LOC** |
 
-**Recommended for personal repos:** a fine-grained token with resource owner `christo-zero-john`, `All repositories`, and **Contents: Read-only** and Metadata read. To discover more historical aliases, enable **Email addresses: Read-only** (account permission), where available. Note that a fine-grained token tied to a single resource owner might not cover your private repositories in other organizations.
+**Why provisional?** Anybody can write `Christo` as a Git author name. It is not identity proof. Provisional counts appear separately and force `PARTIAL` coverage. The algorithm never calls those counts `verified`.
 
-**If you need *every* private organization and collaborator repo available to your account:** a classic PAT with `repo` and, if required for org enumeration, `read:org`; `user:email` retrieves verified email aliases if permitted. **Classic `repo` is a broad scope**; use a short-lived token, keep it secret, and rotate it. Organization policies may disallow or require approval of any PAT. No token can reveal repos you cannot access.
+**Finding earlier emails:** The workflow reads verified email aliases available to the token, discovers the full standard/current GitHub no-reply addresses, recognizes the immutable numeric GitHub account ID even across renamed handles, and gathers author emails from commits that GitHub's search index resolves to this exact account. GitHub Desktop reinstallations and custom identities are supported through the provisional fallback **only in owned nonfork repositories**. An old custom email absent from these sources in a fork cannot be safely assigned without additional direct evidence.
 
-Save the token as a profile repository **Actions secret** named exactly `GH_AUDIT_READ_TOKEN` at:
+## Forks and branches
 
-`https://github.com/christo-zero-john/christo-zero-john/settings/secrets/actions`
+- A fork **inherits upstream history**. It does not confer ownership. Upstream commits by other developers do not qualify simply because the fork is yours, or because Claude helped upstream authors.
+- GitHub's fork-parent comparison records `ahead_by`/`behind_by` evidence for the default branch; it is *not* the authorship test.
+- The workflow clones accessible repositories with `git clone --mirror` and traverses **all advertised refs**, with `git log --all`. This includes reachable commits on unmerged remote branches and tags—not only `main`.
+- A commit on multiple branches in a repository is counted once per repository/SHA. **Unique Git SHA** totals deduplicate the same SHA across forks and mirrors.
+- Deleted, inaccessible, or never-pushed branches cannot be reconstructed.
 
-The workflow's built-in `GITHUB_TOKEN` is used **only for committing the report back to the profile repo**. It is not relied on to access your other private repositories.
+## What code-line statistics mean
 
-## 3. Automatic identity discovery — no author emails required
+For **non-merge qualifying commits**, Git's `--numstat` records text additions and deletions. Changed LOC = additions + deletions. The audit separately reports all-text changes, stricter code-classified changes, and binary-file events. A merge authored by you adds **zero extra LOC** to avoid attributing third-party merged code to you. The original qualifying commits on merged or independent branches are measured individually.
 
-**AUDIT_EMAILS is optional. You can leave it unset.**
+This is cumulative edit volume, **not** proof that every line was invented by you: a personally authored commit may contain pasted, generated, imported or vendored code. The strict code-only measure uses GitHub Linguist's official filename/extension definitions, conservatively excludes ambiguous/generated/vendor paths, and is not the full content-based Linguist parser. Current language-byte proportions include all authors in currently accessible default branches and are clearly labeled as such.
 
-Before scanning histories, the workflow finds historical author emails automatically:
+## Reports and publishing
 
-1. Starts with your GitHub login, numeric account ID, and standard GitHub no-reply addresses.
-2. Queries your verified account email addresses via the GitHub API when the access token allows it.
-3. Searches GitHub's historical commits by the account-linked author login, and extracts the original author email for any commit GitHub links to your account. This detects different GitHub Desktop identities, including many identities from prior installations.
-4. Matches all discovered email aliases when counting authored and co-authored commits across repositories.
-5. For repositories you own, commits with an exact matching Git author name but an unverified email are counted as **provisional name-only matches**. The report explicitly marks coverage **PARTIAL** and reports the provisional count. Author names are not proof of identity.
+The workflow regenerates `docs/github-audit/REPORT.md`, the repository/timeline/language/activity Markdown files, `APPENDIX.md`, and `audit.json`. It then updates the **marked statistics and project-card blocks** in `README.md` and all generated SVGs in `assets/`.
 
-Git author email aliases are used only in memory. The published Markdown and JSON show only alias counts, not actual email addresses.
+Before making public claims, inspect `audit.json` for `schema_version: 2` and **`identity_policy_version: 3`**, the summary of verified/provisional matches, and the `coverage` value. Existing files without the policy version are older snapshots and must be re-audited.
 
-**Optional Actions repository variables:**
+## Privacy (important)
 
-- **AUDIT_EMAILS**: extra historical author emails if you later discover any missed identity; normally leave unset.
-- **AUDIT_NAMES**: additional names if GitHub Desktop used a different author name; normally leave unset.
-- **AUDIT_AGENT_IDENTIFIERS**: customize which bot and agent author/co-author identities count.
+The current workflow has **`AUDIT_SHOW_PRIVATE_NAMES: 'true'`** because this was explicitly selected for the profile. This means private repository names may be printed in **public Markdown and JSON**. Change to `'false'` if you do not want public disclosure. Private repo code and credentials are not published. Never paste token values into README, Markdown, script or workflow logs.
 
-A historical email not linked to your GitHub account and written under an unrecognized name **cannot be reliably proven to be yours** solely from Git history. GitHub's indexed commit search may also omit deleted or inaccessible history. The report must not describe this as exact, total lifetime authorship.
+The GitHub profile itself cannot execute JavaScript. Premium links are clickable SVG image cards plus GitHub-supported `<details>` disclosures. SVG/CSS animations are progressive enhancements, may not run in all GitHub clients, and have accessible final-value static fallbacks.
 
-## 4. Grant workflow permission to update your README
+## If a metric is wrong
 
-Profile repository → **Settings → Actions → General → Workflow permissions** → **Read and write permissions** (where your organization policy permits). The workflow explicitly requests `contents: write`.
+Check the matching repository row, name-only provisional count, known-email coverage, fork status, and `excluded_unverified_agent` count. If you can identify a missing address, add it privately as `AUDIT_EMAILS` and rerun; manually supplied addresses are still subject to the Christo/numeric ID guard. Do not credit upstream/agent changes purely by repo ownership.
 
-## 5. Run
-
-`https://github.com/christo-zero-john/christo-zero-john/actions/workflows/github-lifetime-audit.yml`
-
-Click **Run workflow**. Once completed, your README will link to:
-
-`https://github.com/christo-zero-john/christo-zero-john/blob/main/docs/github-audit/REPORT.md`
-
-It also runs every Sunday. Delete the `schedule` block to make it manual-only.
-
-## Attribution requirements — strict mode
-
-The old audit **incorrectly counted inherited upstream commits in forks as your own** merely because an AI co-author appeared in their message. All older totals are withdrawn until the strict workflow runs again.
-
-- **Directly authored:** exact Git author email in the verified/account-linked identity set.
-- **Co-authored by you:** exact developer email in a valid `Co-authored-by` trailer.
-- **Agent-assisted:** confirmed direct/co-authored commit with an identifiable agent trailer; no additional commit is credited.
-- **Agent-only:** excluded by default. To deliberately claim a specific agent-authored SHA you can create an optional Actions repository secret `AUDIT_APPROVED_AGENT_COMMITS`, containing comma-separated values of the form `owner/repo@0123456789abcdef0123456789abcdef01234567` (40-digit full SHA). Review each SHA carefully before adding it. This must not include unrelated upstream agents.
-- **Name-only author matches:** excluded by default, even in your own repositories. A matching Git author name isn't proof of identity.
-- **Fork inspection:** parent comparison is recorded for each accessible fork; an upstream ancestor does not confer authorship. Branches and tags are still enumerated.
-- **GitHub email discovery:** uses GitHub verified account emails (if the token allows) and original Git author addresses from commits linked by GitHub to your account. Manually setting `AUDIT_EMAILS` is optional.
-- **Reproducible histories:** only Git refs accessible to the token can be scanned, so deleted and never-pushed histories cannot be recreated.
-
-## GitHub Linguist language sources
-
-The workflow downloads the official GitHub Linguist language filename/extension registry before scanning and uses it to classify historical changed paths. It uses the GitHub /languages API for current per-repository default-branch language bytes. It does **not** pretend that filename metadata is equivalent to a complete GitHub Linguist content-level parse on every old Git blob.
-
-The report keeps all changed text lines, code-classified changed lines and generated/vendor/ambiguous paths separate. Every published metric table row receives a GitHub-native expandable `<details>` explanation linking to `APPENDIX.md`.
-
-## After merging this fix
-
-1. Verify `GH_AUDIT_READ_TOKEN` is configured. The script needs Contents: Read-only for personal repositories and Email addresses: Read-only when supported. All previous author-email variables can remain unset.
-2. Open the **GitHub lifetime engineering audit** workflow on the main branch and run it.
-3. Confirm the new report has `schema_version: 2` in `audit.json`, and review its coverage status, excluded upstream/agent signals, fork comparison columns, and chronological/language tables.
-4. Never reuse the legacy 2026-11-06 commit and LOC figures withdrawn in this PR.
-
-## Tuning performance
-
-Cloning each repository's complete history, including branches and tags, may be slow or consume many gigabytes of runner disk. GitHub-hosted runners have finite disk and action durations; jobs may fail on particularly large histories. The workflow uses 3 worker threads and a 360-minute job timeout, with a 15-minute clone and 20-minute Git-history budget per repository. A timed-out repository is marked as failed and the published report is marked PARTIAL. Adjust `AUDIT_WORKERS` between 1 and 12; reduce it for very large repositories. Adjust `AUDIT_CLONE_TIMEOUT_SECONDS`, `AUDIT_GIT_LOG_TIMEOUT_SECONDS`, and `AUDIT_DISCOVERY_MAX_QUERIES` if needed. `AUDIT_GLOBAL_DISCOVERY: 'true'` searches authored commits on GitHub to find public repositories outside your explicit repository list; change it to `false` to accelerate audits at the expense of coverage.
-
-## Privacy
-
-The script does not write auth tokens or author email aliases into Markdown or JSON. Private repository names are redacted by default. GitHub Actions logs can still reveal errors and some API paths; avoid publishing verbose logs or making this workflow callable by untrusted pull requests. The workflow is manual/scheduled, not PR-triggered.
-
-## Validate locally (without a GitHub token)
-
-Run `python -m unittest discover -s tests -v` from the extracted package folder. The included integration tests create temporary Git repositories and validate branch traversal, rename statistics, co-author and agent attribution, merge counting, and private-repo redaction.
+The workflow may show `PARTIAL` for incomplete GitHub indexing, inaccessible fork comparisons, clone failures or provisional matches. A complete scan of visible Git refs can never prove that all lifetime work across deleted/unpushed repositories was captured.

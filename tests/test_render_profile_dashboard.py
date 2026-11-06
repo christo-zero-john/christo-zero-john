@@ -67,7 +67,7 @@ class DashboardTests(unittest.TestCase):
         self.assertIn("15,882", stats)
         self.assertIn("1,030,800", stats)
         self.assertNotIn("16,177", stats)
-        self.assertIn("PARTIAL COVERAGE", stats)
+        self.assertIn("POLICY RECHECK PENDING", stats)
         self.assertIn("TypeScript", languages)
         self.assertIn("ALL AUTHORS", languages)
         self.assertNotIn("github_pat_", stats + languages)
@@ -85,8 +85,9 @@ class DashboardTests(unittest.TestCase):
                 content = dashboard.README.read_text(encoding="utf-8")
                 self.assertIn("# Editorial hero", content)
                 self.assertIn("## Work", content)
-                self.assertIn("15,882 verified-identity Git SHAs", content)
-                self.assertIn("Partial", content)
+                self.assertIn("15,882 attributed Git SHAs", content)
+                self.assertIn("Previous attribution-rule snapshot", content)
+                self.assertIn("requires a fresh full audit", content)
                 self.assertEqual(content.count(dashboard.OPEN), 1)
                 self.assertEqual(content.count(dashboard.CLOSE), 1)
                 self.assertFalse(dashboard.update_readme(fixture()))
@@ -95,6 +96,16 @@ class DashboardTests(unittest.TestCase):
                     dashboard.update_readme(fixture())
             finally:
                 dashboard.README = old
+
+    def test_current_christo_policy_separates_verified_and_provisional(self):
+        sample = fixture()
+        sample["identity_policy_version"] = 3
+        sample["unique_attributed_sha_summary"]["name_only_attributed"] = 23
+        content = dashboard.stats_markdown(sample)
+        self.assertIn("Email-confirmed: 15,859", content)
+        self.assertIn("provisional Christo pattern: 23", content)
+        self.assertIn("PARTIAL COVERAGE", dashboard.stat_svg(sample))
+        self.assertNotIn("Previous attribution-rule", content)
 
     def test_timestamp_is_sourced_from_audit(self):
         sample = fixture()
