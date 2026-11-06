@@ -22,7 +22,7 @@
 <text x="921" y="216" font-size="13" fill="#81918B" font-weight="400" font-family="Inter, Segoe UI, Arial, sans-serif">Repo/SHA occurrences†</text>
 <line x1="38" y1="241" x2="1162" y2="241" stroke="#3C4848"/>
 <text x="48" y="275" font-size="12" fill="#81918B" font-weight="400" font-family="Inter, Segoe UI, Arial, sans-serif" letter-spacing="0.5">REFRESHED 06 NOV 2026 · 16:40 UTC</text>
-<text x="1152" y="275" font-size="12" fill="#A9B9B3" font-weight="400" font-family="Inter, Segoe UI, Arial, sans-serif" text-anchor="end" letter-spacing="1">PARTIAL COVERAGE</text>
+<text x="1152" y="275" font-size="12" fill="#A9B9B3" font-weight="400" font-family="Inter, Segoe UI, Arial, sans-serif" text-anchor="end" letter-spacing="1">POLICY RECHECK PENDING</text>
 <style><![CDATA[
       /* premium-count-motion: progressive enhancement with static numeric fallback */
       @keyframes cover {0%,7%,78%{opacity:1}100%{opacity:0}}
