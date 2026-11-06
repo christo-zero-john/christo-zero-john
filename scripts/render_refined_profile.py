@@ -326,7 +326,7 @@ Commits are attributed using the account-linked Christo identity rules; unrelate
     README.write_text(prose,encoding="utf-8")
     # A real browser application may be deployed separately through GitHub
     # Pages or an existing portfolio host. Exclude private repo identifiers.
-    site = ROOT / "docs" / "experience"
+    site = README.parent / "docs" / "experience"
     site.mkdir(parents=True, exist_ok=True)
     public_projects=[]
     for key,repo,name,category,description in FEATURED:
