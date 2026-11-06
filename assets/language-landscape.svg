@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 380" role="img" aria-label="Most prevalent current codebase languages across accessible repositories">
+<rect width="1200" height="380" rx="14" fill="#101416"/>
+<rect x="1" y="1" width="1198" height="378" rx="13" fill="none" stroke="#3C4848"/>
+<text x="48" y="44" font-size="16" fill="#F0F4EE" font-weight="700" font-family="Inter, Segoe UI, Arial, sans-serif" letter-spacing="1.8">LANGUAGE LANDSCAPE</text>
+<text x="1153" y="44" font-size="12" fill="#81918B" font-weight="400" font-family="Inter, Segoe UI, Arial, sans-serif" text-anchor="end" letter-spacing="0.8">CURRENT DEFAULT-BRANCH BYTES · ALL AUTHORS</text>
+<line x1="46" y1="67" x2="1153" y2="67" stroke="#3C4848"/>
+<text x="50" y="113" font-size="17" fill="#F0F4EE" font-weight="550" font-family="Inter, Segoe UI, Arial, sans-serif">Python</text>
+<rect x="270" y="97" width="666" height="14" rx="7" fill="#556863" opacity=".30"/>
+<rect x="270" y="97" width="666" height="14" rx="7" fill="#C2ECD1" opacity="1.00"/>
+<text x="1152" y="113" font-size="17" fill="#F0F4EE" font-weight="550" font-family="Inter, Segoe UI, Arial, sans-serif" text-anchor="end">37.7%</text>
+<text x="50" y="164" font-size="17" fill="#F0F4EE" font-weight="550" font-family="Inter, Segoe UI, Arial, sans-serif">TypeScript</text>
+<rect x="270" y="148" width="666" height="14" rx="7" fill="#556863" opacity=".30"/>
+<rect x="270" y="148" width="549" height="14" rx="7" fill="#C2ECD1" opacity="0.88"/>
+<text x="1152" y="164" font-size="17" fill="#F0F4EE" font-weight="550" font-family="Inter, Segoe UI, Arial, sans-serif" text-anchor="end">31.1%</text>
+<text x="50" y="215" font-size="17" fill="#F0F4EE" font-weight="550" font-family="Inter, Segoe UI, Arial, sans-serif">HTML</text>
+<rect x="270" y="199" width="666" height="14" rx="7" fill="#556863" opacity=".30"/>
+<rect x="270" y="199" width="269" height="14" rx="7" fill="#C2ECD1" opacity="0.76"/>
+<text x="1152" y="215" font-size="17" fill="#F0F4EE" font-weight="550" font-family="Inter, Segoe UI, Arial, sans-serif" text-anchor="end">15.2%</text>
+<text x="50" y="266" font-size="17" fill="#F0F4EE" font-weight="550" font-family="Inter, Segoe UI, Arial, sans-serif">JavaScript</text>
+<rect x="270" y="250" width="666" height="14" rx="7" fill="#556863" opacity=".30"/>
+<rect x="270" y="250" width="174" height="14" rx="7" fill="#C2ECD1" opacity="0.64"/>
+<text x="1152" y="266" font-size="17" fill="#F0F4EE" font-weight="550" font-family="Inter, Segoe UI, Arial, sans-serif" text-anchor="end">9.9%</text>
+<text x="50" y="317" font-size="17" fill="#F0F4EE" font-weight="550" font-family="Inter, Segoe UI, Arial, sans-serif">CSS</text>
+<rect x="270" y="301" width="666" height="14" rx="7" fill="#556863" opacity=".30"/>
+<rect x="270" y="301" width="52" height="14" rx="7" fill="#C2ECD1" opacity="0.52"/>
+<text x="1152" y="317" font-size="17" fill="#F0F4EE" font-weight="550" font-family="Inter, Segoe UI, Arial, sans-serif" text-anchor="end">3.0%</text>
+<text x="50" y="363" font-size="12" fill="#81918B" font-weight="400" font-family="Inter, Segoe UI, Arial, sans-serif">Linguist snapshots include contributors other than you; not historical authored LOC.</text>
+</svg>
