@@ -1,0 +1,23 @@
+{
+  "name": "christo-build-log-film",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "check": "tsc --noEmit",
+    "still": "remotion still src/index.ts BuildLogFilm",
+    "render": "remotion render src/index.ts BuildLogFilm out/build-log-instagram.mp4",
+    "studio": "remotion studio src/index.ts"
+  },
+  "dependencies": {
+    "@fontsource-variable/instrument-sans": "5.2.7",
+    "@fontsource/ibm-plex-mono": "5.2.7",
+    "@remotion/cli": "4.0.484",
+    "react": "19.2.7",
+    "react-dom": "19.2.7",
+    "remotion": "4.0.484"
+  },
+  "devDependencies": {
+    "@types/react": "19.2.17",
+    "typescript": "6.0.3"
+  }
+}
