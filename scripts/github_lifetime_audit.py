@@ -2,8 +2,9 @@
 """Lifetime GitHub audit for a profile README; Python 3.11+, standard library only.
 
 Metric contract:
-- qualifying commit: self-authored, self-coauthored, or attributable to a configured
-  agent in an owned repository (optionally collaborator repositories)
+- qualifying commit: GitHub-linked email plus Christo marker, or provisional
+  Christo-name match in owned nonfork repositories, or approved exact agent SHA
+- a fork's upstream contributors and unrelated AI coauthors are never owner work
 - count at most once per repository + SHA; enumerate all accessible Git refs
 - LOC: Git numstat additions + deletions, including text/config/documentation; binary
   diffs have no line totals; merges compared with first parent
@@ -263,9 +264,14 @@ class Metrics:
 
 
 class Identity:
-    """Use only verified/linked emails for inclusion; keep name-only as excluded evidence."""
+    """Conservative account identity: Christo signal + email evidence, or owned-nonfork name inference.
+
+    Name-only work is intentionally reported as provisional. A fork's inherited
+    history never qualifies solely from an author name.
+    """
     def __init__(self, username: str, user: dict, emails: list[str]):
         self.username = username
+        self.account_id = str(user.get("id") or "")
         self.names = split_aliases(os.getenv("AUDIT_NAMES", "")) | {username.casefold()}
         if user.get("name"):
             self.names.add(user["name"].strip().casefold())
@@ -286,17 +292,50 @@ class Identity:
         self.linked_commit_emails += len(additions)
         return len(additions)
 
+    @staticmethod
+    def has_christo(value: str) -> bool:
+        # Case-insensitive explicit identity fragment required by the owner.
+        # A matching name alone is NEVER called verified.
+        return "christo" in str(value).casefold()
+
     def is_email_me(self, email: str) -> bool:
-        return email.strip().casefold() in self.emails
+        email = email.strip().casefold()
+        if not email:
+            return False
+        if email in self.emails:
+            return True
+        # GitHub's account ID is stable even if the GitHub login later changes.
+        if self.account_id and re.fullmatch(
+                re.escape(self.account_id) + r"\\+[^@]+@users\\.noreply\\.github\\.com",
+                email):
+            return True
+        return False
 
-    def is_name_only(self, name: str, email: str, repo_owner: str) -> bool:
-        return (repo_owner.casefold() == self.username.casefold()
-                and name.strip().casefold() in self.names
-                and not self.is_email_me(email))
+    def attribution(self, name: str, email: str, repo_owner: str,
+                    is_fork: bool = False) -> str | None:
+        named = self.has_christo(name) or self.has_christo(email)
+        # Exact known email and account ID are the strong GitHub identity links,
+        # but require the Christo marker to prevent crediting unrelated developers
+        # if a historic address was reused or misattributed.
+        if self.is_email_me(email) and (named or (
+                self.account_id and email.strip().casefold().startswith(
+                    self.account_id + "+"))):
+            return "verified"
+        if named and repo_owner.casefold() == self.username.casefold() and not is_fork:
+            # This can cover Github Desktop's unlinked/custom author email.
+            # It is NOT proven identity; expose it as provisional in the report.
+            return "inferred"
+        return None
 
-    def is_me(self, name: str, email: str, repo_owner: str = "") -> bool:
-        # Git author names are not unique. Never count name-only matches as verified work.
-        return self.is_email_me(email)
+    def is_name_only(self, name: str, email: str, repo_owner: str,
+                     is_fork: bool = False) -> bool:
+        return (self.has_christo(name) or self.has_christo(email)) and (
+            self.attribution(name, email, repo_owner, is_fork) != "verified"
+        )
+
+    def is_me(self, name: str, email: str, repo_owner: str = "",
+              is_fork: bool = False) -> bool:
+        return self.attribution(name, email, repo_owner, is_fork) is not None
 
     def is_agent(self, name: str, email: str) -> bool:
         whole = (name + " " + email).casefold()
@@ -304,17 +343,17 @@ class Identity:
 
     def category(self, author_name: str, author_email: str,
                  message: str, repo_owner: str, commit_sha: str = "",
-                 repo_full_name: str = "") -> tuple[str | None, bool]:
-        # A commit qualifies only when an exact known Git email matches the
-        # author or a Co-authored-by trailer. Agent-only work requires an explicit
-        # repo@SHA approval; the mere existence of a Claude coauthor in a fork
-        # is never proof the account owner did the work.
+                 repo_full_name: str = "", is_fork: bool = False
+                 ) -> tuple[str | None, bool]:
+        # An agent co-author is only a FLAG on a qualifying human commit.
+        # Never credit another author's work merely because Claude/Codex appears.
         agent_author = self.is_agent(author_name, author_email)
         partners = COAUTHOR.findall(message)
         agent_partner = any(self.is_agent(name, email) for name, email in partners)
-        if self.is_email_me(author_email):
+        if self.attribution(author_name, author_email, repo_owner, is_fork):
             return "direct", agent_partner
-        if any(self.is_email_me(email) for _, email in partners):
+        if any(self.attribution(name, email, repo_owner, is_fork)
+               for name, email in partners):
             return "coauthored", (agent_author or agent_partner)
         key = f"{repo_full_name}@{commit_sha}".casefold()
         if (repo_full_name and commit_sha and key in APPROVED_AGENT_COMMITS
@@ -322,7 +361,6 @@ class Identity:
                 and agent_author):
             return "agent_only", True
         return None, False
-
 
 
 def nul_tokens(stream):
@@ -339,7 +377,8 @@ def nul_tokens(stream):
         buf = parts[-1]
 
 
-def read_git_history(mirror: Path, identity: Identity, repo_owner: str, repo_full_name: str = "") -> dict:
+def read_git_history(mirror: Path, identity: Identity, repo_owner: str,
+                     repo_full_name: str = "", is_fork: bool = False) -> dict:
     """Read every reachable unique commit from a mirror; no first-parent *traversal*."""
     git_format = "%x1e%H%x1f%an%x1f%ae%x1f%aI%x1f%cn%x1f%ce%x1f%P%x1f%B%x1f"
     cmd = ["git", "--git-dir=" + str(mirror), "log", "--all", "--root",
@@ -425,15 +464,22 @@ def read_git_history(mirror: Path, identity: Identity, repo_owner: str, repo_ful
                     current = {"sha": sha, "kind": None, "date": date[:10], "merge": False, "agent_assisted": False, "name_only": False, "excluded_name": False, "excluded_agent": False}
                 else:
                     unique_shas.add(sha)
-                    kind, assisted = identity.category(name, email, message, repo_owner, sha, repo_full_name)
+                    kind, assisted = identity.category(
+                        name, email, message, repo_owner, sha, repo_full_name, is_fork)
                     partners = COAUTHOR.findall(message)
-                    possible_name = identity.is_name_only(name, email, repo_owner) or any(
-                        identity.is_name_only(n, e, repo_owner) for n, e in partners)
+                    author_provenance = identity.attribution(name, email, repo_owner, is_fork)
+                    partners_provenance = [
+                        identity.attribution(n, e, repo_owner, is_fork) for n, e in partners]
+                    inferred = (kind == "direct" and author_provenance == "inferred"
+                                or kind == "coauthored" and "verified" not in partners_provenance
+                                and "inferred" in partners_provenance)
+                    possible_name = identity.is_name_only(name, email, repo_owner, is_fork) or any(
+                        identity.is_name_only(n, e, repo_owner, is_fork) for n, e in partners)
                     possible_agent = identity.is_agent(name, email) or any(
                         identity.is_agent(n, e) for n, e in partners)
                     current = {"sha": sha, "kind": kind, "date": date[:10],
                                "merge": len(parents.split()) > 1, "agent_assisted": assisted,
-                               "name_only": False,
+                               "name_only": inferred,
                                "excluded_name": kind is None and possible_name,
                                "excluded_agent": kind is None and possible_agent}
                 current_stats = Metrics()
@@ -515,7 +561,8 @@ def inspect_repo(repo: dict, identity: Identity, api: GitHubAPI) -> dict:
                 # Avoid echoing tokens or any credential-like information in the error.
                 err = err.replace(TOKEN, "[REDACTED]") if TOKEN else err
                 raise RuntimeError(f"clone error {clone.returncode}: {err}")
-            result.update(read_git_history(mirror, identity, result["owner"], full))
+            result.update(read_git_history(mirror, identity, result["owner"], full,
+                                           is_fork=bool(result["fork"])))
     except (OSError, subprocess.TimeoutExpired, RuntimeError) as exc:
         result["status"] = "failed"
         result["error"] = str(exc).replace(TOKEN, "[REDACTED]") if TOKEN else str(exc)
@@ -736,14 +783,14 @@ def render_reports(user: dict, repositories: list[dict], activity: dict,
                        r.get("fork_evidence", {}).get("status") != "checked"
                        for r in repositories)
     incomplete = (len(failures) > 0 or len(warnings) > 0 or
-                  excluded_names > 0 or fork_unknown > 0)
+                  excluded_names > 0 or provisional_names > 0 or fork_unknown > 0)
     status = "PARTIAL — incomplete sources or provisional identity matches" if incomplete else "COMPLETE for enumerated accessible repositories"
     generated = as_of.strftime("%Y-%m-%d %H:%M UTC")
     docs = "[Overview](./REPORT.md) · [Repositories](./repositories.md) · [Timeline](./timeline.md) · [Languages](./languages.md) · [Activity](./activity.md)"
     scope = ("All available refs in each cloned repository (branches, tags, and refs advertised by GitHub); "
-             "each SHA once per repository. Verified author/coauthor email matches qualify. "
-             "Unrelated upstream commits and third-party agent co-authorship do not qualify. "
-             "Agent-only SHA approvals must be explicit in AUDIT_APPROVED_AGENT_COMMITS.")
+             "each SHA once per repository. Verified Christo identity markers qualify; owned nonfork "
+             "name/email-only matches are provisional. Inherited fork contributions without verified "
+             "identity are excluded. Agent-only SHA approvals must be explicit.")
     warning_block = ("\n**Audit gaps:** " + str(len(failures)) + " repository clone/scan failures; " +
                      str(len(warnings)) + " discovery/API warnings; " +
                      fmt(provisional_names) + " name-only *included* commits; " + fmt(excluded_names) +
@@ -774,7 +821,7 @@ def render_reports(user: dict, repositories: list[dict], activity: dict,
             ["Agent-linked commits excluded (not proven yours)", fmt(excluded_agents)],
             ["Unverified name-only matches excluded", fmt(excluded_names)],
             ["Fork default-branch ancestry checks unavailable", fmt(fork_unknown)],
-            ["Commits matched by name only (provisional, owned repos)", fmt(totals["name_only_attributed"])],
+            ["Christo-name/email pattern matches (provisional, owned nonfork)", fmt(totals["name_only_attributed"])],
             ["Known author email aliases (count only; not published)", fmt(len(identity.emails))],
             ["New account-linked email aliases discovered", fmt(identity.linked_commit_emails)],
             ["Direct/co-authored commits also tagged with an agent", fmt(totals["agent_assisted"])],
@@ -801,8 +848,10 @@ def render_reports(user: dict, repositories: list[dict], activity: dict,
             [y, fmt(d["commits"]), fmt(d["additions"]), fmt(d["deletions"]), fmt(d["lines_changed"])]
             for y, d in sorted(yearly.items(), reverse=True)]),
         "## How to interpret the totals", "",
-        "1. **Attributed commits** = author email matched + co-author email matched + explicitly "
-        "approved agent-only SHAs. Git author names alone and agents in upstream forks are excluded.",
+        "1. **Attributed commits** = exact known GitHub email + Christo signal, "
+        "or clearly flagged provisional Christo-name/email pattern match in repositories owned by "
+        "the account that are NOT forks, plus individually approved agent SHA. "
+        "Co-author trailers use the same rules. Unrelated agent metadata is excluded.",
         "2. **Total LOC changed** = sum of Git `--numstat` added + deleted text lines across every attributed commit. "
         "This includes docs, configs, lockfiles, generated text and repeated edits; it is not current codebase size or unique lines written.",
         "3. **Code-classified LOC** uses filename extensions. It is an approximation and excludes many unrecognized formats.",
@@ -812,8 +861,9 @@ def render_reports(user: dict, repositories: list[dict], activity: dict,
         "6. **Forks** are included when available. Repo-level totals count the same SHA in two different repositories twice; "
         "the **unique attributed Git SHAs** and **unique LOC changed** fields deduplicate matching SHAs across repositories.",
         f"7. **Coverage scope:** {scope}",
-        "8. Email aliases are automatically discovered from GitHub account-linked indexed commits "
-        "and accessible verified-email APIs; name-only matches are NEVER included in verified totals.",
+        "8. Email aliases are discovered from GitHub-account-linked indexed commits and verified-email "
+        "APIs. Case-insensitive Christo author names or emails with unknown addresses count as "
+        "PROVISIONAL only in owned nonfork repositories; they cannot make an upstream fork commit yours.",
         "9. Commits on local branches never pushed to GitHub, deleted repositories, inaccessible private repositories, "
         "and contributions with no identifiable Git identity cannot be recovered as exact lifetime data.",
         "10. **Private-repository names and links** are masked in public Markdown/JSON by default. "
