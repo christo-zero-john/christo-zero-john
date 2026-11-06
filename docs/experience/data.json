@@ -1,0 +1,77 @@
+{
+  "generated": "2026-11-06T18:02:23.764741+00:00",
+  "coverage": "partial",
+  "repositories": 125,
+  "commits": 15944,
+  "codeLinesChanged": 872440,
+  "agentAssisted": 2791,
+  "languages": [
+    {
+      "name": "Python",
+      "bytes": 22816657
+    },
+    {
+      "name": "TypeScript",
+      "bytes": 18736848
+    },
+    {
+      "name": "HTML",
+      "bytes": 9184890
+    },
+    {
+      "name": "JavaScript",
+      "bytes": 5939307
+    },
+    {
+      "name": "CSS",
+      "bytes": 1788808
+    }
+  ],
+  "projects": [
+    {
+      "name": "Virtual Background Photobooth",
+      "repository": "christo-zero-john/virtual-background-photobooth",
+      "category": "INTERACTIVE MEDIA",
+      "description": "Live background replacement · QR pairing · Remote shutter",
+      "url": "https://github.com/christo-zero-john/virtual-background-photobooth",
+      "commits": 218,
+      "codeLinesChanged": 2561,
+      "span": "6 days",
+      "dates": "SEP 2026  —  SEP 2026"
+    },
+    {
+      "name": "Movie Watch History Tracker",
+      "repository": "christo-zero-john/movie-watch-history-tracker-webapp",
+      "category": "PRODUCT / FRONTEND",
+      "description": "A personal movie journal and discovery experience powered by TMDB",
+      "url": "https://github.com/christo-zero-john/movie-watch-history-tracker-webapp",
+      "commits": 1148,
+      "codeLinesChanged": 85546,
+      "span": "95 days",
+      "dates": "FEB 2025  —  MAY 2025"
+    },
+    {
+      "name": "Complaint Management System",
+      "repository": "christo-zero-john/complaint-management-system",
+      "category": "FULL-STACK / SYSTEMS",
+      "description": "Institutional complaint reporting and tracking system",
+      "url": "https://github.com/christo-zero-john/complaint-management-system",
+      "commits": 5139,
+      "codeLinesChanged": 90022,
+      "span": "148 days",
+      "dates": "OCT 2024  —  MAR 2025"
+    },
+    {
+      "name": "ROCO / The Agentic Car",
+      "repository": "christo-zero-john/roco-the-agentic-car",
+      "category": "HARDWARE / PROTOTYPING",
+      "description": "A hands-on 4WD robotics and agentic systems experiment",
+      "url": "https://github.com/christo-zero-john/roco-the-agentic-car",
+      "commits": 68,
+      "codeLinesChanged": 664,
+      "span": "1 days",
+      "dates": "APR 2026  —  APR 2026"
+    }
+  ],
+  "auditUrl": "https://github.com/christo-zero-john/christo-zero-john/blob/main/docs/github-audit/REPORT.md"
+}
