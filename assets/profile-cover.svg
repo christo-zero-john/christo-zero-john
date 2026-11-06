@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 392" role="img" aria-label="Christo John, AI Product Engineer. Product thinking and production engineering.">
+  <rect width="1200" height="392" rx="14" fill="#101416"/>
+  <rect x="1" y="1" width="1198" height="390" rx="13" fill="none" stroke="#374440"/>
+  <line x1="52" y1="72" x2="1148" y2="72" stroke="#3E4945"/>
+  <line x1="52" y1="326" x2="1148" y2="326" stroke="#3E4945"/>
+  <circle cx="61" cy="39" r="4" fill="#C2ECD1"/>
+  <text x="78" y="45" fill="#F0F4EE" font-size="17" font-weight="700" letter-spacing="2.5" font-family="Arial, Helvetica, sans-serif">CHRISTO JOHN</text>
+  <text x="1146" y="45" text-anchor="end" fill="#A9B9B3" font-size="13" font-weight="500" letter-spacing="1.3" font-family="Arial, Helvetica, sans-serif">AI PRODUCT ENGINEER / INDEPENDENT BUILDER</text>
+  <text x="54" y="171" fill="#F0F4EE" font-size="81" font-weight="700" letter-spacing="-3.0" font-family="Arial, Helvetica, sans-serif">Product thinking.</text>
+  <text x="54" y="266" fill="#C2ECD1" font-size="81" font-weight="700" letter-spacing="-3.0" font-family="Arial, Helvetica, sans-serif">Production engineering.</text>
+  <text x="54" y="360" fill="#A9B9B3" font-size="14" font-weight="600" letter-spacing="1.75" font-family="Arial, Helvetica, sans-serif">DESIGN  /  BUILD  /  AUTOMATE  /  SHIP</text>
+  <text x="1146" y="360" text-anchor="end" fill="#81918B" font-size="13" letter-spacing="1.2" font-family="Arial, Helvetica, sans-serif">SELECTED WORK &amp; ENGINEERING RECORD</text>
+</svg>
