@@ -1,0 +1,81 @@
+name: GitHub lifetime engineering audit
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Every Sunday, 03:17 UTC. Remove schedule: if you only want manual runs.
+    - cron: '17 3 * * 0'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: github-lifetime-audit
+  cancel-in-progress: false
+
+jobs:
+  lifetime-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    env:
+      AUDIT_TOKEN: ${{ secrets.GH_AUDIT_READ_TOKEN }}
+      AUDIT_USER: christo-zero-john
+      AUDIT_EMAILS: ${{ vars.AUDIT_EMAILS }}
+      AUDIT_NAMES: ${{ vars.AUDIT_NAMES }}
+      AUDIT_AGENT_IDENTIFIERS: ${{ vars.AUDIT_AGENT_IDENTIFIERS }}
+      AUDIT_GLOBAL_DISCOVERY: 'true'
+      AUDIT_INCLUDE_FORKS: 'true'
+      AUDIT_SHOW_PRIVATE_NAMES: 'false'
+      AUDIT_AGENT_COLLAB_REPOS: 'false'
+      AUDIT_CURRENT_LANGUAGES: 'true'
+      AUDIT_WORKERS: '3'
+      AUDIT_CLONE_TIMEOUT_SECONDS: '900'
+      AUDIT_GIT_LOG_TIMEOUT_SECONDS: '1200'
+      AUDIT_DISCOVERY_MAX_QUERIES: '120'
+
+    steps:
+      - name: Check out the profile repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Run audit integration tests
+        run: python -m unittest discover -s tests -v
+
+      - name: Check read token
+        shell: bash
+        run: |
+          if [[ -z "$AUDIT_TOKEN" ]]; then
+            echo 'Missing GH_AUDIT_READ_TOKEN. Add a read token to Actions repository secrets.' >&2
+            exit 1
+          fi
+
+      - name: Generate full lifetime report
+        run: python scripts/github_lifetime_audit.py
+
+      - name: Show coverage status
+        shell: bash
+        run: |
+          STATUS=$(cat docs/github-audit/STATUS.txt)
+          echo "Coverage: $STATUS"
+          if [[ "$STATUS" == 'PARTIAL' ]]; then
+            echo '::warning::Some repositories or GitHub API searches were incomplete. The report explicitly marks PARTIAL.'
+          fi
+
+      - name: Save Markdown and JSON into profile repository
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add README.md docs/github-audit
+          if git diff --cached --quiet; then
+            echo 'No report changes.'
+          else
+            git commit -m 'docs: update lifetime GitHub audit [skip ci]'
+            git push
+          fi

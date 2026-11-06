@@ -85,6 +85,17 @@ Real-time background replacement in the browser, with QR-based phone pairing, ph
   <img src="./assets/engineering-stats.svg" width="100%" alt="GitHub repository footprint — public and private repositories, plus collaborations." />
 </div>
 
+
+<!-- LIFETIME_GITHUB_AUDIT_START -->
+
+### Lifetime GitHub audit
+
+[**View complete engineering activity →**](./docs/github-audit/REPORT.md)  
+Commits · AI-agent contributions · cumulative LOC · languages · repositories · historical timeline.  
+<sub>Audit report pending first workflow run — [setup](./docs/github-audit/INSTALL.md)</sub>
+
+<!-- LIFETIME_GITHUB_AUDIT_END -->
+
 <br/>
 
 ### Beyond the code
