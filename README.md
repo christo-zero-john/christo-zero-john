@@ -26,9 +26,21 @@ My focus is on making ambitious software practical — clear to use, robust unde
 
 <!-- PROFILE_STATS:START -->
 
-The live engineering record will appear here after the GitHub lifetime audit runs.
+<p align="center">
+  <a href="./docs/github-audit/REPORT.md">
+    <img src="./assets/lifetime-engineering.svg" width="100%" alt="Live lifetime engineering record: repositories, unique attributed commits, code lines changed and AI-tagged commit activity" />
+  </a>
+</p>
 
-[Open the detailed GitHub audit](./docs/github-audit/REPORT.md).
+**15,882 verified-identity Git SHAs** · **1,030,800 code lines changed** · **125 repositories scanned**.
+
+<sub>Updated 06 NOV 2026 · 14:59 UTC · Partial — some discovery or fork comparisons require review. Code LOC is cumulative added + deleted programming/markup lines, not unique code written. AI-tagged commits are repository/SHA occurrences, not confirmed autonomous agent-authored commits. Private repository identities are withheld.</sub>
+
+**Current language footprint** — **Python** · **TypeScript** · **HTML** · **JavaScript** · **CSS**
+
+<img src="./assets/language-landscape.svg" width="100%" alt="Current top language shares across accessible default branches, as reported by GitHub Linguist" />
+
+[Full methodology &amp; audit](./docs/github-audit/REPORT.md) · [Repository evidence](./docs/github-audit/repositories.md) · [Language history](./docs/github-audit/languages.md) · [AI attribution and definitions](./docs/github-audit/APPENDIX.md)
 
 <!-- PROFILE_STATS:END -->
 
