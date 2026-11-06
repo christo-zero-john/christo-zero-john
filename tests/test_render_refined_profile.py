@@ -94,6 +94,12 @@ class RefinedProfileTests(unittest.TestCase):
                 for spec in profile.FEATURED:
                     self.assertIn("https://github.com/"+spec[1],md)
                 self.assertIn('href="./docs/github-audit/REPORT.md"',md)
+                site_data=json.loads((Path(directory)/"docs/experience/data.json").read_text())
+                self.assertEqual(site_data["commits"],1800)
+                self.assertEqual(site_data["codeLinesChanged"],123456)
+                self.assertNotIn("PRIVATE_SECRET_INTERNAL_PLATFORM",
+                                 json.dumps(site_data))
+                self.assertEqual(len(site_data["projects"]),4)
                 assets=list(profile.ASSETS.glob("*.svg"))
                 self.assertEqual(len(assets),15)
                 for path in assets:
