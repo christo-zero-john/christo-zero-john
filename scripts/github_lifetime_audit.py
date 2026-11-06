@@ -470,6 +470,34 @@ def inspect_repo(repo: dict, identity: Identity, api: GitHubAPI) -> dict:
     except (OSError, subprocess.TimeoutExpired, RuntimeError) as exc:
         result["status"] = "failed"
         result["error"] = str(exc).replace(TOKEN, "[REDACTED]") if TOKEN else str(exc)
+    # Verify fork/default-branch ancestry independently from Git authorship.
+    # 'ahead_by=0' confirms there are no fork-only commits on the DEFAULT
+    # branch relative to the current parent; other refs can still diverge.
+    if result["fork"]:
+        evidence = {"status": "unknown", "parent": None, "ahead_default": None,
+                    "behind_default": None}
+        try:
+            detailed = api.request("/repos/" + urllib.parse.quote(full, safe="/"))
+            parent = (detailed or {}).get("parent") or {}
+            parent_name = parent.get("full_name")
+            if parent_name:
+                evidence["parent"] = parent_name
+                parent_branch = parent.get("default_branch") or "main"
+                fork_branch = detailed.get("default_branch") or repo.get("default_branch") or "main"
+                comparison_endpoint = ("/repos/" + urllib.parse.quote(parent_name, safe="/") +
+                    "/compare/" + urllib.parse.quote(parent_branch, safe="") +
+                    "..." + urllib.parse.quote(result["owner"] + ":" + fork_branch, safe=":"))
+                comparison = api.request(comparison_endpoint, optional=True)
+                if comparison and isinstance(comparison.get("ahead_by"), int):
+                    evidence.update(status="checked", ahead_default=comparison["ahead_by"],
+                                    behind_default=comparison.get("behind_by"))
+                else:
+                    evidence["status"] = "comparison_unavailable"
+            else:
+                evidence["status"] = "parent_not_visible"
+        except APIError:
+            evidence["status"] = "error"
+        result["fork_evidence"] = evidence
     if FETCH_LANGUAGES:
         try:
             result["current_languages_bytes"] = api.request(
