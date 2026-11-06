@@ -172,7 +172,7 @@ class AuditTests(unittest.TestCase):
         ident = audit.Identity("christo-zero-john",
                                {"id": 129399273, "name": "Christo John"}, ["10.christojohn@gmail.com"])
         self.commit("fork.py", "other = 1\n", "upstream with similar name",
-                    "Christopher Other <random@thirdparty.test>")
+                    "Christo Other <random@thirdparty.test>")
         result = audit.read_git_history(self.repo / ".git", ident,
                                         "christo-zero-john",
                                         "christo-zero-john/other-fork", is_fork=True)
@@ -191,6 +191,17 @@ class AuditTests(unittest.TestCase):
         self.assertEqual(result["metrics"]["commits"], 1)
         self.assertEqual(result["metrics"]["name_only_attributed"], 1)
         self.assertEqual(result["metrics"]["code_additions"], 1)
+
+    def test_christo_marker_rejects_incidental_name_and_email_substrings(self):
+        ident = audit.Identity("christo-zero-john",
+                               {"id": 129399273, "name": "Christo John"}, [])
+        self.assertFalse(ident.has_christo("Christopher Smith"))
+        self.assertFalse(ident.has_christo("notchristo"))
+        self.assertTrue(ident.has_christo("Christo John"))
+        self.assertTrue(ident.has_christo("129399273+christo-old-handle"))
+        self.assertTrue(ident.has_christo("10.christojohn"))
+        self.assertIsNone(ident.attribution(
+            "Other Developer", "notchristo@other.org", "christo-zero-john"))
 
     def test_numeric_github_id_survives_username_changes(self):
         ident = audit.Identity("christo-zero-john",
