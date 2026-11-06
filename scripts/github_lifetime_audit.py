@@ -960,6 +960,11 @@ def render_reports(user: dict, repositories: list[dict], activity: dict,
 
 
 def update_readme(generated: str, incomplete: bool):
+    # The premium README is managed by render_profile_dashboard.py, which runs
+    # after all audit reports. Preserve the editorial layout and do not append
+    # the old audit block. Legacy profile repositories retain old behavior.
+    if README.exists() and "<!-- PREMIUM_PROFILE_DASHBOARD -->" in README.read_text(encoding="utf-8"):
+        return
     opening = "<!-- LIFETIME_GITHUB_AUDIT_START -->"
     closing = "<!-- LIFETIME_GITHUB_AUDIT_END -->"
     block = (f"{opening}\n\n### Lifetime GitHub audit\n\n"
