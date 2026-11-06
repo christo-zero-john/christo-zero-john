@@ -93,7 +93,7 @@ def annotate_table(lines):
     inside = False
     headers = []
     already = False
-    for line in lines:
+    for index, line in enumerate(lines):
         if not line.startswith("| ") or not line.rstrip().endswith("|"):
             output.append(line)
             inside = False
@@ -104,14 +104,18 @@ def annotate_table(lines):
             inside = False
             continue
         values = [cell.strip() for cell in cells[1:-1]]
-        if not inside:
+        next_is_separator = (index + 1 < len(lines) and
+                             lines[index + 1].startswith("| ") and
+                             all(re.fullmatch(r":?-{3,}:?", c.strip())
+                                 for c in split_cells(lines[index + 1])[1:-1]))
+        if not inside or next_is_separator:
             headers = values
             already = any("Details" in h for h in headers)
-            output.append(line if already else line.rstrip()[:-1] + " ℹ Details |")
+            output.append(line if already else line.rstrip()[:-1] + " | ℹ Details |")
             inside = True
             continue
         if all(re.fullmatch(r":?-{3,}:?", v) for v in values):
-            output.append(line if already else line.rstrip()[:-1] + " --- |")
+            output.append(line if already else line.rstrip()[:-1] + " | --- |")
             continue
         if already:
             output.append(line)
@@ -123,7 +127,7 @@ def annotate_table(lines):
                   f"<p>{help_text} "
                   f'<a href="./APPENDIX.md#{key}">Full appendix: {escape(heading)}</a></p>'
                   "</details>")
-        output.append(line.rstrip()[:-1] + " " + detail + " |")
+        output.append(line.rstrip()[:-1] + " | " + detail + " |")
     return output
 
 
