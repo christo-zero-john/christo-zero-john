@@ -44,6 +44,10 @@ jobs:
       AUDIT_CLONE_TIMEOUT_SECONDS: '900'
       AUDIT_GIT_LOG_TIMEOUT_SECONDS: '1200'
       AUDIT_DISCOVERY_MAX_QUERIES: '120'
+      # GitHub search has tighter limits than general REST. Keep every
+      # repository/branch enabled; pace requests instead of dropping results.
+      AUDIT_SEARCH_REQUEST_GAP_SECONDS: '5.0'
+      AUDIT_API_REQUEST_GAP_SECONDS: '0.4'
 
     steps:
       - name: Check out the profile repository
