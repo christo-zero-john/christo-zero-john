@@ -786,7 +786,7 @@ def render_reports(user: dict, repositories: list[dict], activity: dict,
     scope = ("All available refs in each cloned repository (branches, tags, and refs advertised by GitHub); "
              "each SHA once per repository. Verified Christo identity markers qualify; owned nonfork "
              "name/email-only matches are provisional. Inherited fork contributions without verified "
-             "identity are excluded. Agent-only SHA approvals must be explicit.")
+             "identity are excluded. Autonomous agent-only commits without Christo attribution are excluded.")
     warning_block = ("\n**Audit gaps:** " + str(len(failures)) + " repository clone/scan failures; " +
                      str(len(warnings)) + " discovery/API warnings; " +
                      fmt(provisional_names) + " name-only *included* commits; " + fmt(excluded_names) +
@@ -859,7 +859,8 @@ def render_reports(user: dict, repositories: list[dict], activity: dict,
         f"7. **Coverage scope:** {scope}",
         "8. Email aliases are discovered from GitHub-account-linked indexed commits and verified-email "
         "APIs. Case-insensitive Christo author names or emails with unknown addresses count as "
-        "PROVISIONAL only in owned nonfork repositories; they cannot make an upstream fork commit yours.",
+        "PROVISIONAL only in owned nonfork repositories; they cannot make an upstream fork commit yours. "
+        "All reachable branches/tags are considered by git clone --mirror and git log --all.",
         "9. Commits on local branches never pushed to GitHub, deleted repositories, inaccessible private repositories, "
         "and contributions with no identifiable Git identity cannot be recovered as exact lifetime data.",
         "10. **Private-repository names and links** are masked in public Markdown/JSON by default. "
@@ -977,7 +978,10 @@ def render_reports(user: dict, repositories: list[dict], activity: dict,
             result["url"] = r["html_url"]
         safe_repos.append(result)
     data = {"schema_version": 2, "run_at_utc": as_of.isoformat(),
-            "account": user["login"], "coverage": "partial" if incomplete else "complete_for_enumerated_repos",
+            "account": user["login"],
+            "identity_policy_version": 3,
+            "identity_policy": "verified email+Christo identifier; provisional owned nonfork Christo pattern; agent coauthor only",
+            "coverage": "partial" if incomplete else "complete_for_enumerated_repos",
             "repositories_enumerated": len(repositories), "repositories_scanned": len(ok_repos),
             "repositories_failed": len(failures), "warnings": len(warnings),
             "name_only_attributed_commits": provisional_names,
