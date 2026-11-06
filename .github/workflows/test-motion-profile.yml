@@ -1,0 +1,80 @@
+name: Verify and preview real README motion
+
+on:
+  pull_request:
+    paths:
+      - 'README.md'
+      - 'scripts/render_motion_profile.py'
+      - 'scripts/render_interactive_profile.py'
+      - 'scripts/render_profile_dashboard.py'
+      - 'tests/test_render_motion_profile.py'
+      - '.github/workflows/test-motion-profile.yml'
+      - 'assets/**'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  motion-preview:
+    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      PROFILE_MOTION_FRAMES: 23
+      PROFILE_MOTION_PAUSE_MS: 2500
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.head_ref || github.ref_name }}
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Install real GIF renderer
+        run: python -m pip install 'Pillow>=11,<13'
+      - name: Validate source and tests
+        run: |
+          python -m py_compile scripts/render_motion_profile.py
+          python -m unittest discover -s tests -p 'test_render_motion_profile.py' -v
+          python -m unittest discover -s tests -p 'test_render_profile_dashboard.py' -v
+          python -m unittest discover -s tests -p 'test_render_interactive_profile.py' -v
+      - name: Render actual GIFs and redesigned nav
+        run: |
+          python scripts/render_profile_dashboard.py
+          python scripts/render_interactive_profile.py
+          python scripts/render_motion_profile.py
+      - name: Validate generated media and README
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from PIL import Image
+          from xml.etree import ElementTree
+          gifs=list(Path('assets').glob('*motion.gif'))
+          gifs+=list(Path('assets').glob('feature-*-motion.gif'))
+          gifs=sorted(set(gifs))
+          assert len(gifs)==7, f'Expected 7 real GIF animations, got {len(gifs)}'
+          for path in gifs:
+              with Image.open(path) as f:
+                  assert f.format=='GIF' and f.n_frames>=5, path
+              print(path,round(path.stat().st_size/1024), 'KB')
+          for path in list(Path('assets').glob('action-*.svg')) + list(Path('assets').glob('audit-*.svg')):
+              ElementTree.parse(path)
+          text=Path('README.md').read_text()
+          for name in ('profile-motion.gif','engineering-motion.gif','languages-motion.gif','feature-photobooth-motion.gif'):
+              assert name in text, name
+          assert text.count('<details>') >= 4
+          assert text.count('<a href=') >= 14
+          print('Validated motion GIFs, styled clickable navigation and project disclosures')
+          PY
+          git diff --check
+      - name: Publish motion assets to this review branch
+        if: github.event_name == 'pull_request' && github.head_ref == 'feat/readme-motion-rebuild'
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add README.md assets/
+          if ! git diff --cached --quiet; then
+            git commit -m 'design: add real motion previews for GitHub profile [skip ci]'
+            git push origin HEAD:feat/readme-motion-rebuild
+          fi
