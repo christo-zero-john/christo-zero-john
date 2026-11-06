@@ -40,7 +40,7 @@ class DashboardTests(unittest.TestCase):
                 dashboard.DATA = Path(d) / "audit.json"
                 self.assertRaises(ValueError, dashboard.load_audit)
                 for bad in (
-                    {"schema_version": 1, **fixture()},
+                    {**fixture(), "schema_version": 1},
                     {**fixture(), "coverage": "invalidated"},
                     {**fixture(), "repositories_scanned": 0},
                     {**fixture(), "unique_attributed_sha_summary": {
