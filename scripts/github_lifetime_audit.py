@@ -44,7 +44,11 @@ LOG_TIMEOUT = int(os.getenv("AUDIT_GIT_LOG_TIMEOUT_SECONDS", "1200"))
 DISCOVERY_MAX_QUERIES = int(os.getenv("AUDIT_DISCOVERY_MAX_QUERIES", "120"))
 SHOW_PRIVATE_NAMES = os.getenv("AUDIT_SHOW_PRIVATE_NAMES", "false").lower() == "true"
 GLOBAL_DISCOVERY = os.getenv("AUDIT_GLOBAL_DISCOVERY", "true").lower() == "true"
-ALLOW_AGENT_COLLAB = os.getenv("AUDIT_AGENT_COLLAB_REPOS", "false").lower() == "true"
+# Explicit, repo-and-SHA-specific user approvals; never infer agent ownership from repo ownership.
+APPROVED_AGENT_COMMITS = split_env_agent_approvals = {
+    part.strip().casefold() for part in re.split(r"[,;\n]", os.getenv("AUDIT_APPROVED_AGENT_COMMITS", ""))
+    if part.strip()
+}
 INCLUDE_FORKS = os.getenv("AUDIT_INCLUDE_FORKS", "true").lower() == "true"
 FETCH_LANGUAGES = os.getenv("AUDIT_CURRENT_LANGUAGES", "true").lower() == "true"
 AGENT_IDENTIFIERS = [s.strip().casefold() for s in re.split(r"[,;]", (os.getenv(
@@ -242,27 +246,34 @@ class Identity:
                 and not self.is_email_me(email))
 
     def is_me(self, name: str, email: str, repo_owner: str = "") -> bool:
-        return self.is_email_me(email) or self.is_name_only(name, email, repo_owner)
+        # Git author names are not unique. Never count name-only matches as verified work.
+        return self.is_email_me(email)
 
     def is_agent(self, name: str, email: str) -> bool:
         whole = (name + " " + email).casefold()
         return any(pattern.strip() in whole for pattern in AGENT_IDENTIFIERS)
 
     def category(self, author_name: str, author_email: str,
-                 message: str, repo_owner: str) -> tuple[str | None, bool]:
-        self_author = self.is_me(author_name, author_email, repo_owner)
+                 message: str, repo_owner: str, commit_sha: str = "",
+                 repo_full_name: str = "") -> tuple[str | None, bool]:
+        # A commit qualifies only when an exact known Git email matches the
+        # author or a Co-authored-by trailer. Agent-only work requires an explicit
+        # repo@SHA approval; the mere existence of a Claude coauthor in a fork
+        # is never proof the account owner did the work.
         agent_author = self.is_agent(author_name, author_email)
         partners = COAUTHOR.findall(message)
-        self_partner = any(self.is_me(name, email, repo_owner) for name, email in partners)
         agent_partner = any(self.is_agent(name, email) for name, email in partners)
-        agent_in_scope = repo_owner.casefold() == self.username.casefold() or ALLOW_AGENT_COLLAB
-        if self_author:
-            return "direct", (agent_author or agent_partner)
-        if self_partner:
+        if self.is_email_me(author_email):
+            return "direct", agent_partner
+        if any(self.is_email_me(email) for _, email in partners):
             return "coauthored", (agent_author or agent_partner)
-        if agent_in_scope and (agent_author or agent_partner):
+        key = f"{repo_full_name}@{commit_sha}".casefold()
+        if (repo_full_name and commit_sha and key in APPROVED_AGENT_COMMITS
+                and repo_owner.casefold() == self.username.casefold()
+                and agent_author):
             return "agent_only", True
         return None, False
+
 
 
 def nul_tokens(stream):
@@ -279,7 +290,7 @@ def nul_tokens(stream):
         buf = parts[-1]
 
 
-def read_git_history(mirror: Path, identity: Identity, repo_owner: str) -> dict:
+def read_git_history(mirror: Path, identity: Identity, repo_owner: str, repo_full_name: str = "") -> dict:
     """Read every reachable unique commit from a mirror; no first-parent *traversal*."""
     git_format = "%x1e%H%x1f%an%x1f%ae%x1f%aI%x1f%cn%x1f%ce%x1f%P%x1f%B%x1f"
     cmd = ["git", "--git-dir=" + str(mirror), "log", "--all", "--root",
@@ -296,6 +307,8 @@ def read_git_history(mirror: Path, identity: Identity, repo_owner: str) -> dict:
     authors: collections.Counter = collections.Counter()
     first_date, last_date = None, None
     reachable = 0
+    excluded_names = 0
+    excluded_agents = 0
     current = None
     current_stats = None
     expecting_rename = 0
@@ -323,10 +336,12 @@ def read_git_history(mirror: Path, identity: Identity, repo_owner: str) -> dict:
             languages[lang].code_deletions += delete
 
     def finish():
-        nonlocal current, current_stats, first_date, last_date, reachable
+        nonlocal current, current_stats, first_date, last_date, reachable, excluded_names, excluded_agents
         if current is None:
             return
         reachable += 1
+        excluded_names += int(current.get("excluded_name", False))
+        excluded_agents += int(current.get("excluded_agent", False))
         if current["kind"]:
             stat = current_stats
             stat.commits = 1
@@ -358,17 +373,20 @@ def read_git_history(mirror: Path, identity: Identity, repo_owner: str) -> dict:
                 sha, name, email, date, committer, committer_email, parents, message, _ = fields
                 if sha in unique_shas:
                     # Git log --all normally deduplicates per SHA, even across tags/branches.
-                    current = {"sha": sha, "kind": None, "date": date[:10], "merge": False, "agent_assisted": False, "name_only": False}
+                    current = {"sha": sha, "kind": None, "date": date[:10], "merge": False, "agent_assisted": False, "name_only": False, "excluded_name": False, "excluded_agent": False}
                 else:
                     unique_shas.add(sha)
-                    kind, assisted = identity.category(name, email, message, repo_owner)
-                    partners = COAUTHOR.findall(message) if kind == "coauthored" else []
-                    name_only = ((kind == "direct" and identity.is_name_only(name, email, repo_owner))
-                                 or (kind == "coauthored" and not any(
-                                     identity.is_email_me(co_email) for _, co_email in partners)))
+                    kind, assisted = identity.category(name, email, message, repo_owner, sha, repo_full_name)
+                    partners = COAUTHOR.findall(message)
+                    possible_name = identity.is_name_only(name, email, repo_owner) or any(
+                        identity.is_name_only(n, e, repo_owner) for n, e in partners)
+                    possible_agent = identity.is_agent(name, email) or any(
+                        identity.is_agent(n, e) for n, e in partners)
                     current = {"sha": sha, "kind": kind, "date": date[:10],
                                "merge": len(parents.split()) > 1, "agent_assisted": assisted,
-                               "name_only": name_only}
+                               "name_only": False,
+                               "excluded_name": kind is None and possible_name,
+                               "excluded_agent": kind is None and possible_agent}
                 current_stats = Metrics()
                 expecting_rename = 0
                 pending_rename = None
@@ -406,6 +424,7 @@ def read_git_history(mirror: Path, identity: Identity, repo_owner: str) -> dict:
     if code:
         raise RuntimeError(f"git log failed (exit {code}): {stderr[-300:]}")
     return {"metrics": overall.as_dict(), "qualifying_commits": qualifying_commits, "reachable_commits": reachable,
+            "excluded_name_only": excluded_names, "excluded_unverified_agent": excluded_agents,
             "first_commit": first_date, "last_commit": last_date,
             "years": {k: v.as_dict() for k, v in yearly.items()},
             "months": {k: v.as_dict() for k, v in monthly.items()},
@@ -447,7 +466,7 @@ def inspect_repo(repo: dict, identity: Identity, api: GitHubAPI) -> dict:
                 # Avoid echoing tokens or any credential-like information in the error.
                 err = err.replace(TOKEN, "[REDACTED]") if TOKEN else err
                 raise RuntimeError(f"clone error {clone.returncode}: {err}")
-            result.update(read_git_history(mirror, identity, result["owner"]))
+            result.update(read_git_history(mirror, identity, result["owner"], full))
     except (OSError, subprocess.TimeoutExpired, RuntimeError) as exc:
         result["status"] = "failed"
         result["error"] = str(exc).replace(TOKEN, "[REDACTED]") if TOKEN else str(exc)
