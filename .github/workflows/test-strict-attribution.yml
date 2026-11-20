@@ -23,7 +23,7 @@ jobs:
         with:
           python-version: '3.12'
       - name: Install language metadata parser
-        run: python -m pip install 'PyYAML==6.0.2'
+        run: python -m pip install 'PyYAML==6.0.2' 'Pillow>=11,<13'
       - name: Verify Python syntax
         run: python -m py_compile scripts/github_lifetime_audit.py scripts/build_linguist_index.py scripts/annotate_audit_markdown.py
       - name: Fetch official GitHub Linguist language registry

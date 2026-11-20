@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 584 138" role="img" aria-label="ATTRIBUTION NOTES: Forks, AI agents &amp; methodology">
+<rect x="0" y="0" width="584" height="138" rx="5" fill="#101A1B"/>
+<path d="M1 1 H583 V137 H1 Z" fill="none" stroke="#3F554E"/>
+<path d="M25 22 H559" stroke="#3F554E"/>
+<path d="M25 115 H559" stroke="#3F554E" opacity=".65"/>
+<rect x="1" y="1" width="5" height="136" fill="#BCEFCF"/>
+<text x="25" y="17" fill="#BCEFCF" font-size="11" font-family="DejaVu Sans, Arial, sans-serif" font-weight="700" letter-spacing="1.5">04  /  04 / PROOF</text>
+<text x="25" y="76" fill="#F1F6F0" font-size="30" font-family="DejaVu Sans, Arial, sans-serif" font-weight="700">ATTRIBUTION NOTES</text>
+<text x="27" y="103" fill="#A2BBB0" font-size="13" font-family="DejaVu Sans, Arial, sans-serif" font-weight="450">Forks, AI agents &amp; methodology</text>
+<circle cx="535" cy="75" r="24" fill="none" stroke="#5F8775"/>
+<text x="535" y="84" fill="#BCEFCF" font-size="25" font-family="DejaVu Sans, Arial, sans-serif" font-weight="500" text-anchor="middle">↗</text>
+</svg>

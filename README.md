@@ -1,119 +1,58 @@
-<div align="center">
-  <a href="https://tesnic.vercel.app">
-    <img src="./assets/hero.svg" width="100%" alt="Christo John — Full-Stack Product Engineer. Applied AI, cloud systems and thoughtful interfaces." />
-  </a>
+<!-- REFINED_PROFILE_V2 -->
+<p align="center">
+  <img src="./assets/profile-editorial.svg" alt="Christo John, AI Product Engineer" width="100%" />
+</p>
 
-  <br/>
+<p align="center">
+<a href="https://tesnic.vercel.app"><img src="./assets/link-portfolio.svg" alt="PORTFOLIO" width="23%" /></a>&nbsp;&nbsp;<a href="https://www.linkedin.com/in/christo-john-kalapurackal/"><img src="./assets/link-linkedin.svg" alt="LINKEDIN" width="23%" /></a>&nbsp;&nbsp;<a href="#selected-work"><img src="./assets/link-projects.svg" alt="PROJECTS" width="23%" /></a>&nbsp;&nbsp;<a href="mailto:10.christojohn@gmail.com"><img src="./assets/link-contact.svg" alt="CONTACT" width="23%" /></a>
+</p>
 
-  <a href="https://tesnic.vercel.app"><strong>Portfolio</strong></a>
-  &nbsp;&nbsp;·&nbsp;&nbsp;
-  <a href="https://www.linkedin.com/in/christo-john-kalapurackal/"><strong>LinkedIn</strong></a>
-  &nbsp;&nbsp;·&nbsp;&nbsp;
-  <a href="mailto:10.christojohn@gmail.com"><strong>Email</strong></a>
-</div>
+### Building with purpose.
 
-<br/>
+I'm **Christo John**, an AI Product Engineer. I design interfaces, build full-stack systems, and put applied AI to work inside real products—from Figma and Next.js to Supabase, infrastructure, and automated workflows.
 
-### I build the product and the systems behind it.
+### The engineering record
 
-I'm **Christo John** — a design-minded, full-stack engineer working across **product development, applied AI, automation, and cloud infrastructure**.
+<p><a href="./docs/github-audit/REPORT.md"><img src="./assets/profile-engineering.svg" alt="Read the source-backed GitHub engineering report" width="100%" /></a></p>
 
-I like the difficult middle: turning an idea into a working interface, connecting it to real systems, handling edge cases, and taking it all the way to deployment.
+<sub>Last recalculated 06 Nov 2026 / 18:02 UTC · Coverage: Partial. 15,944 exact-email attributed Git SHAs; any provisional Christo-name matches are disclosed in the audit. Code lines changed = cumulative additions + deletions in qualifying non-merge commits, not unique original code. All accessible remote refs are scanned. Private repository names are intentionally omitted from this public profile.</sub>
 
-From Figma to frontend. From database contracts to background workers. From first prototype to a product someone can actually use.
+<p><img src="./assets/profile-languages.svg" alt="Current GitHub Linguist language bytes across all authors" width="100%" /></p>
 
-<br/>
+<p align="center">
+<a href="./docs/github-audit/REPORT.md"><img src="./assets/doc-report.svg" alt="AUDIT REPORT" width="23%" /></a>&nbsp;&nbsp;<a href="./docs/github-audit/repositories.md"><img src="./assets/doc-repositories.svg" alt="ALL REPOSITORIES" width="23%" /></a>&nbsp;&nbsp;<a href="./docs/github-audit/languages.md"><img src="./assets/doc-languages.svg" alt="LANGUAGE HISTORY" width="23%" /></a>&nbsp;&nbsp;<a href="./docs/github-audit/APPENDIX.md"><img src="./assets/doc-methodology.svg" alt="METHODOLOGY" width="23%" /></a>
+</p>
 
 ### Selected work
 
-<table>
-  <tr>
-    <td width="50%" valign="top">
-      <p><sub>01 / CREATIVE INFRASTRUCTURE</sub></p>
-      <p><strong>Video creation, engineered end to end.</strong></p>
-      <p>A browser-based creative platform backed by asynchronous rendering, cloud workers, object storage, and reliable export workflows.</p>
-      <p><code>Next.js</code> · <code>Remotion</code> · <code>AWS</code> · <code>TypeScript</code></p>
-    </td>
-    <td width="50%" valign="top">
-      <p><sub>02 / DATA &amp; DECISION SYSTEMS</sub></p>
-      <p><strong>Turning fragmented data into clear decisions.</strong></p>
-      <p>Research and analytics interfaces built around normalization, source provenance, secure data boundaries, and trustworthy calculations.</p>
-      <p><code>PostgreSQL</code> · <code>Supabase</code> · <code>SQL</code> · <code>React</code></p>
-    </td>
-  </tr>
-  <tr>
-    <td width="50%" valign="top">
-      <p><sub>03 / CONNECTED PRODUCTS</sub></p>
-      <p><strong>Making complex integrations feel simple.</strong></p>
-      <p>Full-stack product experiences built around external data services, localization, authentication, payments, and AI-assisted interactions.</p>
-      <p><code>Next.js</code> · <code>Django</code> · <code>REST APIs</code> · <code>Python</code></p>
-    </td>
-    <td width="50%" valign="top">
-      <p><sub>04 / AUTOMATION &amp; OPERATIONS</sub></p>
-      <p><strong>Workflows designed for more than the happy path.</strong></p>
-      <p>Cross-platform automation with authenticated callbacks, explicit states, recovery paths, and reconciliation when external systems are uncertain.</p>
-      <p><code>Webhooks</code> · <code>Playwright</code> · <code>Docker</code> · <code>n8n</code></p>
-    </td>
-  </tr>
-</table>
+<sub>Public projects · Project figures reflect attributed Git history, not total upstream repository activity.</sub>
 
-<br/>
+<p><a href="https://github.com/christo-zero-john/virtual-background-photobooth"><img src="./assets/project-photobooth.svg" alt="Open Virtual Background Photobooth repository and review attributed statistics" width="100%" /></a></p>
+<p><a href="https://github.com/christo-zero-john/movie-watch-history-tracker-webapp"><img src="./assets/project-movie.svg" alt="Open Movie Watch History Tracker repository and review attributed statistics" width="100%" /></a></p>
+<p><a href="https://github.com/christo-zero-john/complaint-management-system"><img src="./assets/project-complaints.svg" alt="Open Complaint Management System repository and review attributed statistics" width="100%" /></a></p>
+<p><a href="https://github.com/christo-zero-john/roco-the-agentic-car"><img src="./assets/project-roco.svg" alt="Open ROCO / The Agentic Car repository and review attributed statistics" width="100%" /></a></p>
 
-### In the open
+<details>
+<summary><strong>How these project numbers are measured</strong></summary>
 
-<a href="https://github.com/christo-zero-john/virtual-background-photobooth"><strong>Virtual Background Photobooth ↗</strong></a>
+Commits are attributed using the account-linked Christo identity rules; unrelated upstream authors and standalone agents are excluded. Agent-assisted owner commits count once. Changed code lines include additions and deletions, not surviving source or work hours. The commit span is the calendar difference between first and last qualifying commit author dates—not time actively spent working. For detailed repository evidence and exclusions, open the linked audit using the navigation above.
 
-Real-time background replacement in the browser, with QR-based phone pairing, photo delivery, and remote shutter control. Built with **MediaPipe, WebGL, and Supabase**.
+</details>
 
-<br/>
+### The toolkit
 
-### Engineering stack
+**Primary** · Next.js / Supabase / Figma / Claude Code / Codex
 
-| | |
-| :-- | :-- |
-| **Frontend** | TypeScript, JavaScript, React, Next.js, Tailwind CSS |
-| **Backend & data** | Python, Django, PostgreSQL, Supabase, REST APIs |
-| **Cloud & infrastructure** | AWS, Google Cloud, Docker, Vercel, S3, Lambda, SQS |
-| **AI, automation & media** | LLM integrations, Codex, Claude Code, Playwright, Remotion, FFmpeg |
-| **Design & quality** | Figma, Vitest, Testing Library, Playwright E2E |
+**Also working with** · TypeScript / React / Python / Django / PostgreSQL / Tailwind CSS / Docker / Vercel / AWS / Playwright
 
-<br/>
+<sub>Technologies are self-reported experience; the language chart above is a current all-author repository snapshot.</sub>
 
-### By the numbers
+---
 
-<div align="center">
-  <img src="./assets/engineering-stats.svg" width="100%" alt="GitHub repository footprint — public and private repositories, plus collaborations." />
-</div>
+<p align="center"><strong>Thoughtful interfaces. Serious engineering.</strong></p>
 
+<p align="center">
+<a href="https://tesnic.vercel.app"><img src="./assets/link-portfolio.svg" alt="PORTFOLIO" width="23%" /></a>&nbsp;&nbsp;<a href="https://www.linkedin.com/in/christo-john-kalapurackal/"><img src="./assets/link-linkedin.svg" alt="LINKEDIN" width="23%" /></a>&nbsp;&nbsp;<a href="mailto:10.christojohn@gmail.com"><img src="./assets/link-contact.svg" alt="CONTACT" width="23%" /></a>
+</p>
 
-<!-- LIFETIME_GITHUB_AUDIT_START -->
-
-### Lifetime GitHub audit
-
-[**View complete engineering activity →**](./docs/github-audit/REPORT.md)  
-Commits · AI-agent contributions · cumulative LOC · languages · repositories · historical timeline.  
-<sub>Updated 2026-11-06 14:59 UTC · Partial coverage — see audit notes</sub>
-
-<!-- LIFETIME_GITHUB_AUDIT_END -->
-
-<br/>
-
-### Beyond the code
-
-**Full-stack engineering** for startups and client products. Previously worked across **product engineering and UI design at Neuegrid Design Studio**, and **full-stack development at Tomatrix Technologies**. Pursuing an **MCA (2025–2027)** after completing a **BCA (2022–2025)**.
-
-<br/>
-
-<div align="center">
-
-<strong>Good products need thoughtful engineering.</strong>
-
-<a href="mailto:10.christojohn@gmail.com">Let's work together</a>
-&nbsp;&nbsp;·&nbsp;&nbsp;
-<a href="https://tesnic.vercel.app">tesnic.vercel.app</a>
-
-<br/><br/>
-
-<img src="./assets/footer.svg" width="100%" alt="Christo John — design, build, iterate." />
-
-</div>
+<sub>GitHub profile data regenerated from the strict lifetime audit. The layout intentionally uses static, accessible vector graphics; no flashing GIFs, fragile JavaScript, or decorative badges.</sub>

@@ -1,0 +1,77 @@
+name: Verify refined GitHub profile
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/render_refined_profile.py'
+      - 'tests/test_render_refined_profile.py'
+      - '.github/workflows/test-refined-profile.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  render-preview:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.head_ref || github.ref_name }}
+          persist-credentials: true
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Compile and test the new motion-free profile renderer
+        run: |
+          python -m py_compile scripts/render_refined_profile.py
+          python -m unittest discover -s tests -p 'test_render_refined_profile.py' -v
+      - name: Generate preview using latest committed verified audit
+        run: python scripts/render_refined_profile.py
+      - name: Inspect generated files and links
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from xml.etree import ElementTree as ET
+          import re
+          paths=[Path('assets/profile-editorial.svg'), Path('assets/profile-engineering.svg'), Path('assets/profile-languages.svg')]
+          paths+=list(Path('assets').glob('link-*.svg'))
+          paths+=list(Path('assets').glob('doc-*.svg'))
+          paths+=list(Path('assets').glob('project-*.svg'))
+          assert len(paths)==15, len(paths)
+          for path in paths:
+              ET.parse(path)
+          readme=Path('README.md').read_text()
+          assert 'profile-editorial.svg' in readme
+          assert 'profile-engineering.svg' in readme
+          assert 'profile-languages.svg' in readme
+          assert '.gif' not in readme
+          assert '<table>' not in readme
+          assert readme.count('<details>')==1
+          assert readme.count('project-')>=4
+          assert not re.search(r'(?m)^\[[^]]+\]\([^)]+\)',readme)
+          import json
+          site=json.loads(Path('docs/experience/data.json').read_text())
+          assert len(site['projects'])==4
+          assert site['commits']>0
+          assert 'PRIVATE_SECRET_INTERNAL_PLATFORM' not in json.dumps(site)
+          print('Refined preview validated, with 15 static SVG assets and public-only site data.')
+          source=Path('docs/experience/index.html').read_text()
+          Path('/tmp/profile-site.js').write_text(source.split('<script>',1)[1].split('</script>',1)[0])
+          PY
+          node --check /tmp/profile-site.js
+          git diff --check
+      - name: Attach visual preview directly to PR branch
+        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository && github.head_ref == 'redesign/refined-native-profile'
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add README.md assets/ docs/experience/data.json
+          if ! git diff --cached --quiet; then
+            git commit -m 'design: publish refined vector README preview [skip ci]'
+            git push origin HEAD:redesign/refined-native-profile
+          else
+            echo 'Preview already matches audit snapshot.'
+          fi
