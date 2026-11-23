@@ -62,3 +62,42 @@ The GitHub profile itself cannot execute JavaScript. Premium links are clickable
 Check the matching repository row, name-only provisional count, known-email coverage, fork status, and `excluded_unverified_agent` count. If you can identify a missing address, add it privately as `AUDIT_EMAILS` and rerun; manually supplied addresses are still subject to the Christo/numeric ID guard. Do not credit upstream/agent changes purely by repo ownership.
 
 The workflow may show `PARTIAL` for incomplete GitHub indexing, inaccessible fork comparisons, clone failures or provisional matches. A complete scan of visible Git refs can never prove that all lifetime work across deleted/unpushed repositories was captured.
+
+## GitHub API throttling (HTTP 403 or 429)
+
+If the **Generate full lifetime report** step prints `GitHub API throttled (403)`,
+GitHub is restricting API request frequency. This normally occurs during global
+author-linked commit discovery (`/search/commits`), **after the repository list
+has already loaded**, or during later fork comparisons. This does **not** mean
+the token is invalid, and it does not mean all 125 repos are being counted
+incorrectly.
+
+The audit deliberately preserves **all accessible branches and repositories**:
+`git clone --mirror` and `git log --all` are unchanged. The throttling fix
+serializes GitHub REST API requests across workers, waits at least five seconds
+between search calls, and obeys GitHub `Retry-After` and `X-RateLimit-Reset`.
+On a secondary limit without a usable header, it waits at least 60 seconds
+and backs off exponentially. A generic permission-related 403 is reported as
+an access error, rather than retried as though it were a rate limit.
+
+The rate-control environment variables are:
+
+| Variable | Default | Purpose |
+| --- | ---: | --- |
+| `AUDIT_SEARCH_REQUEST_GAP_SECONDS` | `5.0` | Minimum seconds between GitHub Search API requests |
+| `AUDIT_API_REQUEST_GAP_SECONDS` | `0.4` | Minimum seconds between **all** API requests |
+| `AUDIT_DISCOVERY_MAX_QUERIES` | `120` | Upper bound on global public author-discovery searches |
+| `AUDIT_WORKERS` | `3` | Parallel Git mirror workers; API traffic is serialized independently |
+
+**While a run is active:** Leave it alone if the log says `retrying` or
+`respecting cooldown`; repeated manual reruns can aggravate GitHub throttling.
+If the job fails, inspect the **last** error line rather than the first 403.
+After merging this fix, trigger a fresh manual workflow run. If API limits
+remain severe, increase the search gap to `7.0` or `10.0` rather than
+disabling global discovery or suppressing fork checks.
+
+If the log instead shows `Resource not accessible by personal access token`
+or a plain HTTP 403 **without rate-limit evidence**, review the fine-grained PAT
+repository and email permissions. Never paste the token or its value into
+logs, reports, or messages.
+

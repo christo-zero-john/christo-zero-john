@@ -28,6 +28,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import threading
 import time
 import urllib.error
 import urllib.parse
@@ -105,50 +106,132 @@ class APIError(RuntimeError):
 
 
 class GitHubAPI:
+    """Single token-wide request gate, with separate GitHub search pacing.
+
+    GitHub's search quota is stricter than the normal REST API. Repository
+    scans run in worker threads, so *all* REST calls must honor a shared
+    secondary-rate-limit cooldown. Git clone is not routed through this gate.
+    """
     def __init__(self, token: str):
         if not token:
             raise APIError("AUDIT_TOKEN is required; set GH_AUDIT_READ_TOKEN in GitHub repository secrets")
         self.token = token
+        self._lock = threading.Lock()
+        self._next_any = 0.0
+        self._next_search = 0.0
+        self._cooldown_until = 0.0
+        self._request_gap = max(0.1, float(os.getenv("AUDIT_API_REQUEST_GAP_SECONDS", "0.4")))
+        self._search_gap = max(2.1, float(os.getenv("AUDIT_SEARCH_REQUEST_GAP_SECONDS", "5.0")))
+
+    def _wait_for_turn(self, is_search: bool) -> None:
+        deadline = max(self._next_any, self._cooldown_until,
+                       self._next_search if is_search else 0.0)
+        gap = deadline - time.monotonic()
+        if gap > 0:
+            time.sleep(gap)
+        now = time.monotonic()
+        self._next_any = now + self._request_gap
+        if is_search:
+            self._next_search = now + self._search_gap
+
+    def _rate_limit_pause(self, exc: urllib.error.HTTPError, attempt: int,
+                          detail: str) -> float | None:
+        """Return cooldown seconds for genuine rate-limit/server errors.
+
+        A generic 403 can be a permissions problem. It is *not* a reason to
+        hammer GitHub with retries.
+        """
+        remaining = exc.headers.get("X-RateLimit-Remaining")
+        reset = exc.headers.get("X-RateLimit-Reset", "")
+        retry_after = exc.headers.get("Retry-After", "")
+        throttled = ("secondary rate limit" in detail.casefold()
+                     or "rate limit exceeded" in detail.casefold()
+                     or "rate limit" in detail.casefold() and
+                     ("exceeded" in detail.casefold() or "abuse" in detail.casefold()))
+        if exc.code in (403, 429):
+            if not (remaining == "0" or retry_after or throttled or exc.code == 429):
+                return None
+            if retry_after:
+                try:
+                    delay = max(1.0, float(retry_after))
+                except ValueError:
+                    delay = 60.0
+            elif remaining == "0" and reset.isdigit():
+                delay = max(1.0, int(reset) - time.time() + 2)
+            else:
+                delay = max(60.0, 60.0 * (2 ** attempt))
+            # Back off further when GitHub still rejects after the first wait.
+            if attempt:
+                delay = max(delay, min(600.0, 15.0 * (2 ** attempt)))
+            return delay
+        if exc.code in (500, 502, 503, 504):
+            return min(120.0, 3.0 * (2 ** attempt))
+        return None
 
     def request(self, endpoint: str, params: dict | None = None, *, optional: bool = False):
         if not endpoint.startswith("/"):
             endpoint = "/" + endpoint
         query = urllib.parse.urlencode(params or {})
         url = API_ROOT + endpoint + ("?" + query if query else "")
-        for attempt in range(7):
-            req = urllib.request.Request(url, headers={
-                "Authorization": f"Bearer {self.token}",
-                "Accept": "application/vnd.github+json",
-                "X-GitHub-Api-Version": "2022-11-28",
-                "User-Agent": "christo-lifetime-github-audit/1.0",
-            })
-            try:
-                with urllib.request.urlopen(req, timeout=45) as res:
-                    return json.load(res)
-            except urllib.error.HTTPError as exc:
-                if optional and exc.code in (403, 404, 422):
-                    return None
-                rem = exc.headers.get("X-RateLimit-Remaining")
-                retry_after = exc.headers.get("Retry-After")
-                if attempt < 6 and (exc.code in (429, 500, 502, 503, 504) or
-                                    (exc.code == 403 and (rem == "0" or retry_after))):
-                    delay = min(180, (int(retry_after) if retry_after and retry_after.isdigit()
-                                      else max(4, min(90, 3 * 2 ** attempt))))
-                    if rem == "0" and exc.headers.get("X-RateLimit-Reset", "").isdigit():
-                        delay = min(180, max(delay, int(exc.headers["X-RateLimit-Reset"]) - int(time.time()) + 2))
-                    log(f"GitHub API throttled ({exc.code}); retrying in {delay}s")
-                    time.sleep(delay)
-                    continue
+        is_search = endpoint.startswith("/search/")
+        group = "search" if is_search else "core"
+        # Serialize even requests made by the concurrent repository workers.
+        # This deliberately favors correctness and coverage over raw speed.
+        with self._lock:
+            for attempt in range(7):
+                self._wait_for_turn(is_search)
+                req = urllib.request.Request(url, headers={
+                    "Authorization": f"Bearer {self.token}",
+                    "Accept": "application/vnd.github+json",
+                    "X-GitHub-Api-Version": "2022-11-28",
+                    "User-Agent": "christo-lifetime-github-audit/2.0",
+                })
                 try:
-                    detail = exc.read(300).decode("utf-8", "replace")
-                except Exception:
-                    detail = ""
-                raise APIError(f"GitHub API HTTP {exc.code} on {endpoint}: {detail}") from None
-            except (urllib.error.URLError, TimeoutError) as exc:
-                if attempt == 6:
-                    raise APIError(f"GitHub API connection failed on {endpoint}: {exc}") from exc
-                time.sleep(min(45, 2 ** attempt + 1))
-        raise APIError(f"GitHub API request exhausted retries: {endpoint}")
+                    with urllib.request.urlopen(req, timeout=45) as res:
+                        if res.headers.get("X-RateLimit-Remaining") == "0":
+                            reset = res.headers.get("X-RateLimit-Reset", "")
+                            if reset.isdigit():
+                                seconds = max(0, int(reset) - time.time() + 2)
+                                self._cooldown_until = max(
+                                    self._cooldown_until, time.monotonic() + seconds)
+                        return json.load(res)
+                except urllib.error.HTTPError as exc:
+                    try:
+                        detail = exc.read(1000).decode("utf-8", "replace")
+                    except (OSError, ValueError):
+                        detail = ""
+                    delay = self._rate_limit_pause(exc, attempt, detail)
+                    if delay is not None and attempt < 6:
+                        self._cooldown_until = max(
+                            self._cooldown_until, time.monotonic() + delay)
+                        log(f"GitHub API throttled (HTTP {exc.code}; {group}); "
+                            f"respecting cooldown {math.ceil(delay)}s "
+                            f"(attempt {attempt+1}/7)")
+                        continue
+                    if optional and (
+                        exc.code in (404, 422) or (exc.code == 403 and delay is None)
+                    ):
+                        return None
+                    # Avoid logging full URLs or queries that could include
+                    # sensitive author email aliases.
+                    if delay is not None:
+                        raise APIError(
+                            f"GitHub {group} rate limit still blocked {endpoint} "
+                            f"after 7 attempts; lower query volume or retry later"
+                        ) from None
+                    raise APIError(
+                        f"GitHub API HTTP {exc.code} on {endpoint}: "
+                        f"{detail[:250]}"
+                    ) from None
+                except (urllib.error.URLError, TimeoutError) as exc:
+                    if attempt == 6:
+                        raise APIError(
+                            f"GitHub API connection failed on {endpoint}: {exc}"
+                        ) from exc
+                    pause = min(45, 2 ** attempt + 1)
+                    self._cooldown_until = max(
+                        self._cooldown_until, time.monotonic() + pause)
+            raise APIError(f"GitHub API request exhausted retries: {endpoint}")
 
     def pages(self, endpoint: str, params: dict | None = None):
         page = 1
